@@ -1,9 +1,9 @@
-Raw.Data <- function(Symbols,start.date){
+Raw.Data <- function(Symbols,start.date,end.date){
     
   
     Data <- new.env()
     
-    getSymbols(c(Symbols), from=start.date,env=Data)
+    getSymbols(c(Symbols), from=start.date,to=end.date,env=Data)
     
     Returns <- eapply(Data, function(s) ROC(Ad(s), type="discrete"))
     Volume <- eapply(Data, function(s) Vo(s))
@@ -14,14 +14,13 @@ Raw.Data <- function(Symbols,start.date){
     colnames(ReturnsDF) <- gsub(".Adjusted","",colnames(ReturnsDF))
     colnames(VolumeDF) <- gsub(".Adjusted","",colnames(VolumeDF))
     
-    VolumeDF <<- VolumeDF[ 2:length(ReturnsDF[,1]), colSums(is.na(ReturnsDF)) == 0]
-    ReturnsDF <<- ReturnsDF[2:length(ReturnsDF[,1]), colSums(is.na(ReturnsDF)) == 0]
+### Eliminates securities without complete return series
+    ReturnsDF <- ReturnsDF[,colSums(is.na(ReturnsDF))<2]
+    VolumeDF <- VolumeDF[,colSums(is.na(ReturnsDF))<2]
     
+### First row of differences generated NA, need to eliminate
     ReturnsDF <<- (ReturnsDF[-1,])
     VolumeDF <<- (VolumeDF[-1,])
-    
-    VolumeDF <<- VolumeDF[ , colSums(is.na(ReturnsDF)) == 0]
-    ReturnsDF <<- ReturnsDF[ , colSums(is.na(ReturnsDF)) == 0]
     
     
     
