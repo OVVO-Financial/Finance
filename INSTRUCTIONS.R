@@ -10,10 +10,10 @@ require(DEoptim)
 #Step1: Create Symbol list
   DJIA.Symbols <- c("AAPL","AXP","BA","CAT","CSCO","CVX","DD","DIS","GE","GS","HD","IBM","INTC","JNJ","JPM","KO","MCD","MMM","MRK","MSFT","NKE","PG","PFE","TRV","UNH","UTX","V","VZ","WMT","XOM")
 
-  ETF.Symbols <- c("SPY","GLD","FXE","TLT","VXX")
+  ETF.Symbols <- c("SPY","GLD","FXE","TLT","VXX") #...
   
 #Step2: Download Data
-  Raw.Data(SP500_Symbols,start.date="2013-01-01")
+  Raw.Data(DJIA.Symbols,start.date="2013-01-01")
 
       
 #Step3: Condition Data  ### RUN ONCE RETURN 3 GLOBAL VARIABLES
