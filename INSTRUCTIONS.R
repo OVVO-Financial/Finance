@@ -13,7 +13,7 @@ require(DEoptim)
   ETF.Symbols <- c("SPY","GLD","FXE","TLT","VXX") #...
   
 #Step2: Download Data
-  Raw.Data(DJIA.Symbols,start.date="2013-01-01")
+  Raw.Data(DJIA.Symbols,start.date="2013-01-01",end.date="2016-06-17")
 
       
 #Step3: Condition Data  ### RUN ONCE RETURN 3 GLOBAL VARIABLES
