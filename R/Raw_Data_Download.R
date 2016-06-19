@@ -4,13 +4,15 @@ Raw.Data <- function(Symbols,start.date,end.date){
     Data <- new.env()
     
     getSymbols(c(Symbols), from=start.date,to=end.date,env=Data)
-    
+
+### Generate both data.frames for returns and volume    
     Returns <- eapply(Data, function(s) ROC(Ad(s), type="discrete"))
     Volume <- eapply(Data, function(s) Vo(s))
     
     ReturnsDF <<- as.data.frame(do.call(merge, na.omit(Returns)))
     VolumeDF <<- as.data.frame(do.call(merge, na.omit(Volume)))
-    
+
+### Name columns of both data.frames    
     colnames(ReturnsDF) <- gsub(".Adjusted","",colnames(ReturnsDF))
     colnames(VolumeDF) <- gsub(".Adjusted","",colnames(VolumeDF))
     
