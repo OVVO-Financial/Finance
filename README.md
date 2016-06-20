@@ -20,10 +20,10 @@ S&P 100 `UPM/LPM` Optimization Run Time: <br />
  `user  system elapsed` <br /> 
  `216.86    0.31  233.38` <br /> 
 
-##**Example on S&P 500 for 1 year holding period**<br />
+##**Example on S&P 100 for 1 year holding period**<br />
 
 **Optimized `Conditioned` data.frame**<br />
-![SP500 Weights](https://github.com/OVVO-Financial/Finance/blob/master/Images/Conditioned%20Weights.png)
+![SP100 Weights](https://github.com/OVVO-Financial/Finance/blob/master/Images/SP100%20Conditioned%20Weights%201%20year.png)
 
-**Comparison vs. equal weight (1/N) and un-conditioned optimized UPM/LPM portfolio**<br />
-![SP500 Returns](https://github.com/OVVO-Financial/Finance/blob/master/Images/SP500%201%20year%20holding%20period.png)
+**Comparison vs. equal weight (1/N) and entropy conditioned optimized UPM/LPM portfolio**<br />
+![SP100 Returns](https://github.com/OVVO-Financial/Finance/blob/master/Images/SP100%201%20year%20holding.png)
