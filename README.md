@@ -9,7 +9,7 @@ Implementation of **PORTFOLIO THEORY** available at  http://ssrn.com/abstract=27
 **2.  Returns Conditioning:** <br />
 &nbsp;&nbsp;&nbsp;&nbsp;    Conditions `Returns` with entropy proxies.  Outputs `Conditioned` data.frame.<br />
 S&P 100 Conditioning Run Time: <br />
-`> system.time(conditioning(Sample.period,Backtest))`<br />
+`> system.time(Condition(Sample.period,Backtest))`<br />
 `user  system elapsed` <br />
 `283.10    0.08  284.79` <br />
     
