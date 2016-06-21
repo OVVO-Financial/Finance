@@ -25,18 +25,18 @@ require(DEoptim)
 #Step4: Optimize Data & Portfolio Construction
   LPM.degree <<- 3;UPM.degree<<- 2;
   LPM.target = 1.00005;UPM.target=1.00005;
-  Conditioned.port=VN.Lin.opt(Conditioned);
+  Conditioned.port=VN.opt(Conditioned);
   Conditioned.weights <<- Conditioned.port;
   noquote(paste("Conditioned.port=",Conditioned.port,sep = ""))
     ### COPY & PASTE OUTPUT FROM --> Conditioned.port
   
   
-  Conditioned.no.vol.port= VN.Lin.opt(Conditioned.no.vol);
+  Conditioned.no.vol.port= VN.opt(Conditioned.no.vol);
   Conditioned.no.vol.weights <<- Conditioned.no.vol.port;
   noquote(paste("Conditioned.no.vol.port=",Conditioned.no.vol.port,sep = ""))
     ### COPY & PASTE OUTPUT FROM --> Conditioned.no.vol.port
       
-  UN.Conditioned.port=VN.Lin.opt(Raw);
+  UN.Conditioned.port=VN.opt(Raw);
   UN.Conditioned.weights <<- UN.Conditioned.port;
   noquote(paste("UN.Conditioned.port=",UN.Conditioned.port,sep = ""))
     ### COPY & PASTE OUTPUT FROM --> UN.Conditioned.port
