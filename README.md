@@ -14,7 +14,7 @@ S&P 100 Conditioning Run Time: <br />
 `283.10    0.08  284.79` <br />
     
 **3.  Optimization:**  <br />
-&nbsp;&nbsp;&nbsp;&nbsp;    Non-convex `UPM/LPM` optimization of `Conditioned` data.frame. <br />
+&nbsp;&nbsp;&nbsp;&nbsp;    Non-convex `UPM/LPM` optimization of `Conditioned` data.frame.   See here for comparison of optimization methods: https://github.com/OVVO-Financial/Finance/blob/master/Optimization%20Method%20Comparison<br />
 S&P 100 `UPM/LPM` Optimization Run Time: <br />
 `>system.time(VN.opt(Conditioned))` <br />
  `user  system elapsed` <br /> 
