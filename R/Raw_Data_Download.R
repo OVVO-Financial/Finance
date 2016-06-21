@@ -12,9 +12,9 @@ Raw.Data <- function(Symbols,start.date,end.date){
     ReturnsDF <<- as.data.frame(do.call(merge, na.omit(Returns)))
     VolumeDF <<- as.data.frame(do.call(merge, na.omit(Volume)))
 
-### Name columns of both data.frames    
+### Name columns of data.frame    
     colnames(ReturnsDF) <- gsub(".Adjusted","",colnames(ReturnsDF))
-    colnames(VolumeDF) <- gsub(".Adjusted","",colnames(VolumeDF))
+    
     
 ### Eliminates securities without complete return series
     ReturnsDF <- ReturnsDF[,colSums(is.na(ReturnsDF))<2]
