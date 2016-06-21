@@ -4,10 +4,10 @@ Implementation of **PORTFOLIO THEORY** available at  http://ssrn.com/abstract=27
 ##**Portfolio Theory Steps:**
 
 **1.  Data Download:**  <br />
-&nbsp;&nbsp;&nbsp;&nbsp;    Download data and create returns via `quantmod` routines.  Outputs `Returns` and `Volume` data.frames for specified time frame.
+&nbsp;&nbsp;&nbsp;&nbsp;    Download data and create returns series via `quantmod` routines.  Outputs `Returns` and `Volume` data.frames for specified time frame.
 
 **2.  Returns Conditioning:** <br />
-&nbsp;&nbsp;&nbsp;&nbsp;    Conditions the returns with entropy proxies.  Outputs `Conditioned` data.frame.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;    Conditions `Returns` with entropy proxies.  Outputs `Conditioned` data.frame.<br />
 S&P 100 Conditioning Run Time: <br />
 `> system.time(conditioning(Sample.period,Backtest))`<br />
 `user  system elapsed` <br />
