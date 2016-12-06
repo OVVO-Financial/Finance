@@ -8,7 +8,8 @@ Implementation of **PORTFOLIO THEORY** available at  http://ssrn.com/abstract=27
 
 **2.  Returns Conditioning:** <br />
 &nbsp;&nbsp;&nbsp;&nbsp;    Conditions `Returns` with entropy proxies.  Outputs `Conditioned` data.frame.<br />
-S&P 100 Conditioning Run Time: <br />
+
+####S&P 100 Conditioning Run Time: <br />
 ```{r}
 > system.time(Condition(Sample.period,Backtest))
 user  system elapsed
@@ -16,7 +17,8 @@ user  system elapsed
 ```    
 **3.  Optimization:**  <br />
 &nbsp;&nbsp;&nbsp;&nbsp;    Non-convex `UPM/LPM` optimization of `Conditioned` data.frame.   See here for comparison of optimization methods: https://github.com/OVVO-Financial/Finance/blob/master/R/Optimization%20Method%20Comparison.md<br />
-S&P 100 `UPM/LPM` Optimization Run Time: <br />
+
+####S&P 100 `UPM/LPM` Optimization Run Time: <br />
 ```{r}
 > system.time(VN.opt(Conditioned)) 
 user  system elapsed 
