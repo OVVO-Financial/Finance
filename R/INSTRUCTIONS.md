@@ -20,7 +20,7 @@ require(DEoptim)
   Raw.Data(DJIA.Symbols,start.date="2013-01-01",end.date="2016-06-17")
 ```
       
-#Step3: Condition Data  ### RUN ONCE RETURN 3 GLOBAL VARIABLES
+#Step3: Condition Data
 ```{r}
   Sample.period <<- 100; Backtest <<- 250;
   conditioning(Sample.period,Backtest);
