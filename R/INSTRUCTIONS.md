@@ -17,13 +17,13 @@ require(DEoptim)
 ```
 #Step2: Download Data
 ```{r}
-  Raw.Data(DJIA.Symbols,start.date="2013-01-01",end.date="2016-06-17")
+  Raw.Data(DJIA.Symbols,end.date=Sys.Date())
 ```
       
 #Step3: Condition Data
 ```{r}
   Sample.period <<- 100; Backtest <<- 250;
-  conditioning(Sample.period,Backtest);
+  VN.Condition(Sample.period,Backtest);
   EW.port <- rowMeans(BT.Raw)
 ```
     
@@ -31,11 +31,7 @@ require(DEoptim)
 ```{r}
   LPM.degree <<- 3;UPM.degree<<- 2;
   LPM.target = 1.00005;UPM.target=1.00005;
-  Conditioned.port=VN.opt(Conditioned);
-  Conditioned.weights <<- Conditioned.port;
-
-  UN.Conditioned.port=VN.opt(Raw);
-  UN.Conditioned.weights <<- UN.Conditioned.port;
+  Conditioned.port=VN.opt(Conditioned)
 ```  
 
 
