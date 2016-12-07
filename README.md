@@ -24,11 +24,10 @@ user  system elapsed
 user  system elapsed 
 216.86    0.31  233.38
 ```
-##**Example on DJIA, 100 ETFs, and S&P 100 for 1 year holding period**<br />
+##**Example on 100 ETFs and S&P 100 for 1 year holding period**<br />
 
 
-**Comparison vs. equal weight (1/N) and S&P 500 benchmarks**<br />
-![DJIA Returns](https://github.com/OVVO-Financial/Finance/blob/master/Images/DJIA.png)
+**Comparison vs. equal weight (1/N), a 60/40 portfolio and S&P 500 benchmarks**<br />
 
 ![SP100 Returns](https://github.com/OVVO-Financial/Finance/blob/master/Images/SP100.png)
 
