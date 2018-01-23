@@ -4,8 +4,10 @@ VN.Utility <- function (n,q,required.return,x,upside.target=NULL,downside.target
   
   if(min(x)>0 & required.return<1){stop("You have a negative required return...Really?!?  Please set to a minimum of 1.")}
   
-  if(downside.target> required.return){stop("You have a downside target greater than your required return...Really?!?  Please set downside target to below the required return.")}
-  
+  if(!is.null(downside.target)){
+    if(downside.target> required.return){stop("You have a downside target greater than your required return...Really?!?  Please set downside target to below the required return.")}
+  }
+    
   #These can be adjusted, but objectively the expected upside and downside would be the conditional mean of each.
   if(is.null(upside.target)){upside.target <- mean(x[x>required.return])}
   if(is.null(downside.target)){downside.target <- mean(x[x<required.return])}
