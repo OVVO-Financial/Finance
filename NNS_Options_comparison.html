@@ -10,7 +10,7 @@
 
 
 
-<meta name="date" content="2024-05-15" />
+<meta name="date" content="2024-05-16" />
 
 <title>NNS Options Pricing Comparison</title>
 
@@ -2756,7 +2756,7 @@ font-size: 0.95em;
 
 
 <h1 class="title toc-ignore">NNS Options Pricing Comparison</h1>
-<h4 class="date">May 15, 2024</h4>
+<h4 class="date">May 16, 2024</h4>
 
 </div>
 
@@ -2825,116 +2825,99 @@ rownames(otm_call_comp) = paste0(otm_prices[otm_prices$Type==&quot;calls&quot;, 
 <h3>ITM Calls</h3>
 <pre class="r"><code># Last price
 print(paste0(&quot;Last price: &quot;, itm_nns_model$`Last (S)`))</code></pre>
-<pre><code>## [1] &quot;Last price: 528.1&quot;</code></pre>
+<pre><code>## [1] &quot;Last price: 530.5&quot;</code></pre>
 <pre class="r"><code>print(paste0(&quot;ITM Call MAPE: &quot;, Metrics::mape(itm_call_comp[,1], itm_call_comp[,2])))</code></pre>
-<pre><code>## [1] &quot;ITM Call MAPE: 0.0582460726602549&quot;</code></pre>
+<pre><code>## [1] &quot;ITM Call MAPE: 0.0782934389982635&quot;</code></pre>
 <pre class="r"><code>itm_call_comp</code></pre>
 <pre><code>##            SPY Market Prices NNS Model
-## 365 strike           164.815  167.9989
-## 370 strike           159.880  162.8219
-## 380 strike           149.945  152.4708
-## 405 strike           125.075  126.6112
-## 410 strike           120.145  121.4426
-## 415 strike           115.170  116.2754
-## 416 strike           114.190  115.2421
-## 420 strike           110.235  111.1095
-## 425 strike           105.255  105.9449
-## 430 strike           100.300  100.7817
-## 437 strike            93.330   93.5559
-## 440 strike            90.360   90.4600
-## 442 strike            88.365   88.3965
-## 445 strike            85.420   85.3017
-## 448 strike            82.430   82.2075
-## 449 strike            81.465   81.1762
-## 450 strike            80.415   80.1451
-## 455 strike            75.535   74.9904
-## 464 strike            66.570   65.7171
-## 465 strike            65.655   64.6871
-## 468 strike            62.590   61.5979
-## 470 strike            60.650   59.5389
-## 474 strike            56.760   55.4222
-## 475 strike            55.700   54.3933
-## 477 strike            53.815   52.3358
-## 478 strike            52.830   51.3072
-## 480 strike            50.870   49.2504
-## 482 strike            48.865   47.1941
-## 484 strike            46.930   45.1383
-## 485 strike            45.985   44.1106
-## 486 strike            45.005   43.0830
-## 487 strike            44.040   42.0556
-## 490 strike            41.090   38.9742
-## 493 strike            38.240   35.8941
-## 495 strike            36.285   33.8416
-## 499 strike            32.500   29.7387
-## 500 strike            31.550   28.7135
-## 501 strike            30.550   27.6885
-## 503 strike            28.785   25.7144
-## 504 strike            27.805   24.6900
-## 505 strike            26.940   23.6659
-## 506 strike            25.960   22.7404
-## 507 strike            25.055   21.8169
-## 508 strike            24.160   20.9545
-## 509 strike            23.275   20.1326
-## 510 strike            22.395   19.2739
-## 511 strike            21.500   18.4579
-## 512 strike            20.585   17.6929
-## 513 strike            19.730   16.9882
-## 514 strike            18.880   16.3714
-## 515 strike            17.990   15.9311
-## 516 strike            17.200   15.4042
-## 517 strike            16.365   14.6947
-## 518 strike            15.570   14.2406
-## 519 strike            14.780   13.8376
-## 520 strike            13.960   13.4845
-## 521 strike            13.265   13.2777
-## 522 strike            12.525   12.7735
-## 523 strike            11.810   12.1327
-## 524 strike            11.105   11.6282
-## 525 strike            10.430   11.1695
-## 526 strike             9.765   10.8196
-## 527 strike             9.130   10.8164
-## 528 strike             8.500   10.4215</code></pre>
+## 355 strike           177.665  180.6262
+## 400 strike           132.960  134.0903
+## 410 strike           122.975  123.7602
+## 415 strike           118.055  118.5969
+## 420 strike           113.065  113.4349
+## 425 strike           108.100  108.2741
+## 435 strike            98.185   97.9568
+## 436 strike            97.145   96.9254
+## 440 strike            93.165   92.8004
+## 450 strike            83.305   82.4924
+## 460 strike            73.415   72.1915
+## 466 strike            67.400   66.0148
+## 470 strike            63.475   61.8988
+## 475 strike            58.520   56.7559
+## 478 strike            55.605   53.6714
+## 490 strike            43.845   41.3438
+## 495 strike            38.960   36.2131
+## 498 strike            36.070   33.1365
+## 499 strike            35.160   32.1113
+## 500 strike            34.195   31.0863
+## 501 strike            33.210   30.0615
+## 502 strike            32.320   29.0369
+## 503 strike            31.350   28.0135
+## 504 strike            30.410   26.9899
+## 505 strike            29.425   25.9659
+## 506 strike            28.525   24.9421
+## 507 strike            27.560   23.9558
+## 508 strike            26.675   22.9696
+## 509 strike            25.755   22.0199
+## 510 strike            24.845   21.1040
+## 511 strike            23.920   20.2397
+## 512 strike            22.980   19.4113
+## 513 strike            22.080   18.5817
+## 514 strike            21.185   17.7779
+## 515 strike            20.340   17.0760
+## 516 strike            19.505   16.3744
+## 517 strike            18.710   15.7302
+## 518 strike            17.810   15.3202
+## 519 strike            16.940   14.7132
+## 520 strike            16.135   14.1277
+## 521 strike            15.340   13.6570
+## 522 strike            14.495   13.2963
+## 523 strike            13.760   13.1124
+## 524 strike            12.985   12.6230
+## 525 strike            12.220   12.0748
+## 526 strike            11.520   11.4279
+## 527 strike            10.775   10.9678
+## 528 strike            10.080   10.5480
+## 529 strike             9.485   10.4396
+## 530 strike             8.805   10.2287</code></pre>
 </div>
 <div id="otm-calls" class="section level3">
 <h3>OTM Calls</h3>
 <pre class="r"><code>print(paste0(&quot;OTM Call MAPE: &quot;, Metrics::mape(otm_call_comp[,1], otm_call_comp[,2])))</code></pre>
-<pre><code>## [1] &quot;OTM Call MAPE: 0.907022134188631&quot;</code></pre>
+<pre><code>## [1] &quot;OTM Call MAPE: 0.794594467116215&quot;</code></pre>
 <pre class="r"><code>otm_call_comp</code></pre>
 <pre><code>##            SPY Market Prices NNS Model
-## 529 strike             7.915    9.9802
-## 530 strike             7.335    9.9352
-## 531 strike             6.755    9.9864
-## 532 strike             6.280    9.7588
-## 533 strike             5.790    9.6556
-## 534 strike             5.290    8.9803
-## 535 strike             4.875    8.2056
-## 536 strike             4.460    7.8245
-## 537 strike             4.075    7.8170
-## 538 strike             3.670    7.0275
-## 539 strike             3.355    6.4933
-## 540 strike             3.040    5.8528
-## 541 strike             2.710    5.2854
-## 542 strike             2.460    4.8205
-## 543 strike             2.220    4.4009
-## 544 strike             1.975    4.1231
-## 545 strike             1.765    3.7235
-## 546 strike             1.560    3.5209
-## 547 strike             1.385    3.2518
-## 548 strike             1.240    0.0000
-## 549 strike             1.095    0.0000
-## 550 strike             0.970    0.0000
-## 551 strike             0.855    0.0000
-## 552 strike             0.755    0.0000
-## 555 strike             0.515    0.0000
-## 560 strike             0.275    0.0000
-## 565 strike             0.165    0.0000
-## 570 strike             0.105    0.0000
-## 575 strike             0.075    0.0000
-## 580 strike             0.055    0.0000
-## 585 strike             0.035    0.0000
+## 531 strike             8.205    9.7434
+## 532 strike             7.615    9.5533
+## 533 strike             7.040    9.4836
+## 534 strike             6.520    9.3038
+## 535 strike             6.030    9.3941
+## 536 strike             5.540    8.7125
+## 537 strike             5.100    7.8974
+## 538 strike             4.640    7.4776
+## 539 strike             4.225    7.3485
+## 540 strike             3.860    6.6874
+## 541 strike             3.505    6.0576
+## 542 strike             3.145    5.5062
+## 543 strike             2.855    4.9451
+## 544 strike             2.565    4.5734
+## 545 strike             2.315    4.0957
+## 546 strike             2.075    3.9656
+## 547 strike             1.845    3.5534
+## 548 strike             1.630    3.1761
+## 549 strike             1.445    3.0417
+## 550 strike             1.285    0.0000
+## 551 strike             1.135    0.0000
+## 552 strike             1.005    0.0000
+## 555 strike             0.685    0.0000
+## 560 strike             0.365    0.0000
+## 565 strike             0.205    0.0000
+## 570 strike             0.125    0.0000
+## 575 strike             0.085    0.0000
+## 580 strike             0.065    0.0000
+## 585 strike             0.045    0.0000
 ## 595 strike             0.025    0.0000
-## 600 strike             0.015    0.0000
-## 615 strike             0.015    0.0000</code></pre>
+## 600 strike             0.025    0.0000</code></pre>
 </div>
 </div>
 <div id="aapl" class="section level2">
@@ -2944,47 +2927,44 @@ print(paste0(&quot;Last price: &quot;, itm_nns_model$`Last (S)`))</code></pre>
 <h3>ITM Calls</h3>
 <pre class="r"><code># Last price
 print(paste0(&quot;Last price: &quot;, itm_nns_model$`Last (S)`))</code></pre>
-<pre><code>## [1] &quot;Last price: 190.28&quot;</code></pre>
+<pre><code>## [1] &quot;Last price: 189.9402&quot;</code></pre>
 <pre class="r"><code>print(paste0(&quot;ITM Call MAPE: &quot;, Metrics::mape(itm_call_comp[,1], itm_call_comp[,2])))</code></pre>
-<pre><code>## [1] &quot;ITM Call MAPE: 0.018752803989374&quot;</code></pre>
+<pre><code>## [1] &quot;ITM Call MAPE: 0.0192363572564904&quot;</code></pre>
 <pre class="r"><code>itm_call_comp</code></pre>
 <pre><code>##            AAPL Market Prices NNS Model
-## 60 strike             130.375  133.9628
-## 65 strike             125.325  128.7926
-## 100 strike             90.700   92.6374
-## 115 strike             75.575   77.1654
-## 130 strike             60.675   61.7112
-## 135 strike             55.725   56.5644
-## 140 strike             50.800   51.4203
-## 145 strike             46.025   46.2792
-## 150 strike             40.925   41.1413
-## 155 strike             35.950   36.0070
-## 160 strike             31.125   30.8770
-## 165 strike             26.150   25.7518
-## 170 strike             21.300   20.6789
-## 175 strike             16.600   16.0727
-## 180 strike             12.100   11.9675
-## 185 strike              8.075    8.2960
-## 190 strike              4.850    5.0538</code></pre>
+## 5 strike              184.850  190.3977
+## 100 strike             90.500   92.2232
+## 120 strike             70.600   71.6151
+## 130 strike             60.775   61.3229
+## 135 strike             55.600   56.1803
+## 140 strike             50.775   51.0403
+## 150 strike             40.875   40.7692
+## 160 strike             30.975   30.5126
+## 165 strike             26.000   25.3912
+## 170 strike             21.225   20.3253
+## 175 strike             16.450   15.6645
+## 180 strike             11.850   11.6137
+## 185 strike              7.825    7.9107</code></pre>
 </div>
 <div id="otm-calls-1" class="section level3">
 <h3>OTM Calls</h3>
 <pre class="r"><code>print(paste0(&quot;OTM Call MAPE: &quot;, Metrics::mape(otm_call_comp[,1], otm_call_comp[,2])))</code></pre>
-<pre><code>## [1] &quot;OTM Call MAPE: 0.874401141826923&quot;</code></pre>
+<pre><code>## [1] &quot;OTM Call MAPE: 0.863602325211021&quot;</code></pre>
 <pre class="r"><code>otm_call_comp</code></pre>
 <pre><code>##            AAPL Market Prices NNS Model
-## 195 strike              2.600    2.9573
-## 200 strike              1.280    1.7349
-## 205 strike              0.625    0.0000
-## 210 strike              0.325    0.0000
-## 215 strike              0.195    0.0000
-## 220 strike              0.125    0.0000
-## 225 strike              0.075    0.0000
+## 190 strike              4.600    4.7718
+## 195 strike              2.415    2.8726
+## 200 strike              1.135    0.0000
+## 205 strike              0.545    0.0000
+## 210 strike              0.290    0.0000
+## 215 strike              0.175    0.0000
+## 220 strike              0.115    0.0000
+## 225 strike              0.085    0.0000
 ## 230 strike              0.065    0.0000
-## 240 strike              0.035    0.0000
-## 245 strike              0.030    0.0000
+## 235 strike              0.045    0.0000
+## 240 strike              0.030    0.0000
 ## 250 strike              0.025    0.0000
-## 255 strike              0.020    0.0000</code></pre>
+## 255 strike              0.015    0.0000</code></pre>
 </div>
 </div>
 <div id="xom" class="section level2">
@@ -2992,22 +2972,21 @@ print(paste0(&quot;Last price: &quot;, itm_nns_model$`Last (S)`))</code></pre>
 <pre class="r"><code>security = &quot;XOM&quot;</code></pre>
 <div id="itm-calls-2" class="section level3">
 <h3>ITM Calls</h3>
-<pre><code>## [1] &quot;Last price: 118.05&quot;</code></pre>
-<pre><code>## [1] &quot;ITM Call MAPE: 0.138077483505262&quot;</code></pre>
+<pre><code>## [1] &quot;Last price: 118.755&quot;</code></pre>
+<pre><code>## [1] &quot;ITM Call MAPE: 0.0983474941515703&quot;</code></pre>
 <pre><code>##            XOM Market Prices NNS Model
-## 100 strike            18.875   18.3514
-## 110 strike             9.275    8.1504
-## 115 strike             5.075    3.7289</code></pre>
+## 90 strike             29.175   29.2982
+## 110 strike             9.600    8.8619
+## 115 strike             5.325    4.1858</code></pre>
 </div>
 <div id="otm-calls-2" class="section level3">
 <h3>OTM Calls</h3>
-<pre><code>## [1] &quot;OTM Call MAPE: 0.894651353874883&quot;</code></pre>
+<pre><code>## [1] &quot;OTM Call MAPE: 0.845924951267056&quot;</code></pre>
 <pre><code>##            XOM Market Prices NNS Model
-## 120 strike             2.125    2.4645
-## 125 strike             0.630    1.4575
-## 130 strike             0.150    0.0000
-## 135 strike             0.045    0.0000
-## 140 strike             0.030    0.0000</code></pre>
+## 120 strike             2.280    2.6252
+## 125 strike             0.675    1.5068
+## 130 strike             0.165    0.0000
+## 140 strike             0.025    0.0000</code></pre>
 </div>
 </div>
 <div id="tlt" class="section level2">
@@ -3015,41 +2994,38 @@ print(paste0(&quot;Last price: &quot;, itm_nns_model$`Last (S)`))</code></pre>
 <pre class="r"><code>security = &quot;TLT&quot;</code></pre>
 <div id="itm-calls-3" class="section level3">
 <h3>ITM Calls</h3>
-<pre><code>## [1] &quot;Last price: 92.15&quot;</code></pre>
-<pre><code>## [1] &quot;ITM Call MAPE: 0.0330490131161287&quot;</code></pre>
+<pre><code>## [1] &quot;Last price: 92.12&quot;</code></pre>
+<pre><code>## [1] &quot;ITM Call MAPE: 0.0451958161358888&quot;</code></pre>
 <pre><code>##           TLT Market Prices NNS Model
-## 75 strike            17.250   17.4313
-## 80 strike            12.250   12.3249
-## 83 strike             9.300    9.2667
-## 84 strike             8.300    8.2485
-## 85 strike             7.300    7.2399
-## 86 strike             6.375    6.2345
-## 87 strike             5.400    5.2925
-## 88 strike             4.525    4.4365
-## 89 strike             3.625    3.6216
-## 90 strike             2.825    2.8793
-## 91 strike             2.125    2.2740
-## 92 strike             1.525    1.8455</code></pre>
+## 50 strike            42.375   43.0105
+## 80 strike            12.425   12.2931
+## 85 strike             7.500    7.2059
+## 87 strike             5.525    5.2591
+## 88 strike             4.650    4.3911
+## 89 strike             3.750    3.5818
+## 90 strike             2.910    2.8376
+## 91 strike             2.205    2.2490
+## 92 strike             1.575    1.8088</code></pre>
 </div>
 <div id="otm-calls-3" class="section level3">
 <h3>OTM Calls</h3>
-<pre><code>## [1] &quot;OTM Call MAPE: 0.870997154204585&quot;</code></pre>
+<pre><code>## [1] &quot;OTM Call MAPE: 0.852331395652234&quot;</code></pre>
 <pre><code>##            TLT Market Prices NNS Model
-## 93 strike              1.045    1.2809
-## 94 strike              0.675    0.9243
-## 95 strike              0.425    0.6247
-## 96 strike              0.265    0.0000
-## 97 strike              0.165    0.0000
-## 98 strike              0.105    0.0000
-## 99 strike              0.075    0.0000
+## 93 strike              1.080    1.2857
+## 94 strike              0.725    0.9064
+## 95 strike              0.465    0.6251
+## 96 strike              0.285    0.0000
+## 97 strike              0.175    0.0000
+## 98 strike              0.115    0.0000
 ## 100 strike             0.055    0.0000
-## 102 strike             0.045    0.0000
-## 103 strike             0.040    0.0000
-## 105 strike             0.035    0.0000
-## 107 strike             0.035    0.0000
+## 101 strike             0.045    0.0000
+## 102 strike             0.040    0.0000
+## 103 strike             0.035    0.0000
+## 105 strike             0.025    0.0000
+## 107 strike             0.025    0.0000
 ## 108 strike             0.025    0.0000
-## 110 strike             0.020    0.0000
-## 115 strike             0.020    0.0000</code></pre>
+## 109 strike             0.015    0.0000
+## 115 strike             0.015    0.0000</code></pre>
 </div>
 </div>
 <div id="refactored-options-code" class="section level2">
