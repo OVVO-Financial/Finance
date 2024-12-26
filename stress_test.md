@@ -86,6 +86,7 @@ for (i in 1:num_regressors) {
 par(mfrow = c(1, 1))  # Reset plotting layout
 ```
 ## Results
+We have generated distributions of losses for each of the securities for this market loss scenario.
 ```r
 expected_regressors
        AAPL        MSFT       GOOGL        AMZN        META        TSLA        NVDA 
