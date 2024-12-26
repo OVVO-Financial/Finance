@@ -34,10 +34,45 @@ y <- clpm_observations[, 1]
 # Generate bootstrapped replicates of each regressor
 sampled_regressors <- apply(original_regressors, 2, function(i) 
   head(as.vector(NNS::NNS.meboot(as.vector(i), reps = ceiling(nn/qq), rho = 1)["replicates",]$replicates), nn))
+```
+### Correlation and Dependence
+Verify we have similar pairwise correlation structures between our `original_regressors` and  `sampled_regressors`.
+```r
+> cor(original_regressors, method = "spearman")
+           AAPL      MSFT     GOOGL      AMZN      META      TSLA      NVDA
+AAPL  1.0000000 0.6405076 0.6658329 0.4779329 0.4476271 0.3642260 0.5148969
+MSFT  0.6405076 1.0000000 0.6985712 0.6325684 0.5085180 0.3723069 0.5416388
+GOOGL 0.6658329 0.6985712 1.0000000 0.6019448 0.5480946 0.3639042 0.5610609
+AMZN  0.4779329 0.6325684 0.6019448 1.0000000 0.5374962 0.4361241 0.5459656
+META  0.4476271 0.5085180 0.5480946 0.5374962 1.0000000 0.3060146 0.4869852
+TSLA  0.3642260 0.3723069 0.3639042 0.4361241 0.3060146 1.0000000 0.4303827
+NVDA  0.5148969 0.5416388 0.5610609 0.5459656 0.4869852 0.4303827 1.0000000
 
+> cor(sampled_regressors, method = "spearman")
+           AAPL      MSFT     GOOGL      AMZN      META      TSLA      NVDA
+AAPL  1.0000000 0.6356982 0.6580721 0.4665701 0.4457178 0.3634110 0.5140733
+MSFT  0.6356982 1.0000000 0.6914647 0.6220349 0.5035894 0.3701024 0.5388916
+GOOGL 0.6580721 0.6914647 1.0000000 0.5939436 0.5424583 0.3615964 0.5571910
+AMZN  0.4665701 0.6220349 0.5939436 1.0000000 0.5263291 0.4302841 0.5388315
+META  0.4457178 0.5035894 0.5424583 0.5263291 1.0000000 0.3055460 0.4833622
+TSLA  0.3634110 0.3701024 0.3615964 0.4302841 0.3055460 1.0000000 0.4277793
+NVDA  0.5140733 0.5388916 0.5571910 0.5388315 0.4833622 0.4277793 1.0000000
+```
+and via the `NNS.copula()` function which measures multivariate dependence.
+```r
+> NNS::NNS.copula(original_regressors)
+[1] 0.7518493
+> NNS::NNS.copula(sampled_regressors)
+[1] 0.747049
+```
+
+## Regress, Predict and Filter
+```r
 # Optimal Clusters and predicted values
-predicted_values <- NNS.stack(IVs.train = original_regressors, DV.train = y, 
-                              IVs.test = sampled_regressors, method = 1)$stack
+predicted_values <- NNS::NNS.stack(IVs.train = original_regressors,
+                                   DV.train = y, 
+                                   IVs.test = sampled_regressors,
+                                   method = 1)$stack
 
 # Find the closest match to the desired output
 differences <- abs(predicted_values - desired_output)
@@ -88,7 +123,7 @@ par(mfrow = c(1, 1))  # Reset plotting layout
 ## Results
 We have generated distributions of losses for each of the securities for this market loss scenario.
 ```r
-expected_regressors
+> expected_regressors
        AAPL        MSFT       GOOGL        AMZN        META        TSLA        NVDA 
 -0.12253002 -0.13652204 -0.11021472 -0.05533813 -0.15061686 -0.16932392 -0.17324354
 ```
