@@ -33,11 +33,17 @@ y <- clpm_observations[, 1]
 
 # Generate bootstrapped replicates of each regressor
 sampled_regressors <- apply(original_regressors, 2, function(i) 
-  head(as.vector(NNS::NNS.meboot(as.vector(i), reps = ceiling(nn/qq), rho = 1)["replicates",]$replicates), nn))
+  tail(as.vector(NNS::NNS.meboot(as.vector(i), reps = ceiling(nn/qq), rho = 1)["replicates",]$replicates), nn))
 ```
 ### Correlation and Dependence
-Verify we have similar pairwise correlation structures between our `original_regressors` and  `sampled_regressors`.
+Verify we have similar pairwise correlation structures between our `original_regressors` and our significantly expanded `sampled_regressors`.
 ```r
+> dim(original_regressors)
+[1] 181   7
+
+> dim(sampled_regressors)
+[1] 1000000       7
+
 > cor(original_regressors, method = "spearman")
            AAPL      MSFT     GOOGL      AMZN      META      TSLA      NVDA
 AAPL  1.0000000 0.6405076 0.6658329 0.4779329 0.4476271 0.3642260 0.5148969
@@ -87,7 +93,7 @@ within_tolerance <- differences <= tolerance
 filtered_regressors <- as.data.frame(sampled_regressors[within_tolerance, ])
 
 # Average value for filtered regressors
-expected_regressors <- apply(filtered_regressors, 2, function(i) mean(i))
+expected_regressors <- apply(filtered_regressors, 2, mean)
 num_regressors <- ncol(filtered_regressors)
 
 # Plot histograms for each regressor
