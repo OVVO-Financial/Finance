@@ -1,5 +1,5 @@
 # Stress Testing 
-Overview of stress testing procedure whereby analysis is restricted to the CLPM quadrant of returns and `NNS.reg()` is utilized to uphold multivariate dependence structure.
+Overview of stress testing procedure whereby analysis is restricted to the CLPM quadrant of returns and `NNS.reg()` is utilized to uphold the multivariate nonlinear dependence structure ([even beyond regressor support](Images/extrapolations.png)).
 
 ## Data
 Assuming you have historical returns for securities of interest
