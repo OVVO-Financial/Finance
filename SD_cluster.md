@@ -1,4 +1,9 @@
-# Using Stochastic Dominant Clusters vs. HRP and 1/N
+# **Using Stochastic Dominant Clusters vs. HRP and 1/N**
+
+This analysis compares **Stochastic Dominance (SD) clustering**, **Hierarchical Risk Parity (HRP)**, and **Equal-Weighted (1/N)** portfolio allocations **out-of-sample**.  
+The **`NNS.cluster`** function (available in **NNS >= v11.1**) is used to retrieve **Stochastic Dominant Clusters (SD1, SD2, SD3)**.  
+We use a **common inverse variance weighting scheme** across methods for a fair comparison.
+
 ```r
 # Load necessary libraries
 library(quantmod)
@@ -9,17 +14,16 @@ library(PerformanceAnalytics)
 library(factoextra)
 library(rvest)
 
-# Step 1: Fetch S&P 500 Stock List
+# Fetch S&P 500 Stock List
 sp500_url <- "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies"
 sp500_table <- read_html(sp500_url) %>% html_table(fill = TRUE)
 sp500_tickers <- sp500_table[[1]]$Symbol
 
-# Remove tickers with special characters (e.g., BRK.B → BRK-B)
+# Clean tickers (remove special characters)
 sp500_tickers <- gsub("\\.", "-", sp500_tickers)
 
-
-# Function to fetch stock data and handle missing values
-get_stock_data <- function(tickers, start_date = "2018-01-01", end_date = Sys.Date()) {
+# Function to fetch stock data with missing data handling
+get_stock_data <- function(tickers, start_date = "2018-01-01", end_date = "2025-02-15") {
   stock_data <- map(tickers, function(ticker) {
     tryCatch({
       data <- getSymbols(ticker, src = "yahoo", from = start_date, to = end_date, auto.assign = FALSE)[,6]
@@ -31,11 +35,11 @@ get_stock_data <- function(tickers, start_date = "2018-01-01", end_date = Sys.Da
   # Remove tickers with excessive missing values
   valid_indices <- which(!sapply(stock_data, is.null) & !sapply(stock_data, function(x) any(is.na(x))))
   stock_data <- stock_data[valid_indices]
-  
+
   # Merge and handle missing values
   stock_data <- reduce(stock_data, merge)
   stock_data <- na.locf(stock_data)  # Forward-fill missing values
-  stock_data <- na.omit(stock_data)  # Remove any remaining NAs
+  stock_data <- na.omit(stock_data)  # Remove remaining NAs
   colnames(stock_data) <- sp500_tickers[valid_indices]
   return(stock_data)
 }
@@ -46,33 +50,35 @@ price_data <- get_stock_data(sp500_tickers)
 # Compute daily returns
 returns <- ROC(price_data, type = "continuous")[-1,] %>% na.omit()
 
-# Step 2: Train-Test Split (Last 250 Observations for Testing)
+# Train-Test Split (Last 250 Observations for Testing)
 train_returns <- returns[1:(nrow(returns) - 250), ]
 test_returns <- returns[(nrow(returns) - 249):nrow(returns), ]
 
 # Compute covariance matrix on training data
 train_cov_matrix <- cov(train_returns)
 
-# Function to compute inverse variance weights within each cluster
+# Function to compute inverse variance weights per cluster
 inverse_variance_weights_by_cluster <- function(ret_mat, cluster_assignments) {
   weights <- rep(0, ncol(ret_mat))
   
   for (cluster in unique(cluster_assignments)) {
-    idx <- which(cluster_assignments == cluster)  # Assets in the cluster
-    cluster_cov <- cov(ret_mat[, idx])  # Covariance matrix for the cluster
+    idx <- which(cluster_assignments == cluster)  # Assets in cluster
+    cluster_cov <- cov(ret_mat[, idx])  # Cluster-specific covariance matrix
     
-    variances <- diag(cluster_cov)  # Extract variances
-    inv_variances <- 1 / variances  # Compute inverse variances
-    cluster_weights <- inv_variances / sum(inv_variances)  # Normalize within the cluster
+    variances <- diag(cluster_cov)
+    inv_variances <- 1 / variances
+    cluster_weights <- inv_variances / sum(inv_variances)
     
-    # Assign weights back to the main weight vector
     weights[idx] <- cluster_weights / length(unique(cluster_assignments))  # Normalize across clusters
   }
   
   return(weights)
 }
 
-# Compute SD-based clusters (independent cluster assignment for each SD method)
+# Define cluster count
+K = 5
+
+# Compute SD Clustering
 sd_clustering <- function(ret_mat, degree = 1, k = 5) {
   clusters <- NNS.SD.cluster(ret_mat, degree = degree, min_cluster = k)$Clusters
   cluster_assignments <- rep(NA, ncol(ret_mat))
@@ -82,32 +88,31 @@ sd_clustering <- function(ret_mat, degree = 1, k = 5) {
   return(cluster_assignments)
 }
 
-K = 5
-
+# Generate Clusters
 sd1_clusters <- sd_clustering(train_returns, degree = 1, k = K)
 sd2_clusters <- sd_clustering(train_returns, degree = 2, k = K)
 sd3_clusters <- sd_clustering(train_returns, degree = 3, k = K)
 
-# Apply cluster-based inverse variance weighting for each method
+# Compute Weights
 sd1_weights <- inverse_variance_weights_by_cluster(train_returns, sd1_clusters)
 sd2_weights <- inverse_variance_weights_by_cluster(train_returns, sd2_clusters)
 sd3_weights <- inverse_variance_weights_by_cluster(train_returns, sd3_clusters)
 
-# HRP: Apply hierarchical clustering first
-hrp_clusters <- cutree(hclust(dist(train_cov_matrix)), k = 5)  # Hierarchical clustering
+# HRP Clustering
+hrp_clusters <- cutree(hclust(dist(train_cov_matrix)), k = K)
 hrp_allocations <- inverse_variance_weights_by_cluster(train_returns, hrp_clusters)
 
-# Compute 1/N Equal-Weighted Portfolio Weights
+# Equal Weight Portfolio
 equal_weights <- rep(1 / ncol(train_returns), ncol(train_returns))
 
-# Apply trained weights to out-of-sample test data
+# Compute Out-of-Sample Returns
 test_hrp_returns <- rowSums(test_returns * hrp_allocations, na.rm = TRUE)
 test_sd1_returns <- rowSums(test_returns * sd1_weights, na.rm = TRUE)
 test_sd2_returns <- rowSums(test_returns * sd2_weights, na.rm = TRUE)
 test_sd3_returns <- rowSums(test_returns * sd3_weights, na.rm = TRUE)
 test_equal_returns <- rowSums(test_returns * equal_weights, na.rm = TRUE)
 
-# Compute performance metrics
+# Compute Performance Metrics
 performance_metrics <- function(portfolio_returns) {
   mean_return <- mean(portfolio_returns)
   volatility <- sd(portfolio_returns)
@@ -126,7 +131,7 @@ performance_metrics <- function(portfolio_returns) {
   ))
 }
 
-# Print performance metrics for out-of-sample test period
+# Print Performance
 perf_df <- rbind(
   cbind("Portfolio" = "HRP", performance_metrics(test_hrp_returns)),
   cbind("Portfolio" = "SD1", performance_metrics(test_sd1_returns)),
@@ -145,9 +150,8 @@ print(perf_df)
                 SD3  0.0005550809 0.007207268   0.07701682    0.12066801 -0.01171807 -0.01531103
  Equal Weight (1/N)  0.0004524134 0.007200696   0.06282913    0.09186082 -0.01164580 -0.01641287
 ```
-
 ```r
-# Generate out-of-sample cumulative return plot
+# Generate Performance Plot
 cumulative_returns <- data.frame(
   Date = index(test_returns),
   HRP = cumprod(1 + test_hrp_returns),
