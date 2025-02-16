@@ -3,6 +3,8 @@
 This analysis compares **Stochastic Dominance (SD) clustering**, **Hierarchical Risk Parity (HRP)**, and **Equal-Weighted (1/N)** portfolio allocations **out-of-sample**.  
 The **`NNS.SD.cluster`** function (available in **NNS >= v11.1**) is used to retrieve **Stochastic Dominant Clusters (SD1, SD2, SD3)**.
 
+<img src="Images/SD_clusters_Dow.png" style="border: none; outline: none; margin: 0; padding: 0; display: block;"/>
+
 The HRP method retains its original weighting scheme using a recursive bisection algorithm that leverages the covariance matrix, while our method in this example uses a naive equal weight both between and within the `NNS.SD` clusters.
 
 ```r
