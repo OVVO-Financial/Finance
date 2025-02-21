@@ -10,7 +10,7 @@
 
 
 
-<meta name="date" content="2025-02-20" />
+<meta name="date" content="2025-02-21" />
 
 <title>NNS Options Pricing Comparison</title>
 
@@ -2756,7 +2756,7 @@ font-size: 0.95em;
 
 
 <h1 class="title toc-ignore">NNS Options Pricing Comparison</h1>
-<h4 class="date">February 20, 2025</h4>
+<h4 class="date">February 21, 2025</h4>
 
 </div>
 
@@ -2847,62 +2847,44 @@ rownames(otm_put_comp) = paste0(otm_prices[otm_prices$Type==&quot;puts&quot;, &q
 <h3>ITM Calls</h3>
 <pre class="r"><code># Last price
 print(paste0(&quot;Last price: &quot;, itm_nns_model$`Last (S)`))</code></pre>
-<pre><code>## [1] &quot;Last price: 609.1364&quot;</code></pre>
+<pre><code>## [1] &quot;Last price: 606.62&quot;</code></pre>
 <pre class="r"><code>print(paste0(&quot;ITM Call MAPE: &quot;, Metrics::mape(itm_call_comp[,1], itm_call_comp[,2])))</code></pre>
-<pre><code>## [1] &quot;ITM Call MAPE: 0.0377009339762506&quot;</code></pre>
+<pre><code>## [1] &quot;ITM Call MAPE: 0.0596192991089175&quot;</code></pre>
 <pre class="r"><code>itm_call_comp</code></pre>
 <pre><code>##            SPY Market Prices NNS Model
-## 180 strike           428.810  441.0585
-## 385 strike           224.110  229.7237
-## 400 strike           209.690  214.2875
-## 425 strike           184.905  188.5718
-## 445 strike           164.910  168.0105
-## 450 strike           160.125  162.8719
-## 460 strike           150.125  152.5968
-## 510 strike           100.310  101.2730
-## 515 strike            95.275   96.1463
-## 520 strike            90.475   91.0207
-## 525 strike            85.535   85.8965
-## 530 strike            80.660   80.7736
-## 535 strike            75.515   75.6522
-## 540 strike            70.680   70.5323
-## 545 strike            65.670   65.4141
-## 550 strike            60.825   60.2977
-## 555 strike            56.050   55.1832
-## 557 strike            54.070   53.1380
-## 558 strike            53.035   52.1156
-## 560 strike            51.150   50.0709
-## 563 strike            48.165   47.0046
-## 565 strike            46.635   44.9609
-## 566 strike            45.430   43.9392
-## 570 strike            41.680   39.8535
-## 573 strike            38.650   36.7904
-## 575 strike            37.005   34.8494
-## 578 strike            34.110   31.7749
-## 580 strike            32.355   29.8300
-## 582 strike            30.470   28.6929
-## 585 strike            27.890   25.2354
-## 587 strike            25.915   23.9157
-## 588 strike            25.235   23.3742
-## 590 strike            23.690   21.9462
-## 592 strike            21.610   20.5986
-## 593 strike            21.105   19.9962
-## 594 strike            20.045   18.9060
-## 595 strike            19.290   18.9508
-## 596 strike            18.440   17.7525
-## 597 strike            17.755   17.2094
-## 598 strike            16.865   16.5467
-## 599 strike            16.235   16.1432
-## 600 strike            15.300   15.1914
-## 601 strike            14.605   14.6624
-## 602 strike            13.805   13.9133
-## 603 strike            13.190   13.3116
-## 604 strike            12.340   12.0915
-## 605 strike            11.635   12.3192
-## 606 strike            10.945   11.2938
-## 607 strike            10.285   11.3962
-## 608 strike             9.595   11.2001
-## 609 strike             8.990   10.8683</code></pre>
+## 240 strike           367.670  376.0918
+## 400 strike           208.565  211.4084
+## 440 strike           168.335  170.3123
+## 445 strike           163.610  165.1781
+## 455 strike           153.440  154.9117
+## 515 strike            93.775   93.3843
+## 520 strike            89.215   88.2637
+## 525 strike            83.945   83.1444
+## 545 strike            64.265   62.6817
+## 550 strike            59.305   57.5703
+## 555 strike            54.475   52.4608
+## 560 strike            49.585   47.3534
+## 562 strike            47.515   45.3111
+## 565 strike            44.695   42.2485
+## 570 strike            40.375   37.1490
+## 571 strike            39.210   36.1648
+## 575 strike            35.365   32.1039
+## 576 strike            34.650   31.1935
+## 580 strike            31.030   27.1792
+## 584 strike            27.290   24.0338
+## 590 strike            22.165   19.8795
+## 591 strike            21.060   19.0782
+## 593 strike            19.530   17.9179
+## 595 strike            17.815   15.9547
+## 596 strike            16.915   15.6466
+## 597 strike            16.375   15.1582
+## 600 strike            13.930   12.5303
+## 601 strike            13.195   11.9561
+## 602 strike            12.390   11.4821
+## 603 strike            11.760   11.2410
+## 604 strike            11.090   10.2408
+## 605 strike            10.390   10.8333
+## 606 strike             9.740   10.5306</code></pre>
 </div>
 <div id="otm-calls" class="section level3">
 <h3>OTM Calls</h3>
@@ -2913,64 +2895,60 @@ if(is.null(nrow(non_zero_nns)))  non_zero_nns = t(non_zero_nns)
 
 
 print(paste0(&quot;OTM Call MAPE: &quot;, Metrics::mape(non_zero_nns[,1], non_zero_nns[,2])))</code></pre>
-<pre><code>## [1] &quot;OTM Call MAPE: 0.794756860079993&quot;</code></pre>
+<pre><code>## [1] &quot;OTM Call MAPE: 0.568575233243101&quot;</code></pre>
 <pre class="r"><code>non_zero_nns</code></pre>
 <pre><code>##            SPY Market Prices NNS Model
-## 610 strike             8.345   10.2447
-## 611 strike             7.765    8.9070
-## 612 strike             7.165    8.6519
-## 613 strike             6.625    8.8818
-## 614 strike             6.165    8.2703
-## 615 strike             5.595    8.0727
-## 616 strike             5.120    7.0986
-## 617 strike             4.655    6.9303
-## 618 strike             4.195    6.6293
-## 619 strike             3.870    6.0965
-## 620 strike             3.480    5.9054
-## 621 strike             3.110    5.3750
-## 622 strike             2.770    4.9492
-## 623 strike             2.495    4.7777
-## 624 strike             2.220    4.2305
-## 625 strike             1.970    3.5665
-## 626 strike             1.760    3.3962
-## 627 strike             1.550    3.0739
-## 628 strike             1.355    2.7933
-## 629 strike             1.190    2.5283
-## 630 strike             1.055    2.4069
-## 631 strike             0.925    2.0382
-## 632 strike             0.805    1.9725
-## 633 strike             0.705    1.8405
-## 634 strike             0.625    1.6520</code></pre>
+## 607 strike             9.305   10.0846
+## 608 strike             8.475    9.2185
+## 609 strike             8.045    8.4740
+## 610 strike             7.225    8.5466
+## 611 strike             6.705    8.1018
+## 612 strike             6.200    7.7951
+## 613 strike             5.820    7.2515
+## 614 strike             5.155    6.3794
+## 615 strike             4.720    6.6072
+## 616 strike             4.285    5.6473
+## 617 strike             3.975    5.7074
+## 618 strike             3.545    4.9836
+## 619 strike             3.185    4.8253
+## 620 strike             2.805    4.4035
+## 621 strike             2.545    4.0074
+## 622 strike             2.215    3.5674
+## 623 strike             2.030    2.9601
+## 624 strike             1.800    2.8523
+## 625 strike             1.540    2.8137
+## 626 strike             1.365    2.6922
+## 627 strike             1.220    2.3435
+## 628 strike             1.050    2.0429
+## 629 strike             0.940    2.0142
+## 630 strike             0.810    1.8774
+## 631 strike             0.700    2.0012</code></pre>
 </div>
 <div id="itm-puts" class="section level3">
 <h3>ITM Puts</h3>
 <pre class="r"><code># Last price
 print(paste0(&quot;Last price: &quot;, itm_nns_model$`Last (S)`))</code></pre>
-<pre><code>## [1] &quot;Last price: 609.1364&quot;</code></pre>
+<pre><code>## [1] &quot;Last price: 606.62&quot;</code></pre>
 <pre class="r"><code>print(paste0(&quot;ITM Put MAPE: &quot;, Metrics::mape(itm_put_comp[,1], itm_put_comp[,2])))</code></pre>
-<pre><code>## [1] &quot;ITM Put MAPE: 0.113656665564839&quot;</code></pre>
+<pre><code>## [1] &quot;ITM Put MAPE: 0.14693484104716&quot;</code></pre>
 <pre class="r"><code>itm_put_comp</code></pre>
 <pre><code>##            SPY Market Prices NNS Model
-## 610 strike             8.635   11.2819
-## 611 strike             9.070   10.5876
-## 612 strike             9.530   11.5929
-## 613 strike            10.000   12.4032
-## 614 strike            10.360   12.6916
-## 615 strike            10.930   12.8963
-## 616 strike            11.490   13.0687
-## 617 strike            11.920   13.8485
-## 618 strike            12.505   13.3946
-## 619 strike            13.135   14.9885
-## 620 strike            13.810   15.5107
-## 621 strike            14.410   16.0190
-## 624 strike            16.610   17.8419
-## 625 strike            17.475   18.3639
-## 627 strike            19.095   19.5662
-## 628 strike            19.875   20.1475
-## 629 strike            20.660   20.8253
-## 630 strike            21.710   21.7145
-## 635 strike            26.565   26.2460
-## 640 strike            31.585   31.3431</code></pre>
+## 607 strike             8.495   10.7037
+## 608 strike             8.790   11.1692
+## 609 strike             9.235   11.6558
+## 610 strike             9.660   11.8252
+## 611 strike            10.005   12.2618
+## 612 strike            10.380   12.3122
+## 613 strike            10.995   13.1257
+## 614 strike            11.550   13.4410
+## 615 strike            12.250   14.1636
+## 617 strike            13.340   15.2885
+## 620 strike            15.295   16.6420
+## 622 strike            16.990   17.9773
+## 624 strike            18.285   19.4085
+## 625 strike            19.470   19.9624
+## 629 strike            22.525   23.0645
+## 630 strike            23.800   23.9344</code></pre>
 </div>
 <div id="otm-puts" class="section level3">
 <h3>OTM Puts</h3>
@@ -2981,41 +2959,39 @@ if(is.null(nrow(non_zero_nns)))  non_zero_nns = t(non_zero_nns)
 
 
 print(paste0(&quot;OTM Put MAPE: &quot;, Metrics::mape(non_zero_nns[,1], non_zero_nns[,2])))</code></pre>
-<pre><code>## [1] &quot;OTM Put MAPE: 0.40497218639149&quot;</code></pre>
+<pre><code>## [1] &quot;OTM Put MAPE: 0.368607700072757&quot;</code></pre>
 <pre class="r"><code>non_zero_nns</code></pre>
 <pre><code>##            SPY Market Prices NNS Model
-## 578 strike             2.115    5.8452
-## 579 strike             2.195    3.6688
-## 580 strike             2.295    2.9947
-## 581 strike             2.365    3.1954
-## 582 strike             2.475    3.4283
-## 583 strike             2.585    3.0452
-## 584 strike             2.690    3.2706
-## 585 strike             2.815    3.2687
-## 586 strike             2.915    3.3096
-## 587 strike             3.060    3.4336
-## 588 strike             3.190    3.6714
-## 589 strike             3.330    3.6929
-## 590 strike             3.480    4.0338
-## 591 strike             3.615    4.8260
-## 592 strike             3.730    5.0409
-## 593 strike             3.945    5.4432
-## 594 strike             4.140    5.8710
-## 595 strike             4.320    6.2324
-## 596 strike             4.510    6.4022
-## 597 strike             4.740    7.4005
-## 598 strike             4.945    7.3168
-## 599 strike             5.155    7.6442
-## 600 strike             5.330    7.5005
-## 601 strike             5.670    8.2386
-## 602 strike             5.930    8.7078
-## 603 strike             6.225    9.7569
-## 604 strike             6.465   10.2015
-## 605 strike             6.800    9.2220
-## 606 strike             7.150   10.0300
-## 607 strike             7.510   10.7675
-## 608 strike             7.850   10.7099
-## 609 strike             8.230   11.1095</code></pre>
+## 576 strike             2.140    2.9374
+## 577 strike             2.195    2.9946
+## 578 strike             2.315    2.9963
+## 579 strike             2.370    3.0671
+## 580 strike             2.540    3.2713
+## 581 strike             2.580    3.1640
+## 582 strike             2.760    3.4830
+## 584 strike             3.005    3.5907
+## 585 strike             3.160    3.7126
+## 586 strike             3.300    3.9032
+## 587 strike             3.430    4.1100
+## 588 strike             3.600    4.1507
+## 589 strike             3.690    4.7609
+## 590 strike             3.900    5.3144
+## 591 strike             3.990    5.6896
+## 592 strike             4.140    5.8373
+## 593 strike             4.445    6.4430
+## 594 strike             4.550    6.8019
+## 595 strike             4.895    7.4156
+## 596 strike             5.120    6.7595
+## 597 strike             5.270    8.0810
+## 598 strike             5.465    8.6422
+## 599 strike             5.680    8.8161
+## 600 strike             6.120    9.5771
+## 601 strike             6.240    9.1619
+## 602 strike             6.620    9.6911
+## 603 strike             6.895   10.1044
+## 604 strike             7.120   10.2552
+## 605 strike             7.675   10.5219
+## 606 strike             8.020   10.7773</code></pre>
 </div>
 </div>
 <div id="aapl" class="section level2">
@@ -3025,31 +3001,31 @@ print(paste0(&quot;OTM Put MAPE: &quot;, Metrics::mape(non_zero_nns[,1], non_zer
 <h3>ITM Calls</h3>
 <pre class="r"><code># Last price
 print(paste0(&quot;Last price: &quot;, itm_nns_model$`Last (S)`))</code></pre>
-<pre><code>## [1] &quot;Last price: 245.33&quot;</code></pre>
+<pre><code>## [1] &quot;Last price: 246.345&quot;</code></pre>
 <pre class="r"><code>print(paste0(&quot;ITM Call MAPE: &quot;, Metrics::mape(itm_call_comp[,1], itm_call_comp[,2])))</code></pre>
-<pre><code>## [1] &quot;ITM Call MAPE: 0.0414941966611435&quot;</code></pre>
+<pre><code>## [1] &quot;ITM Call MAPE: 0.0451604222749893&quot;</code></pre>
 <pre class="r"><code>itm_call_comp</code></pre>
 <pre><code>##            AAPL Market Prices NNS Model
-## 5 strike              240.200  246.3832
-## 130 strike            115.900  117.8748
-## 140 strike            105.825  107.6152
-## 150 strike             95.900   97.3599
-## 160 strike             86.000   87.1095
-## 175 strike             70.975   71.7443
-## 180 strike             66.150   66.6257
-## 185 strike             61.175   61.5089
-## 190 strike             56.150   56.3939
-## 195 strike             51.250   51.2810
-## 200 strike             46.275   46.1705
-## 205 strike             41.350   41.0624
-## 210 strike             36.375   35.9572
-## 215 strike             31.475   30.8553
-## 220 strike             26.700   25.7571
-## 225 strike             22.000   20.6635
-## 230 strike             17.625   15.5892
-## 235 strike             13.375   11.8515
-## 240 strike              9.625   10.0823
-## 245 strike              6.450    8.3866</code></pre>
+## 5 strike              240.800  247.1598
+## 130 strike            116.175  118.7685
+## 135 strike            111.250  113.6424
+## 145 strike            101.350  103.3934
+## 160 strike             86.250   88.0282
+## 175 strike             71.375   72.6746
+## 180 strike             66.525   67.5597
+## 185 strike             61.475   62.4466
+## 190 strike             56.625   57.3352
+## 195 strike             51.600   52.2258
+## 200 strike             46.625   47.1185
+## 205 strike             41.700   42.0137
+## 210 strike             36.775   36.9115
+## 215 strike             31.775   31.8124
+## 220 strike             27.000   26.7169
+## 225 strike             22.275   21.6256
+## 230 strike             17.725   16.5690
+## 235 strike             13.500   12.4218
+## 240 strike              9.750   10.6367
+## 245 strike              6.475    9.1899</code></pre>
 </div>
 <div id="otm-calls-1" class="section level3">
 <h3>OTM Calls</h3>
@@ -3060,28 +3036,26 @@ if(is.null(nrow(non_zero_nns)))  non_zero_nns = t(non_zero_nns)
 
 
 print(paste0(&quot;OTM Call MAPE: &quot;, Metrics::mape(non_zero_nns[,1], non_zero_nns[,2])))</code></pre>
-<pre><code>## [1] &quot;OTM Call MAPE: 1.29598287240601&quot;</code></pre>
+<pre><code>## [1] &quot;OTM Call MAPE: 1.31878003056506&quot;</code></pre>
 <pre class="r"><code>non_zero_nns</code></pre>
 <pre><code>##            AAPL Market Prices NNS Model
-## 250 strike              3.975    4.2816
-## 255 strike              2.220    3.8315
-## 260 strike              1.170    2.8413
-## 265 strike              0.595    2.3517</code></pre>
+## 250 strike              3.925    4.2848
+## 255 strike              2.145    3.4657
+## 260 strike              1.100    2.7601
+## 265 strike              0.555    2.2525</code></pre>
 </div>
 <div id="itm-puts-1" class="section level3">
 <h3>ITM Puts</h3>
 <pre class="r"><code># Last price
 print(paste0(&quot;Last price: &quot;, itm_nns_model$`Last (S)`))</code></pre>
-<pre><code>## [1] &quot;Last price: 245.33&quot;</code></pre>
+<pre><code>## [1] &quot;Last price: 246.345&quot;</code></pre>
 <pre class="r"><code>print(paste0(&quot;ITM Put MAPE: &quot;, Metrics::mape(itm_put_comp[,1], itm_put_comp[,2])))</code></pre>
-<pre><code>## [1] &quot;ITM Put MAPE: 0.0788808003756049&quot;</code></pre>
+<pre><code>## [1] &quot;ITM Put MAPE: 0.0528620286953621&quot;</code></pre>
 <pre class="r"><code>itm_put_comp</code></pre>
 <pre><code>##            AAPL Market Prices NNS Model
-## 250 strike              7.800    9.5284
-## 255 strike             11.125   11.6188
-## 260 strike             15.200   15.9262
-## 265 strike             19.900   20.7529
-## 270 strike             24.775   25.7113</code></pre>
+## 250 strike               7.45    8.3589
+## 255 strike              10.80   10.4434
+## 260 strike              14.80   14.7472</code></pre>
 </div>
 <div id="otm-puts-1" class="section level3">
 <h3>OTM Puts</h3>
@@ -3092,13 +3066,13 @@ if(is.null(nrow(non_zero_nns)))  non_zero_nns = t(non_zero_nns)
 
 
 print(paste0(&quot;OTM Put MAPE: &quot;, Metrics::mape(non_zero_nns[,1], non_zero_nns[,2])))</code></pre>
-<pre><code>## [1] &quot;OTM Put MAPE: 0.150872435017024&quot;</code></pre>
+<pre><code>## [1] &quot;OTM Put MAPE: 0.233920195127453&quot;</code></pre>
 <pre class="r"><code>non_zero_nns</code></pre>
 <pre><code>##            AAPL Market Prices NNS Model
-## 230 strike              1.330    1.3834
-## 235 strike              2.140    2.1527
-## 240 strike              3.375    4.1796
-## 245 strike              5.225    6.8918</code></pre>
+## 230 strike              1.250    1.9835
+## 235 strike              2.015    2.0568
+## 240 strike              3.200    3.8160
+## 245 strike              4.950    5.6214</code></pre>
 </div>
 </div>
 <div id="xom" class="section level2">
@@ -3106,30 +3080,28 @@ print(paste0(&quot;OTM Put MAPE: &quot;, Metrics::mape(non_zero_nns[,1], non_zer
 <pre class="r"><code>security = &quot;XOM&quot;</code></pre>
 <div id="itm-calls-2" class="section level3">
 <h3>ITM Calls</h3>
-<pre><code>## [1] &quot;Last price: 111.925&quot;</code></pre>
-<pre><code>## [1] &quot;ITM Call MAPE: 0.105649760117124&quot;</code></pre>
+<pre><code>## [1] &quot;Last price: 111.355&quot;</code></pre>
+<pre><code>## [1] &quot;ITM Call MAPE: 0.118816705832087&quot;</code></pre>
 <pre><code>##            XOM Market Prices NNS Model
-## 90 strike             22.375   22.2615
-## 100 strike            12.575   12.0886
-## 105 strike             8.100    7.0324
-## 110 strike             3.975    2.9930</code></pre>
+## 100 strike            11.325   11.6511
+## 110 strike             3.100    2.4526</code></pre>
 </div>
 <div id="otm-calls-2" class="section level3">
 <h3>OTM Calls</h3>
-<pre><code>## [1] &quot;OTM Call MAPE: 0.471498257839721&quot;</code></pre>
+<pre><code>## [1] &quot;OTM Call MAPE: 0.324974093264249&quot;</code></pre>
 <pre><code>##      XOM Market Prices NNS Model
-## [1,]             1.435    0.7584</code></pre>
+## [1,]             0.965    0.6514</code></pre>
 </div>
 <div id="itm-puts-2" class="section level3">
 <h3>ITM Puts</h3>
 <pre class="r"><code># Last price
 print(paste0(&quot;Last price: &quot;, itm_nns_model$`Last (S)`))</code></pre>
-<pre><code>## [1] &quot;Last price: 111.925&quot;</code></pre>
+<pre><code>## [1] &quot;Last price: 111.355&quot;</code></pre>
 <pre class="r"><code>print(paste0(&quot;ITM Put MAPE: &quot;, Metrics::mape(itm_put_comp[,1], itm_put_comp[,2])))</code></pre>
-<pre><code>## [1] &quot;ITM Put MAPE: 0.191025&quot;</code></pre>
+<pre><code>## [1] &quot;ITM Put MAPE: 0.242842639593909&quot;</code></pre>
 <pre class="r"><code>itm_put_comp</code></pre>
 <pre><code>##            XOM Market Prices NNS Model
-## 115 strike                 4    3.2359</code></pre>
+## 115 strike             4.925     3.729</code></pre>
 </div>
 <div id="otm-puts-2" class="section level3">
 <h3>OTM Puts</h3>
@@ -3139,11 +3111,11 @@ non_zero_nns = otm_put_comp[otm_put_comp[,2] &gt; 0,]
 if(is.null(nrow(non_zero_nns)))  non_zero_nns = t(non_zero_nns)
 
 print(paste0(&quot;OTM Put MAPE: &quot;, Metrics::mape(non_zero_nns[,1], non_zero_nns[,2])))</code></pre>
-<pre><code>## [1] &quot;OTM Put MAPE: 0.308522451456311&quot;</code></pre>
+<pre><code>## [1] &quot;OTM Put MAPE: 0.144109420654912&quot;</code></pre>
 <pre class="r"><code>non_zero_nns</code></pre>
 <pre><code>##            XOM Market Prices NNS Model
-## 105 strike             0.480    0.7389
-## 110 strike             1.545    1.4250</code></pre>
+## 105 strike             0.625    0.6694
+## 110 strike             1.985    1.5539</code></pre>
 </div>
 </div>
 <div id="tlt" class="section level2">
@@ -3151,46 +3123,42 @@ print(paste0(&quot;OTM Put MAPE: &quot;, Metrics::mape(non_zero_nns[,1], non_zer
 <pre class="r"><code>security = &quot;TLT&quot;</code></pre>
 <div id="itm-calls-3" class="section level3">
 <h3>ITM Calls</h3>
-<pre><code>## [1] &quot;Last price: 88.65&quot;</code></pre>
-<pre><code>## [1] &quot;ITM Call MAPE: 0.0581555620052992&quot;</code></pre>
+<pre><code>## [1] &quot;Last price: 89.325&quot;</code></pre>
+<pre><code>## [1] &quot;ITM Call MAPE: 0.064670285079239&quot;</code></pre>
 <pre><code>##           TLT Market Prices NNS Model
-## 45 strike            43.725   44.4627
-## 80 strike             8.775    8.7992
-## 81 strike             7.825    7.7852
-## 82 strike             6.800    6.7717
-## 83 strike             5.850    5.7589
-## 84 strike             4.850    4.7451
-## 85 strike             3.950    3.7293
-## 86 strike             3.100    2.7751
-## 87 strike             2.335    1.9608
-## 88 strike             1.685    1.3572</code></pre>
+## 82 strike             7.350    7.3999
+## 83 strike             6.350    6.3872
+## 84 strike             5.400    5.3751
+## 85 strike             4.500    4.3627
+## 86 strike             3.525    3.3726
+## 87 strike             2.720    2.4564
+## 88 strike             2.015    1.7396
+## 89 strike             1.425    1.1503</code></pre>
 </div>
 <div id="otm-calls-3" class="section level3">
 <h3>OTM Calls</h3>
-<pre><code>## [1] &quot;OTM Call MAPE: 0.165205648614837&quot;</code></pre>
+<pre><code>## [1] &quot;OTM Call MAPE: 0.482756444324035&quot;</code></pre>
 <pre><code>##           TLT Market Prices NNS Model
-## 89 strike             1.170    0.8617
-## 90 strike             0.785    0.8003
-## 91 strike             0.505    0.4528
-## 92 strike             0.325    0.4142</code></pre>
+## 90 strike             0.965    0.9386
+## 91 strike             0.625    0.6535
+## 92 strike             0.405    0.4147
+## 93 strike             0.255    0.7227</code></pre>
 </div>
 <div id="itm-puts-3" class="section level3">
 <h3>ITM Puts</h3>
 <pre class="r"><code># Last price
 print(paste0(&quot;Last price: &quot;, itm_nns_model$`Last (S)`))</code></pre>
-<pre><code>## [1] &quot;Last price: 88.65&quot;</code></pre>
+<pre><code>## [1] &quot;Last price: 89.325&quot;</code></pre>
 <pre class="r"><code>print(paste0(&quot;ITM Put MAPE: &quot;, Metrics::mape(itm_put_comp[,1], itm_put_comp[,2])))</code></pre>
-<pre><code>## [1] &quot;ITM Put MAPE: 0.0870718025475276&quot;</code></pre>
+<pre><code>## [1] &quot;ITM Put MAPE: 0.126815356264846&quot;</code></pre>
 <pre class="r"><code>itm_put_comp</code></pre>
 <pre><code>##           TLT Market Prices NNS Model
-## 89 strike             1.470    1.1550
-## 90 strike             2.100    1.7125
-## 91 strike             2.845    2.4609
-## 92 strike             3.675    3.3875
-## 93 strike             4.600    4.3860
-## 94 strike             5.550    5.3959
-## 97 strike             8.500    8.4355
-## 98 strike             9.475    9.4499</code></pre>
+## 90 strike             1.720    1.2358
+## 91 strike             2.365    1.9596
+## 92 strike             3.175    2.7489
+## 93 strike             4.050    3.7078
+## 94 strike             5.000    4.7095
+## 96 strike             6.950    6.7334</code></pre>
 </div>
 <div id="otm-puts-3" class="section level3">
 <h3>OTM Puts</h3>
@@ -3201,13 +3169,13 @@ if(is.null(nrow(non_zero_nns)))  non_zero_nns = t(non_zero_nns)
 
 
 print(paste0(&quot;OTM Put MAPE: &quot;, Metrics::mape(non_zero_nns[,1], non_zero_nns[,2])))</code></pre>
-<pre><code>## [1] &quot;OTM Put MAPE: 0.635401726818912&quot;</code></pre>
+<pre><code>## [1] &quot;OTM Put MAPE: 0.304538630934347&quot;</code></pre>
 <pre class="r"><code>non_zero_nns</code></pre>
 <pre><code>##           TLT Market Prices NNS Model
-## 85 strike             0.225    0.6725
-## 86 strike             0.365    0.5083
-## 87 strike             0.605    0.6441
-## 88 strike             0.975    0.8819</code></pre>
+## 86 strike             0.265    0.4485
+## 87 strike             0.445    0.5706
+## 88 strike             0.740    0.6606
+## 89 strike             1.145    0.9891</code></pre>
 </div>
 </div>
 <div id="refactored-options-code" class="section level2">
