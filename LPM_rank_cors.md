@@ -138,7 +138,7 @@ main()
 
 The results illustrate how higher degrees of lower partial moments amplify tail risk effects, aligning closely with the drawdown-focused measures `ERoD` and `CDaR`. 
 Additionally, the connection between `CVaR` and a linear utility framework is evident through its relationship with `LPM degree 1`. 
-Notably, as an investor’s risk aversion increases (*reflected in higher* `LPM` *degrees*) drawdown-based measures like `EDoR` and `CDaR` provide less distinct information, as the focus shifts toward extreme tail losses rather than the magnitude or frequency of drawdowns alone.
+Notably, as an investor’s risk aversion increases (*reflected in higher* `LPM` *degrees*) drawdown-based measures like `EDoR` and `CDaR` provide less distinct information, as the `LPM` focus shifts toward extreme tail losses rather than the magnitude or frequency of drawdowns alone.
 
 ```r
           EDoR      CDaR      CVaR      LPM1      LPM2      LPM3      LPM4
