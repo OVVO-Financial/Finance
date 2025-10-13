@@ -6,7 +6,7 @@
 ## Abstract
 Modern Mathematical Finance and Economics (MFE) relies on stochastic differential equations (SDEs) to model asset price dynamics, enabling derivative valuation, risk measurement, and forecasting. These models typically impose parametric structures (e.g., log-normality, constant volatility) that are fragile under fat tails, skewness, and regime shifts. **Nonlinear Nonparametric Statistics (NNS)** reconstructs this ethos by starting with data, not equations: empirical distributions and partition-based learning replace parametric SDEs. Valuation becomes partial-moment integration over empirically simulated paths; risk uses asymmetric (co-)partial moments; forecasting leverages nonlinear partitions. Critically, NNS respects the constraints enforced by stochastic calculus—such as no-arbitrage and martingale properties—without requiring its formal machinery, treating it as a derivation tool rather than a necessity. Since real-world finance is inherently discrete (due to technological, regulatory, and human constraints on observables like ticks and sampling), NNS's empirical focus aligns naturally with practice.
 
-*Integration in this paper:* we incorporate a *pathwise risk-neutral rescaling* that induces an empirical measure under which discounted prices are (in-sample) martingales and preserves static no-arbitrage shape properties. Coupled with partial-moment payoff integration, this produces an end-to-end, measure-consistent, nonparametric pipeline. We also outline a regime-spanning benchmarking protocol against parametric and constrained nonparametric competitors.
+To that end, we incorporate a *pathwise risk-neutral rescaling* that induces an empirical measure under which discounted prices are (in-sample) martingales and preserves static no-arbitrage shape properties. Coupled with partial-moment payoff integration, this produces an end-to-end, measure-consistent, nonparametric pipeline. We also outline a regime-spanning benchmarking protocol against parametric and constrained nonparametric competitors.
 
 ## The MFE Ethos
 MFE aims to price fairly, measure risk, and make decisions. Under the risk-neutral measure \(\Q\), discounted prices are martingales and option values are discounted expectations:
@@ -23,7 +23,7 @@ Risk under \(\PP\) quantifies uncertainty (volatility, covariance, tail risk). C
 | Change to risk-neutral measure | Enforce fair growth for pricing. | Girsanov (requires parametric drift/vol). | **Pathwise rescaling:** discounted-martingale means enforced empirically. |
 | Price derivatives     | Compute fair values.     | Black--Scholes/Feynman--Kac (sensitive to skew/tails). | **Partial moments:** \(C_0=e^{-rT}\UPM_1(K;S_T^\ast)\). |
 | Measure risk          | Quantify variability/comovement. | Covariance, GARCH (symmetry/parametric). | **(Co-)Partial moments:** asymmetric dependence (CUPM/CLPM/DUPM/DLPM). |
-| Forecasting           | Predict states/volatility. | ARIMA/GARCH (linear/parametric). | NNS partition forecasting with seasonality detection. |
+| Forecasting           | Predict states/volatility. | ARIMA/GARCH (linear/parametric). | NNS forecasting (ARMA/VAR) with seasonality detection. |
 
 ## Partial Moments as Primitives
 Partial moments focus on targeted regions [Fishburn1977, BawaLindenberg1977]:
@@ -46,7 +46,7 @@ Initialize \(S_{t_0}^{*(i)}=S_0\) and iterate.
 
 **Proposition (Empirical martingale condition):** For each grid time \(t_k\), \(\frac{1}{N}\sum_i e^{-r t_k}S_{t_k}^{*(i)}=S_0\). Hence \(e^{-rt}S_t^\ast\) is an in-sample martingale in expectation under the empirical measure induced by the rescaled paths.
 
-*Proof (Sketch):* By construction, \(\frac{1}{N}\sum_i S_{t_k}^{*(i)}=S_0 e^{r t_k}\). Multiply by \(e^{-r t_k}\).
+*Proof:* By construction, \(\frac{1}{N}\sum_i S_{t_k}^{*(i)}=S_0 e^{r t_k}\). Multiply by \(e^{-r t_k}\).
 
 **Remark:** This "in-sample martingale" property is the finite-sample, empirical analogue to the continuous-time martingale condition under \(\Q\), explicitly tying the method back to classical theory while accommodating discrete data.
 
@@ -90,14 +90,19 @@ rbind(
   c(time=tgrid[76],  th=mu_th[76],  gbm=mu_gbm[76],  star=mu_star[76]),
   c(time=tgrid[101], th=mu_th[101], gbm=mu_gbm[101], star=mu_star[101])
 )
-
+```
+Intermediate steps output:
+```r
      time     th      gbm     star
 [1,] 0.00 100.0000 100.0000 100.0000
 [2,] 0.25 101.2578 101.5298 101.2578
 [3,] 0.50 102.5315 102.6828 102.5315
 [4,] 0.75 103.8212 104.1133 103.8212
 [5,] 1.00 105.1271 105.2550 105.1271
+```
 
+Terminal condition output:
+```
 c(mean_gbm=mean(S_gbm[n+1,]), mean_star=mean(S_star[n+1,]),
   var_gbm=var(S_gbm[n+1,]),  var_star=var(S_star[n+1,]))
 
@@ -124,11 +129,15 @@ Partition-based forecasting captures nonlinearities and seasonality directly fro
 3. **Risk-neutral enforcement:** *apply pathwise rescaling* so discounted means are flat (empirical martingale).
 4. **Valuation:** integrate payoffs via partial moments on \(S_T^\ast\).
 5. **Risk:** quantify asymmetry and co-crash using (co-)partial moments.
-6. **Forecasting:** predict with NNS partitions.
+6. **Forecasting:** predict with NNS forecasting.
 
 
 ## Conclusion
 NNS treats data as the solved process: empirical simulation, pathwise risk-neutral rescaling (ensuring in-sample martingale discounted prices), partial-moment valuation, and asymmetric risk. This produces a coherent, nonparametric alternative to parametric SDE finance, respecting theoretical constraints without stochastic calculus's machinery. Given finance's discrete nature, NNS aligns empirical practice with theory's outputs.
+
+
+![NNS as a Modern MFE](https://github.com/OVVO-Financial/Finance/blob/main/Images/NNS_MFE.png?raw=true)
+
 
 ## References
 - [AitSahaliaLo1998] Aït-Sahalia, Y., and Lo, A. W. (1998). Nonparametric estimation of state-price densities implicit in financial asset prices. *The Journal of Finance*, 53(2), 499–547.
