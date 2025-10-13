@@ -91,7 +91,7 @@ rbind(
   c(time=tgrid[101], th=mu_th[101], gbm=mu_gbm[101], star=mu_star[101])
 )
 
-     time       th      gbm     star
+     time     th      gbm     star
 [1,] 0.00 100.0000 100.0000 100.0000
 [2,] 0.25 101.2578 101.5298 101.2578
 [3,] 0.50 102.5315 102.6828 102.5315
