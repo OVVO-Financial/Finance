@@ -9,36 +9,36 @@ Modern Mathematical Finance and Economics (MFE) relies on stochastic differentia
 To that end, we incorporate a *pathwise risk-neutral rescaling* that induces an empirical measure under which discounted prices are (in-sample) martingales and preserves static no-arbitrage shape properties. Coupled with partial-moment payoff integration, this produces an end-to-end, measure-consistent, nonparametric pipeline. We also outline a regime-spanning benchmarking protocol against parametric and constrained nonparametric competitors.
 
 ## The MFE Ethos
-MFE aims to price fairly, measure risk, and make decisions. Under the risk-neutral measure \(\Q\), discounted prices are martingales and option values are discounted expectations:
+MFE aims to price fairly, measure risk, and make decisions. Under the risk-neutral measure \(\mathbb{Q}\), discounted prices are martingales and option values are discounted expectations:
 
-\[ V(t,s)=\E_\Q\!\left[e^{-\int_t^T r(u)\,\dd u}\,h(S_T)\mid S_t=s\right]. \]
+\[ V(t,s)=\mathbb{E}_{\mathbb{Q}}\!\left[e^{-\int_t^T r(u)\,\mathrm{d}u}\,h(S_T)\mid S_t=s\right]. \]
 
-Risk under \(\PP\) quantifies uncertainty (volatility, covariance, tail risk). Classical tools (Black--Scholes, GARCH) impose restrictive forms; NNS instead learns from data, capturing nonlinearities and asymmetries without parametric constraints. Stochastic calculus serves as a derivation tool for these principles in continuous-time models, but it is not a requirement for pricing—empirical or simulation-based methods suffice if they respect the outputs, such as correct drifts and expected values under the relevant measures, without invoking Itô's lemma or similar syntax.
+Risk under \(\mathbb{P}\) quantifies uncertainty (volatility, covariance, tail risk). Classical tools (Black--Scholes, GARCH) impose restrictive forms; NNS instead learns from data, capturing nonlinearities and asymmetries without parametric constraints. Stochastic calculus serves as a derivation tool for these principles in continuous-time models, but it is not a requirement for pricing—empirical or simulation-based methods suffice if they respect the outputs, such as correct drifts and expected values under the relevant measures, without invoking Itô's lemma or similar syntax.
 
 ## MFE Tools and NNS Analogues
 
 | **MFE Goal**          | **Purpose**              | **MFE Tool (Limitations)**                        | **NNS Analogue**                          |
 |-----------------------|--------------------------|--------------------------------------------------|------------------------------------------|
-| Model price dynamics  | Trend + randomness.      | SDEs (GBM): \(\dd S_t=\mu S_t \dd t + \sigma S_t \dd W_t\) (constant \(\sigma\), log-normality). | NNS regression: nonlinear empirical dynamics. |
+| Model price dynamics  | Trend + randomness.      | SDEs (GBM): \(\mathrm{d} S_t=\mu S_t \,\mathrm{d} t + \sigma S_t \,\mathrm{d} W_t\) (constant \(\sigma\), log-normality). | NNS regression: nonlinear empirical dynamics. |
 | Change to risk-neutral measure | Enforce fair growth for pricing. | Girsanov (requires parametric drift/vol). | **Pathwise rescaling:** discounted-martingale means enforced empirically. |
-| Price derivatives     | Compute fair values.     | Black--Scholes/Feynman--Kac (sensitive to skew/tails). | **Partial moments:** \(C_0=e^{-rT}\UPM_1(K;S_T^\ast)\). |
+| Price derivatives     | Compute fair values.     | Black--Scholes/Feynman--Kac (sensitive to skew/tails). | **Partial moments:** \(C_0=e^{-rT}\operatorname{UPM}_1(K;S_T^\ast)\). |
 | Measure risk          | Quantify variability/comovement. | Covariance, GARCH (symmetry/parametric). | **(Co-)Partial moments:** asymmetric dependence (CUPM/CLPM/DUPM/DLPM). |
 | Forecasting           | Predict states/volatility. | ARIMA/GARCH (linear/parametric). | NNS forecasting (ARMA/VAR) with seasonality detection. |
 
 ## Partial Moments as Primitives
 Partial moments focus on targeted regions [Fishburn1977, BawaLindenberg1977]:
 
-\[ \LPM{n}{t}{X}=\int_{-\infty}^t (t-x)^n \dd F_X(x),\quad \UPM{n}{t}{X}=\int_t^\infty (x-t)^n \dd F_X(x). \]
+\[ \operatorname{LPM}_n(t; X)=\int_{-\infty}^t (t-x)^n \,\mathrm{d}F_X(x),\quad \operatorname{UPM}_n(t; X)=\int_t^\infty (x-t)^n \,\mathrm{d}F_X(x). \]
 
-For \(n=2\) and \(t=\mu_X\): \(\Var(X)=\LPM{2}{\mu_X}{X}+\UPM{2}{\mu_X}{X}\). This exposes asymmetry (downside vs. upside). NNS computes these nonparametrically, avoiding Gaussian assumptions, and extends to co-partial structures for dependence.
+For \(n=2\) and \(t=\mu_X\): \(\operatorname{Var}(X)=\operatorname{LPM}_2(\mu_X; X)+\operatorname{UPM}_2(\mu_X; X)\). This exposes asymmetry (downside vs. upside). NNS computes these nonparametrically, avoiding Gaussian assumptions, and extends to co-partial structures for dependence.
 
-## Simulation under \(\PP\) and the Risk-Neutral Bridge
-Under \(\PP\), one may simulate with resampling or SDE proposals. Pricing requires \(\Q\) so that \(e^{-rt}S_t\) is a martingale. Instead of analytic Girsanov, we use an empirical analogue via **pathwise rescaling**. This respects the outputs of stochastic calculus (e.g., correct expected values) without its syntax, as simulations or empirical data satisfying these constraints align with theory even absent Itô's lemma.
+## Simulation under \(\mathbb{P}\) and the Risk-Neutral Bridge
+Under \(\mathbb{P}\), one may simulate with resampling or SDE proposals. Pricing requires \(\mathbb{Q}\) so that \(e^{-rt}S_t\) is a martingale. Instead of analytic Girsanov, we use an empirical analogue via **pathwise rescaling**. This respects the outputs of stochastic calculus (e.g., correct expected values) without its syntax, as simulations or empirical data satisfying these constraints align with theory even absent Itô's lemma.
 
 Practically, finance operates in discrete time: price movements, trading, and data are discrete due to technological limits (e.g., tick sizes), regulatory constraints, and human factors. Even high-frequency data (e.g., nanosecond ticks) has finite resolution, rendering continuous assumptions approximations at best [Hasbrouck2007].
 
 ### Pathwise Risk-Neutral Rescaling
-Let \(0=t_0<\dots<t_n=T\). After generating interim \(\widehat S_{t_k}^{(i)}\) under \(\PP\), define
+Let \(0=t_0<\dots<t_n=T\). After generating interim \(\widehat S_{t_k}^{(i)}\) under \(\mathbb{P}\), define
 
 \[ S_{t_k}^{*(i)}=\widehat S_{t_k}^{(i)}\cdot\frac{S_0 e^{r t_k}}{\overline{\widehat S}_{t_k}}, \qquad \overline{\widehat S}_{t_k}=\frac{1}{N}\sum_{i=1}^N \widehat S_{t_k}^{(i)}. \]
 
@@ -48,9 +48,9 @@ Initialize \(S_{t_0}^{*(i)}=S_0\) and iterate.
 
 *Proof:* By construction, \(\frac{1}{N}\sum_i S_{t_k}^{*(i)}=S_0 e^{r t_k}\). Multiply by \(e^{-r t_k}\).
 
-**Remark:** This "in-sample martingale" property is the finite-sample, empirical analogue to the continuous-time martingale condition under \(\Q\), explicitly tying the method back to classical theory while accommodating discrete data.
+**Remark:** This "in-sample martingale" property is the finite-sample, empirical analogue to the continuous-time martingale condition under \(\mathbb{Q}\), explicitly tying the method back to classical theory while accommodating discrete data.
 
-**Lemma (Static no-arbitrage preserved):** Positive scalar maps \(x\mapsto c x\) preserve order and convexity. Therefore, empirical call prices \(K\mapsto e^{-rT}\UPM(1,K;S_T^\ast)\) remain convex in \(K\) and nondecreasing in \(S_0\) and \(r\).
+**Lemma (Static no-arbitrage preserved):** Positive scalar maps \(x\mapsto c x\) preserve order and convexity. Therefore, empirical call prices \(K\mapsto e^{-rT}\operatorname{UPM}_1(K;S_T^\ast)\) remain convex in \(K\) and nondecreasing in \(S_0\) and \(r\).
 
 **Diagnostics:** Check flat discounted means and near-zero autocorrelation of increments of \(e^{-rt}S_t^\ast\) (e.g., Ljung–Box).
 
@@ -111,20 +111,20 @@ mean_gbm mean_star var_gbm var_star
 ```
 
 ## Valuation by Partial-Moment Integration
-Classically, a call price is \(C_0=e^{-rT}\E_\Q[(S_T-K)^+]\) [BlackScholes1973]. With pathwise rescaled terminal samples \(S_T^\ast\),
+Classically, a call price is \(C_0=e^{-rT}\mathbb{E}_{\mathbb{Q}}[(S_T-K)^+]\) [BlackScholes1973]. With pathwise rescaled terminal samples \(S_T^\ast\),
 
-\[ C_0=e^{-rT}\,\UPM{1}{K}{S_T^\ast},\qquad P_0=e^{-rT}\,\LPM{1}{K}{S_T^\ast}. \]
+\[ C_0=e^{-rT}\,\operatorname{UPM}_1(K;S_T^\ast),\qquad P_0=e^{-rT}\,\operatorname{LPM}_1(K;S_T^\ast). \]
 
 Because rescaling is a positive scalar transformation, the convexity of \(K\mapsto (x-K)^+\) carries to empirical averages, preserving static no-arbitrage.
 
-## Risk under \(\PP\): Asymmetry and Co-Partial Structure
-Variance/covariance treat gains and losses symmetrically. NNS employs \(\LPM\) and \(\UPM\) (and their co-variants) to isolate tail/side-specific risk and dependence. The four quadrants (CUPM/CLPM/DUPM/DLPM) reveal asymmetric co-movement (e.g., co-crashes), informing hedging and capital allocation beyond correlation or Gaussian copulas [AngEtAl2006].
+## Risk under \(\mathbb{P}\): Asymmetry and Co-Partial Structure
+Variance/covariance treat gains and losses symmetrically. NNS employs lower and upper partial moments (and their co-variants) to isolate tail/side-specific risk and dependence. The four quadrants (CUPM/CLPM/DUPM/DLPM) reveal asymmetric co-movement (e.g., co-crashes), informing hedging and capital allocation beyond correlation or Gaussian copulas [AngEtAl2006].
 
 ## Forecasting and Term Structures without Parametric SDEs
 Partition-based forecasting captures nonlinearities and seasonality directly from data. Term structures (e.g., yields) arise from stacking such regressions across maturities, avoiding imposed functional forms.
 
 ## End-to-End NNS Pipeline
-1. **Dynamics under \(\PP\):** learn empirical behavior via resampling or nonlinear regression.
+1. **Dynamics under \(\mathbb{P}\):** learn empirical behavior via resampling or nonlinear regression.
 2. **Simulation:** generate paths preserving real-world features.
 3. **Risk-neutral enforcement:** *apply pathwise rescaling* so discounted means are flat (empirical martingale).
 4. **Valuation:** integrate payoffs via partial moments on \(S_T^\ast\).
