@@ -1,7 +1,7 @@
 # NNS as a Modern MFE: A Data-Driven Reconstruction of Stochastic Finance
 
 **Author:** Fred Viole  
-**Date:** October 12, 2025  
+**Date:** October 21, 2025  
 
 ## Abstract
 Modern Mathematical Finance and Economics (MFE) relies on stochastic differential equations (SDEs) to model asset price dynamics, enabling derivative valuation, risk measurement, and forecasting. These models typically impose parametric structures (e.g., log-normality, constant volatility) that are fragile under fat tails, skewness, and regime shifts. **Nonlinear Nonparametric Statistics (NNS)** reconstructs this ethos by starting with data, not equations: empirical distributions and partition-based learning replace parametric SDEs. Valuation becomes partial-moment integration over empirically simulated paths; risk uses asymmetric (co-)partial moments; forecasting leverages nonlinear partitions. Critically, NNS respects the constraints enforced by stochastic calculus—such as no-arbitrage and martingale properties—without requiring its formal machinery, treating it as a derivation tool rather than a necessity. Since real-world finance is inherently discrete (due to technological, regulatory, and human constraints on observables like ticks and sampling), NNS's empirical focus aligns naturally with practice.
