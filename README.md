@@ -19,6 +19,7 @@ Demonstrates how to source current S&P 500 constituents, compute log returns, an
 Illustrates why `NNS.rescale()` is required when simulated price paths must satisfy theoretical expectations under different probability measures. The worked example shows how the function enforces risk-neutral and discounted constraints without distorting the empirical distribution.
 
 - [Read the Markdown](P_and_Q.md)
+- [Download the PDF](P_and_Q.pdf)
 
 ### SD_cluster.md
 Compares stochastic dominance clustering with Hierarchical Risk Parity and naïve equal weighting in an out-of-sample asset allocation setting. The workflow extracts S&P 500 data, constructs NNS stochastic dominance clusters, and contrasts their performance with conventional portfolio construction heuristics.
