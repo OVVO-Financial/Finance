@@ -1,6 +1,6 @@
 # Finance Research Notes
 
-This repository collects working papers, analytical notebooks, and reproducible code that explore Nonlinear Nonparametric Statistics (NNS) tools for portfolio construction, risk management, and derivative pricing.
+This repository collects working papers, analytical notebooks, and reproducible code that explore [Nonlinear Nonparametric Statistics (NNS)](https://github.com/OVVO-Financial/NNS) tools for portfolio construction, risk management, and derivative pricing.
 
 ## Document Abstracts
 
