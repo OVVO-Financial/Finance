@@ -1,0 +1,593 @@
+\documentclass[11pt]{beamer}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{hyperref}
+\usepackage{inconsolata}
+
+\usetheme{Madrid}
+
+\title{From $\mathbb{P}$ to $\mathbb{Q}$: \\
+       Girsanov vs \texttt{NNS.rescale()} \\
+       \textit{A production-ready alternative to change of measure}}
+\author{Fred Viole @OVVOLabs}
+\date{November 21, 2025}
+
+% ==== KNITR SETUP ====
+<<setup, include=FALSE>>=
+library(NNS)
+set.seed(1234)
+knitr::opts_chunk$set(echo = TRUE, eval = TRUE, collapse = TRUE,
+                      comment = "#>", size = "footnotesize",
+                      fig.width = 5, fig.height = 3, out.width = "0.7\\textwidth")
+@
+
+<<params, include=FALSE>>=
+S0 <- 100; r <- 0.05; mu <- 0.10; sigma <- 0.2; T <- 1; K <- 100
+n <- 1e5  # MC paths
+@
+
+% ==== BLACK-SCHOLES ANALYTIC PRICE ====
+<<bs-price, include=FALSE>>=
+d1 <- (log(S0/K) + (r + 0.5*sigma^2)*T) / (sigma*sqrt(T))
+d2 <- d1 - sigma*sqrt(T)
+bs_call <- S0 * pnorm(d1) - K * exp(-r*T) * pnorm(d2)
+bs_call_rounded <- round(bs_call, 3)
+@
+
+% ==== PRECOMPUTE ALL VALUES ====
+<<precompute, include=FALSE>>=
+# Tiny Girsanov
+ST_P <- c(95, 125)
+W_T <- (log(ST_P/S0) - (mu - 0.5*sigma^2)*T) / sigma
+lambda <- (mu - r)/sigma
+w <- exp(-lambda * W_T - 0.5*lambda^2*T)
+w1 <- round(w[1], 4)
+w2 <- round(w[2], 4)
+weighted_mean_ST <- round(weighted.mean(ST_P, w), 4)
+
+# MC Paths
+dW <- rnorm(n, 0, sqrt(T))
+ST_Q_direct <- S0 * exp((r - 0.5*sigma^2)*T + sigma*dW)
+ST_P <- S0 * exp((mu - 0.5*sigma^2)*T + sigma*dW)
+
+# NNS
+ST_Q_nns <- NNS.rescale(ST_P, a = S0, b = r, method = "riskneutral", T = T, type = "Terminal")
+
+# Girsanov full
+W_T_full <- (log(ST_P/S0) - (mu - 0.5*sigma^2)*T)/sigma
+w_full <- exp(-lambda * W_T_full - 0.5*lambda^2*T)
+
+# Prices
+price_direct <- round(exp(-r*T)*mean(pmax(ST_Q_direct - K, 0)), 3)
+price_nns <- round(exp(-r*T)*mean(pmax(ST_Q_nns - K, 0)), 3)
+price_gir <- round(exp(-r*T)*weighted.mean(pmax(ST_P - K, 0), w_full), 3)
+
+# Efficiency
+ess_gir <- round((sum(w_full)^2) / sum(w_full^2))
+ess_gir_fmt <- format(ess_gir, big.mark=",")
+
+# Means
+mean_direct <- round(mean(ST_Q_direct), 4)
+mean_nns <- round(mean(ST_Q_nns), 4)
+mean_gir <- round(weighted.mean(ST_P, w_full), 4)
+target_mean <- round(S0 * exp(r * T), 4)
+
+# Dynamic Study
+n_steps <- 100; dt <- T/n_steps; n_paths <- 20000
+set.seed(1234)
+paths <- matrix(NA_real_, nrow = n_steps+1, ncol = n_paths); paths[1,] <- S0
+drift <- (r - 0.5*sigma^2)*dt; vol <- sigma*sqrt(dt)
+for(i in 1:n_steps){
+  inc <- rnorm(n_paths, mean = drift, sd = vol)
+  next_prices <- paths[i,] * exp(inc)
+  t_i <- i*dt
+  disc <- next_prices * exp(-r*t_i)
+  disc_rescaled <- NNS.rescale(disc, a=S0, b=r, method="riskneutral", T=t_i, type="Discounted")
+  paths[i+1,] <- disc_rescaled * exp(r*t_i)
+}
+time_steps <- seq(0, T, by = dt)
+disc_means <- rowMeans(exp(-r*time_steps) * paths)
+disc_head <- round(disc_means[1], 6)
+disc_mid <- round(disc_means[51], 6)
+disc_tail <- round(disc_means[101], 6)
+
+# Means Table
+n_paths2 <- 10000
+paths_normal <- matrix(NA_real_, nrow=n_steps+1, ncol=n_paths2); paths_normal[1,] <- S0
+paths_rescaled <- matrix(NA_real_, nrow=n_steps+1, ncol=n_paths2); paths_rescaled[1,] <- S0
+for (i in 1:n_steps) {
+  inc <- rnorm(n_paths2, mean = drift, sd = vol)
+  paths_normal[i+1,] <- paths_normal[i,] * exp(inc)
+  next_prices <- paths_rescaled[i,] * exp(inc)
+  t_i <- i*dt
+  rescaled <- NNS.rescale(next_prices, a=S0, b=r, method="riskneutral", T=t_i, type="Terminal")
+  paths_rescaled[i+1,] <- rescaled
+}
+theo_means <- S0 * exp(r * time_steps)
+m_normal <- rowMeans(paths_normal)
+m_rescaled <- rowMeans(paths_rescaled)
+sel <- c(1,26,51,76,101)
+df_means <- data.frame(
+  Time = time_steps[sel],
+  Theoretical = round(theo_means[sel], 4),
+  Standard = round(m_normal[sel], 4),
+  Rescaled = round(m_rescaled[sel], 4)
+)
+
+# Stats
+compute_path_vol <- function(pr, dt) {
+  log_returns <- diff(log(pr))
+  if (length(log_returns) == 0) return(NA)
+  sqrt(var(log_returns) / dt)
+}
+vols_normal <- apply(paths_normal, 2, compute_path_vol, dt = dt)
+vols_rescaled <- apply(paths_rescaled, 2, compute_path_vol, dt = dt)
+terminal_normal <- paths_normal[n_steps + 1, ]
+terminal_rescaled <- paths_rescaled[n_steps + 1, ]
+stats_df <- data.frame(
+  Metric = c("Mean Volatility (Normal)", "Mean Volatility (Rescaled)",
+             "Terminal Mean (Normal)", "Terminal Mean (Rescaled)",
+             "Terminal Variance (Normal)", "Terminal Variance (Rescaled)"),
+  Value = c(
+    round(mean(vols_normal, na.rm = TRUE), 6),
+    round(mean(vols_rescaled, na.rm = TRUE), 6),
+    round(mean(terminal_normal), 6),
+    round(mean(terminal_rescaled), 6),
+    round(var(terminal_normal), 6),
+    round(var(terminal_rescaled), 6)
+  )
+)
+@
+
+\begin{document}
+
+% ==================== 1. Title ====================
+\begin{frame}
+\titlepage
+\end{frame}
+
+
+% ==================== 2. One Rule to Price Them All ====================
+\begin{frame}{One Rule to Price Them All}
+\begin{block}{The Fundamental Pricing Identity}
+\[
+\boxed{\mathbb{E}^{\mathbb{Q}}[S_T] = S_0 e^{rT}}
+\]
+\end{block}
+
+\vspace{0.5em}
+\textbf{Global Parameters Used:}
+$S_0 = 100, r = 0.05, \mu = 0.10, \sigma = 0.2, T = 1$
+
+\vspace{0.5em}
+\textbf{Target forward:} $S_0 e^{rT} = \Sexpr{target_mean}$
+
+\begin{itemize}
+\item \textbf{Why?} Under $\mathbb{Q}$, the stock is a \alert{martingale after discounting}.
+\item \textbf{Implication:} No arbitrage $\implies$ expected growth = risk-free rate.
+\item \textbf{Consequence:} All derivatives priced via \alert{risk-neutral expectation}.
+\item \textbf{Key Insight:} You \textit{do not need} $\mu$ to price — only $r$, $\sigma$, $S_0$.
+\end{itemize}
+
+\end{frame}
+
+% ==================== 3. The Two Worlds ====================
+\begin{frame}{The Two Worlds: $\mathbb{P}$ vs $\mathbb{Q}$}
+\begin{columns}
+\column{0.5\textwidth}
+\textbf{Real World $\mathbb{P}$} \\
+\begin{itemize}
+\item Drift: $\mu = \Sexpr{mu}$ \alert{(investor belief)}
+\item Volatility: $\sigma = \Sexpr{sigma}$
+\item Use: \\
+  \quad — Risk management \\
+  \quad — VaR, stress testing \\
+  \quad — P\&L simulation \\
+  \quad — Capital allocation
+\end{itemize}
+
+\column{0.5\textwidth}
+\textbf{Risk-Neutral $\mathbb{Q}$} \\
+\begin{itemize}
+\item Drift: $r = \Sexpr{r}$ \alert{(by construction)}
+\item Volatility: $\sigma = \Sexpr{sigma}$ \alert{(unchanged)}
+\item Use: \\
+  \quad — Derivative pricing \\
+  \quad — XVA (CVA, FVA) \\
+  \quad — Hedging \\
+  \quad — Model calibration
+\end{itemize}
+\end{columns}
+
+\vspace{1em}
+\alert{One model, two measures:}
+\begin{itemize}
+\item $\mathbb{P}$: \textit{What might happen}
+\item $\mathbb{Q}$: \textit{What must be priced}
+\end{itemize}
+
+\footnotesize
+\textbf{Discussion Point:} \\
+``Can you use $\mathbb{P}$-simulated paths to price? Yes — but only if you \alert{reweight} or \alert{rescale} to $\mathbb{Q}$.''
+
+\end{frame}
+
+
+% ==================== 4. Girsanov Theory ====================
+\begin{frame}{Girsanov: Change of Measure}
+\begin{block}{From Real Drift to Risk-Neutral Drift}
+\[
+\underbrace{dS_t = \mu S_t dt + \sigma S_t dW^{\mathbb{P}}_t}_{\text{Real world } \mathbb{P}}
+\quad \xrightarrow{\text{Girsanov}} \quad
+\underbrace{dS_t = r S_t dt + \sigma S_t dW^{\mathbb{Q}}_t}_{\text{Risk-neutral } \mathbb{Q}}
+\]
+\end{block}
+
+\vspace{0.5em}
+\textbf{Radon-Nikodym derivative (weight):}
+\[
+\boxed{\frac{d\mathbb{Q}}{d\mathbb{P}} = \exp\!\left(-\lambda W_T^{\mathbb{P}} - \tfrac{1}{2}\lambda^2 T\right)}, \quad
+\lambda = \frac{\mu - r}{\sigma}
+\]
+
+\begin{itemize}
+\item \textbf{What is $\lambda$?} The \alert{market price of risk} — how much extra return per unit volatility.
+\item \textbf{Intuition:} Paths with \alert{too much upside} in $\mathbb{P}$ get \alert{downweighted} in $\mathbb{Q}$.
+\item \textbf{Volatility unchanged:} $\sigma$ is the \alert{same} — only drift is adjusted.
+\end{itemize}
+\end{frame}
+
+
+
+% ==================== 5. Girsanov: Tiny Numeric (2 paths) ====================
+\begin{frame}[fragile]{Girsanov: Tiny Numeric (2 paths)}
+\footnotesize
+<<girs-tiny>>=
+ST_P <- c(95, 125)                            # Two simulated terminal prices under P
+W_T <- (log(ST_P/S0) - (mu - 0.5*sigma^2)*T) / sigma  # Extract Brownian motion
+lambda <- (mu - r)/sigma                      # Market price of risk
+w <- exp(-lambda * W_T - 0.5*lambda^2*T)       # Radon-Nikodym weights
+weighted.mean(ST_P, w)                        # Q-expectation of S_T
+@
+\vspace{0.5em}
+
+\textbf{Results:} \\
+Weights: $\Sexpr{w1}$, $\Sexpr{w2}$ → Weighted mean: $\Sexpr{weighted_mean_ST}$
+
+\begin{columns}
+\column{0.5\textwidth}
+\begin{tabular}{cc}
+\toprule
+$S_T$ & Weight \\
+\midrule
+95  & $\Sexpr{w1}$ \\
+125 & $\Sexpr{w2}$ \\
+\bottomrule
+\end{tabular}
+
+\column{0.5\textwidth}
+\begin{itemize}
+\item Path $95$: \alert{upweighted}
+\item Path $125$: \alert{downweighted}
+\item \textbf{Target:} $S_0 e^{rT} = \Sexpr{target_mean}$
+\end{itemize}
+\end{columns}
+
+\vspace{1.5em}
+
+\footnotesize
+\textbf{Key Takeaway:} \textit{``We don’t change the paths — we change their importance.''}
+
+\end{frame}
+
+% ==================== 6. NNS.rescale ====================
+\begin{frame}[fragile]{\texttt{NNS.rescale}: Direct Mean Enforcement}
+<<nns-demo>>=
+dW <- rnorm(n, 0, sqrt(T))
+ST_P <- S0 * exp((mu - 0.5*sigma^2)*T + sigma*dW)
+ST_Q_nns <- NNS.rescale(ST_P, a = S0, b = r,
+                        method = "riskneutral", T = T, type = "Terminal")
+c(target = S0*exp(r*T), mean = mean(ST_Q_nns))
+@
+One line: \texttt{NNS.rescale(P, ...)}
+\end{frame}
+
+% ==================== 7. MC: Shared Paths ====================
+\begin{frame}[fragile]{Monte Carlo: Shared Brownian Paths}
+<<mc-paths>>=
+set.seed(1234); n <- 1e5; K <- 100
+dW <- rnorm(n, 0, sqrt(T))
+ST_Q_direct <- S0 * exp((r - 0.5*sigma^2)*T + sigma*dW)
+ST_P <- S0 * exp((mu - 0.5*sigma^2)*T + sigma*dW)
+@
+Same $dW$ → fair comparison
+\end{frame}
+
+% ==================== 8. MC: Pricing ====================
+\begin{frame}[fragile]{Monte Carlo: Pricing}
+<<mc-pricing>>=
+ST_Q_nns <- NNS.rescale(ST_P, a=S0, b=r, method="riskneutral", 
+                        T=T, type="Terminal")
+W_T <- (log(ST_P/S0) - (mu - 0.5*sigma^2)*T)/sigma
+lambda <- (mu-r)/sigma
+w <- exp(-lambda*W_T - 0.5*lambda^2*T)
+price_direct <- exp(-r*T)*mean(pmax(ST_Q_direct - K, 0))
+price_nns <- exp(-r*T)*mean(pmax(ST_Q_nns - K, 0))
+price_gir <- exp(-r*T)*weighted.mean(pmax(ST_P - K, 0), w)
+ess_gir <- round((sum(w)^2) / sum(w^2))
+c(direct = price_direct, nns = price_nns, gir = price_gir, ess = ess_gir)
+@
+\end{frame}
+
+% ==================== 9. Results + BS Benchmark ====================
+\begin{frame}{Results: Accuracy \& Efficiency}
+\begin{center}
+\begin{tabular}{lccc}
+\toprule
+& Direct $\mathbb{Q}$ & \texttt{NNS} & Girsanov \\
+\midrule
+Call price & $\Sexpr{price_direct}$ & $\Sexpr{price_nns}$ & $\Sexpr{price_gir}$ \\
+Efficiency & 100{,}000 & 100{,}000 & $\Sexpr{ess_gir_fmt}$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\textbf{Black-Scholes (analytic):} $\Sexpr{bs_call_rounded}$ \\
+
+
+
+\end{frame}
+
+% ==================== 10. Verification ====================
+\begin{frame}[fragile]{Verification}
+<<verify>>=
+cat(sprintf("Target: %.6f\n", S0*exp(r*T)))
+cat(sprintf("Direct Q: %.6f\n", mean(ST_Q_direct)))
+cat(sprintf("NNS: %.6f\n", mean(ST_Q_nns)))
+cat(sprintf("Girsanov: %.6f\n", weighted.mean(ST_P, w)))
+@
+All match target within MC error.
+\end{frame}
+
+
+
+% ==================== 11. Constraint Families ====================
+\begin{frame}{Constraint Families: From $\mathbb{P}$ to $\mathbb{Q}$}
+\begin{block}{Two Valid Constraints}
+\begin{itemize}
+\item \textbf{Terminal}: $\mathbb{E}[S_T^{\mathbb{Q}}] = S_0 e^{rT}$ → Vanilla pricing
+\item \textbf{Discounted}: $\mathbb{E}[e^{-r t} S_t^{\mathbb{Q}}] = S_0$ → True martingale
+\end{itemize}
+\end{block}
+
+\begin{columns}
+\column{0.5\textwidth}
+\textbf{Terminal at Grid Points} \\
+$\mathbb{E}[S_{t_k}^{\mathbb{Q}}] = S_0 e^{r t_k}$ \\
+→ \alert{Valid for multi-maturity vanillas} \\
+→ \alert{Not a martingale}
+
+\column{0.5\textwidth}
+\textbf{Discounted at Grid Points} \\
+$\mathbb{E}[e^{-r t_k} S_{t_k}^{\mathbb{Q}}] = S_0$ \\
+→ \alert{True discrete martingale} \\
+→ \alert{Required for path-dependent}
+\end{columns}
+
+\vspace{0.5em}
+\textbf{Dynamic Rescaling Options:}
+\begin{itemize}
+\item \texttt{type = "Terminal"} at each $t_k$ → correct forwards
+\item \texttt{type = "Discounted"} at each $t_k$ → correct martingale
+\end{itemize}
+
+\end{frame}
+
+% ==================== 12. The NNS.rescale Mechanism: Optimal Transport ====================
+\begin{frame}{The \texttt{NNS.rescale} Mechanism: Deterministic Multiplicative Transport}
+\begin{block}{From $\mathbb{P}$ to $\mathbb{Q}$ via Deterministic Multiplicative Scaling}
+\[
+S_T^{\mathbb{Q}} = e^{\theta} \cdot S_T^{\mathbb{P}}, \quad \theta = \log\left(\frac{S_0 e^{rT}}{\mathbb{E}^{\mathbb{P}}[S_T]}\right)
+\]
+\end{block}
+
+\textbf{For GBM, This is Exact:}
+\[
+S_T^{\mathbb{Q}} = e^{(r-\mu)T} S_T^{\mathbb{P}} \quad \text{(theoretical)} \quad \text{vs} \quad e^{\theta} \to e^{(r-\mu)T} \quad \text{(empirical)}
+\]
+
+\textbf{Why This Works:}
+\begin{itemize}
+\item \textbf{Exact for GBM}: Mathematically equivalent to measure change
+\item \textbf{Mean Enforcement}: Constructed to satisfy no-arbitrage condition
+\item \textbf{Minimal Distortion}: Smallest multiplicative change needed
+\item \textbf{Maximum Efficiency}: No ESS loss, deterministic results
+\end{itemize}
+\end{frame}
+
+% ==================== 13. Why Rescale Works Perfectly ====================
+\begin{frame}{GBM Exactness: Why \texttt{NNS.rescale} Works Perfectly}
+\begin{block}{Mathematical Equivalence}
+For Geometric Brownian Motion, the measure change is \alert{exactly multiplicative}:
+\[
+S_T^{\mathbb{Q}} = e^{(r-\mu)T} \cdot S_T^{\mathbb{P}}
+\]
+\end{block}
+
+\begin{block}{\texttt{NNS.rescale} Converges to Exact Solution}
+\[
+\theta = \log\left(\frac{S_0 e^{rT}}{\mathbb{E}^{\mathbb{P}}[S_T]}\right) \rightarrow (r-\mu)T \quad \text{as } n \rightarrow \infty
+\]
+\[
+\Rightarrow e^{\theta} \rightarrow e^{(r-\mu)T}
+\]
+\end{block}
+
+\small
+\textbf{Key Insight:}
+\begin{itemize}
+\item \textbf{Not an approximation}: \texttt{NNS.rescale} implements the \alert{exact measure change} for GBM
+\item \textbf{Different computational path}: Same mathematical destination
+\item \textbf{Explains perfect accuracy}: Matches Black-Scholes exactly (up to MC error)
+\end{itemize}
+\end{frame}
+
+% ==================== 14. GBM Measure Change: Exact Proof ====================
+\begin{frame}{GBM Measure Change: Exact Multiplicative Proof}
+\begin{block}{Theorem: $\mathbb{P}$→$\mathbb{Q}$ is Exactly Multiplicative for GBM}
+\[
+\boxed{S_T^{\mathbb{Q}} = e^{(r-\mu)T} \cdot S_T^{\mathbb{P}}}
+\]
+\end{block}
+
+\begin{block}{Proof}
+\small
+\begin{align*}
+\text{Under } \mathbb{P}: &\quad S_T^{\mathbb{P}} = S_0 e^{(\mu - \frac{1}{2}\sigma^2)T + \sigma W_T^{\mathbb{P}}} \\
+\text{Under } \mathbb{Q}: &\quad S_T^{\mathbb{Q}} = S_0 e^{(r - \frac{1}{2}\sigma^2)T + \sigma W_T^{\mathbb{Q}}} \\
+\text{Girsanov:} &\quad W_T^{\mathbb{Q}} = W_T^{\mathbb{P}} + \lambda T, \quad \lambda = \frac{\mu - r}{\sigma} \\
+\Rightarrow S_T^{\mathbb{Q}} &= S_0 e^{(r - \frac{1}{2}\sigma^2)T + \sigma(W_T^{\mathbb{P}} + \lambda T)} \\
+&= S_0 e^{(r - \frac{1}{2}\sigma^2)T + \sigma W_T^{\mathbb{P}} + (\mu - r)T} \\
+&= S_0 e^{(\mu - \frac{1}{2}\sigma^2)T + \sigma W_T^{\mathbb{P}}} \cdot e^{(r - \mu)T} \\
+&= S_T^{\mathbb{P}} \cdot e^{(r - \mu)T} \quad \qed
+\end{align*}
+\end{block}
+\end{frame}
+
+% ==================== 15. GBM Exactness ====================
+\begin{frame}{GBM Exactness: \texttt{NNS.rescale} = Exact Measure Change}
+\begin{block}{Theory vs. Implementation}
+\begin{center}
+\begin{tabular}{ll}
+\textbf{Theory:} & $S_T^{\mathbb{Q}} = e^{(r-\mu)T} \cdot S_T^{\mathbb{P}}$ \\
+\textbf{Practice:} & $S_T^{\mathbb{Q}} = e^{\theta} \cdot S_T^{\mathbb{P}}$, \quad $\theta \to (r-\mu)T$ \\
+\end{tabular}
+\end{center}
+\end{block}
+
+\begin{block}{The Mathematical Truth}
+\begin{itemize}
+\item \textbf{Finite $n$}: Exact mean enforcement (no-arbitrage)
+\item \textbf{Infinite $n$}: Exact measure change recovery
+\item \textbf{Always}: More efficient than alternatives
+\end{itemize}
+\end{block}
+\end{frame}
+
+% ==================== 16. Discrete-Grid Martingale ====================
+\begin{frame}[fragile]{Discrete-Grid Martingale via Dynamic Rescaling}
+\footnotesize
+\textbf{Construction:} At each $t_k$:
+\[
+S_{t_k}^{\mathbb{Q}} \leftarrow \texttt{NNS.rescale}(\text{discounted } S, \text{type="Discounted"})
+\]
+Enforces discounted ensemble mean = $S_0$.
+<<grid-martingale, size="scriptsize", message=FALSE>>=
+n_steps <- 100; dt <- T/n_steps; n_paths <- 10000
+paths <- matrix(NA, n_steps+1, n_paths); paths[1,] <- S0
+drift <- (r - 0.5*sigma^2)*dt; vol <- sigma*sqrt(dt)
+for(i in 1:n_steps){
+  inc <- rnorm(n_paths, drift, vol)
+  next_p <- paths[i,] * exp(inc)
+  t_i <- i*dt
+  disc <- next_p * exp(-r*t_i)
+  disc_rescaled <- NNS.rescale(disc, a=S0, b=r, method="riskneutral",
+                              T=t_i, type="Discounted")
+  paths[i+1,] <- disc_rescaled * exp(r*t_i)
+}
+disc_means <- rowMeans(exp(-r*seq(0,T,by=dt)) * paths)
+c(head=disc_means[1], mid=disc_means[51], tail=disc_means[101])
+@
+\end{frame}
+
+% ==================== 17. Dynamic Study: Means ====================
+\begin{frame}{Dynamic Rescaling: Ensemble Means}
+\centering
+\begin{tabular}{cccc}
+\toprule
+Time & Theoretical & Standard & Rescaled \\
+\midrule
+\Sexpr{df_means$Time[1]} & \Sexpr{df_means$Theoretical[1]} & \Sexpr{df_means$Standard[1]} & \Sexpr{df_means$Rescaled[1]} \\
+\Sexpr{df_means$Time[2]} & \Sexpr{df_means$Theoretical[2]} & \Sexpr{df_means$Standard[2]} & \Sexpr{df_means$Rescaled[2]} \\
+\Sexpr{df_means$Time[3]} & \Sexpr{df_means$Theoretical[3]} & \Sexpr{df_means$Standard[3]} & \Sexpr{df_means$Rescaled[3]} \\
+\Sexpr{df_means$Time[4]} & \Sexpr{df_means$Theoretical[4]} & \Sexpr{df_means$Standard[4]} & \Sexpr{df_means$Rescaled[4]} \\
+\Sexpr{df_means$Time[5]} & \Sexpr{df_means$Theoretical[5]} & \Sexpr{df_means$Standard[5]} & \Sexpr{df_means$Rescaled[5]} \\
+\bottomrule
+\end{tabular}
+
+\end{frame}
+
+% ==================== 18. Dynamic Study: Statistics ====================
+\begin{frame}{Dynamic Rescaling: Statistics}
+\centering
+\begin{tabular}{lr}
+\toprule
+Metric & Value \\
+\midrule
+\Sexpr{stats_df$Metric[1]} & \Sexpr{stats_df$Value[1]} \\
+\Sexpr{stats_df$Metric[2]} & \Sexpr{stats_df$Value[2]} \\
+\Sexpr{stats_df$Metric[3]} & \Sexpr{stats_df$Value[3]} \\
+\Sexpr{stats_df$Metric[4]} & \Sexpr{stats_df$Value[4]} \\
+\Sexpr{stats_df$Metric[5]} & \Sexpr{stats_df$Value[5]} \\
+\Sexpr{stats_df$Metric[6]} & \Sexpr{stats_df$Value[6]} \\
+\bottomrule
+\end{tabular}
+
+\end{frame}
+
+% ==================== 19. Takeaway ====================
+\begin{frame}{Takeaway}
+\begin{block}{\textbf{Three Roads from $\mathbb{P}$ to $\mathbb{Q}$}}
+\begin{itemize}
+\item \textbf{Direct $\mathbb{Q}$}: Simulate with drift $r$ → \textit{simplest, accept MC noise}
+\item \textbf{Girsanov}: Reweight $\mathbb{P}$ paths → \textit{elegant, high variance, low ESS}
+\item \textbf{NNS.rescale}: Transform paths to enforce mean → \textit{exact for GBM, full MC efficiency}
+\end{itemize}
+\end{block}
+
+\vspace{0.5em}
+\begin{block}{\textbf{Mathematical Elegance: Two Routes, Same Destination}}
+\begin{center}
+\begin{tabular}{rl}
+\textbf{Theory route:} & Change measure → simulate with new drift \\
+\textbf{\texttt{NNS.rescale}:} & Simulate with real drift → apply exact multiplier \\
+& \textbf{Same mathematical destination for GBM}
+\end{tabular}
+\end{center}
+\[
+S_T^{\mathbb{Q}} = e^{(r-\mu)T} \cdot S_T^{\mathbb{P}} \quad \text{(exact measure change)}
+\]
+\end{block}
+\end{frame}
+
+% ==================== 20. Practical Decision Guide ====================
+\begin{frame}{Practical Decision Guide}
+\small
+\begin{block}{\textbf{When to Use Which Method}}
+\begin{itemize}
+\item \alert{Vanilla pricing (GBM)?} → \texttt{NNS.rescale} (\textit{exact, efficient, stable})
+\item \alert{Exotics or path-dependent?} → Dynamic rescaling with \texttt{type = "Discounted"}
+\item \alert{Proofs or theoretical work?} → Girsanov or Direct $\mathbb{Q}$
+\item \alert{Complex models beyond GBM?} → Rescale for mean enforcement + validate distribution
+\end{itemize}
+\end{block}
+
+\vspace{1em}
+\begin{block}{\textbf{Key Advantages of \texttt{NNS.rescale}}}
+\begin{itemize}
+\item \textbf{Exact mean enforcement}: No-arbitrage condition satisfied by construction
+\item \textbf{Full MC efficiency}: No ESS loss, 100\% path utilization
+\item \textbf{Production stability}: Deterministic, fast, numerically robust
+\item \textbf{Mathematical foundation}: Exact for GBM, principled for other models
+\end{itemize}
+\end{block}
+
+\vspace{1em}
+\textbf{Production Truth:}\\
+\footnotesize
+\textit{``Never trust MC means when you can enforce the invariant.''}
+\end{frame}
+\end{document}
