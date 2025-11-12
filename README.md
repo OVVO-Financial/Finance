@@ -4,6 +4,11 @@ This repository collects working papers, analytical notebooks, and reproducible 
 
 ## Document Abstracts
 
+### Exact_Measure_Changes_in_GBM.pdf
+Derives the Radon–Nikodym density that maps the physical measure to its risk-neutral counterpart when asset prices follow geometric Brownian motion. The note documents how drift adjustments, discounting, and martingale consistency emerge in closed form, providing a concise reference that complements the P and Q rescaling discussion.
+
+- [Read the PDF](Exact_Measure_Changes_in_GBM.pdf)
+
 ### NNS_MFE.md
 A modern restatement of mathematical finance foundations through the lens of Nonlinear Nonparametric Statistics. The paper replaces parametric stochastic differential equation machinery with empirical distributions, partial-moment valuation, and pathwise risk-neutral rescaling to deliver a fully data-driven pricing and risk measurement pipeline that still respects martingale constraints.
 
@@ -19,7 +24,6 @@ Demonstrates how to source current S&P 500 constituents, compute log returns, an
 Illustrates why `NNS.rescale()` is required when simulated price paths must satisfy theoretical expectations under different probability measures. The worked example shows how the function enforces risk-neutral and discounted constraints without distorting the empirical distribution.
 
 - [Read the Markdown](P_and_Q.md)
-- [Download the PDF](P_and_Q.pdf)
 
 ### SD_cluster.md
 Compares stochastic dominance clustering with Hierarchical Risk Parity and naïve equal weighting in an out-of-sample asset allocation setting. The workflow extracts S&P 500 data, constructs NNS stochastic dominance clusters, and contrasts their performance with conventional portfolio construction heuristics.
