@@ -7,6 +7,7 @@
 \usepackage{hyperref}
 \usepackage{inconsolata}
 
+
 \usetheme{Madrid}
 
 \title{From $\mathbb{P}$ to $\mathbb{Q}$: \\
@@ -22,6 +23,7 @@ set.seed(1234)
 knitr::opts_chunk$set(echo = TRUE, eval = TRUE, collapse = TRUE,
                       comment = "#>", size = "footnotesize",
                       fig.width = 5, fig.height = 3, out.width = "0.7\\textwidth")
+
 @
 
 <<params, include=FALSE>>=
@@ -143,6 +145,7 @@ stats_df <- data.frame(
 @
 
 \begin{document}
+
 
 % ==================== 1. Title ====================
 \begin{frame}
@@ -386,93 +389,102 @@ $\mathbb{E}[e^{-r t_k} S_{t_k}^{\mathbb{Q}}] = S_0$ \\
 
 \end{frame}
 
-% ==================== 12. The NNS.rescale Mechanism: Optimal Transport ====================
-\begin{frame}{The \texttt{NNS.rescale} Mechanism: Deterministic Multiplicative Transport}
-\begin{block}{From $\mathbb{P}$ to $\mathbb{Q}$ via Deterministic Multiplicative Scaling}
+% ==================== 12. The NNS.rescale Mechanism ====================
+\begin{frame}{The \texttt{NNS.rescale} Mechanism: Distributional Transformation}
+\begin{block}{From $\mathbb{P}$-Paths to $\mathbb{Q}$-Distribution}
 \[
-S_T^{\mathbb{Q}} = e^{\theta} \cdot S_T^{\mathbb{P}}, \quad \theta = \log\left(\frac{S_0 e^{rT}}{\mathbb{E}^{\mathbb{P}}[S_T]}\right)
+\boxed{S_T^{\mathbb{Q}} = e^{\theta} \cdot S_T^{\mathbb{P}}, \quad 
+\theta = \log\!\left(\frac{S_0 e^{rT}}{\mathbb{E}^{\mathbb{P}}[S_T^{\mathbb{P}}]}\right)}
 \]
 \end{block}
 
-\textbf{For GBM, This is Exact:}
+\textbf{For GBM: Achieves Exact $\mathbb{Q}$-Distribution}
 \[
-S_T^{\mathbb{Q}} = e^{(r-\mu)T} S_T^{\mathbb{P}} \quad \text{(theoretical)} \quad \text{vs} \quad e^{\theta} \to e^{(r-\mu)T} \quad \text{(empirical)}
+S_T^{\mathbb{Q}} \stackrel{d}{=} S_0 \exp\!\left(\left(r - \frac{\sigma^2}{2}\right)T + \sigma W_T^{\mathbb{Q}}\right)
 \]
 
-\textbf{Why This Works:}
+\textbf{Why This Works}
 \begin{itemize}
-\item \textbf{Exact for GBM}: Mathematically equivalent to measure change
-\item \textbf{Mean Enforcement}: Constructed to satisfy no-arbitrage condition
-\item \textbf{Minimal Distortion}: Smallest multiplicative change needed
-\item \textbf{Maximum Efficiency}: No ESS loss, deterministic results
+\item \textbf{Distributionally Exact} for GBM
+\item \textbf{No-Arbitrage by Design}: $\mathbb{E}^{\mathbb{Q}}[S_T] = S_0 e^{rT}$
+\item \textbf{Empirical Convergence}: Sample mean $\to S_0 e^{\mu T}$
+\item \textbf{Zero Variance Loss}: Deterministic, full ESS
 \end{itemize}
 \end{frame}
 
 % ==================== 13. Why Rescale Works Perfectly ====================
 \begin{frame}{GBM Exactness: Why \texttt{NNS.rescale} Works Perfectly}
-\begin{block}{Mathematical Equivalence}
-For Geometric Brownian Motion, the measure change is \alert{exactly multiplicative}:
+\begin{block}{Distributional Equivalence Theorem}
+Scaling $\mathbb{P}$-paths by $e^{(r-\mu)T}$ yields the \alert{exact $\mathbb{Q}$-distribution}:
 \[
-S_T^{\mathbb{Q}} = e^{(r-\mu)T} \cdot S_T^{\mathbb{P}}
+\boxed{S_T^{\mathbb{P}} \cdot e^{(r-\mu)T} \stackrel{d}{=} S_0 \exp\!\left(\left(r - \frac{\sigma^2}{2}\right)T + \sigma W_T^{\mathbb{Q}}\right)}
 \]
 \end{block}
 
-\begin{block}{\texttt{NNS.rescale} Converges to Exact Solution}
+\begin{block}{\texttt{NNS.rescale} Implements This}
 \[
-\theta = \log\left(\frac{S_0 e^{rT}}{\mathbb{E}^{\mathbb{P}}[S_T]}\right) \rightarrow (r-\mu)T \quad \text{as } n \rightarrow \infty
-\]
-\[
-\Rightarrow e^{\theta} \rightarrow e^{(r-\mu)T}
+\theta \to (r-\mu)T \quad \text{as } n \to \infty
+\quad \Rightarrow \quad
+e^{\theta} \to e^{(r-\mu)T}
 \]
 \end{block}
 
-\small
-\textbf{Key Insight:}
+\textbf{Key Insight}
 \begin{itemize}
-\item \textbf{Not an approximation}: \texttt{NNS.rescale} implements the \alert{exact measure change} for GBM
-\item \textbf{Different computational path}: Same mathematical destination
-\item \textbf{Explains perfect accuracy}: Matches Black-Scholes exactly (up to MC error)
+\item \textbf{Empirical $\to$ Theoretical} scaling
+\item \textbf{Same $\mathbb{Q}$-distribution} without measure theory
+\item \textbf{Perfect pricing} up to MC error
 \end{itemize}
 \end{frame}
 
-% ==================== 14. GBM Measure Change: Exact Proof ====================
-\begin{frame}{GBM Measure Change: Exact Multiplicative Proof}
-\begin{block}{Theorem: $\mathbb{P}$→$\mathbb{Q}$ is Exactly Multiplicative for GBM}
+% ==================== 14. Distributional Equivalence Proof ====================
+\begin{frame}{Distributional Equivalence: Correct Proof}
+\begin{block}{Theorem}
+For GBM:
 \[
-\boxed{S_T^{\mathbb{Q}} = e^{(r-\mu)T} \cdot S_T^{\mathbb{P}}}
+\boxed{S_T^{\mathbb{P}} \cdot e^{(r-\mu)T} \stackrel{d}{=} S_T^{\mathbb{Q}}}
 \]
 \end{block}
 
-\begin{block}{Proof}
-\small
+\begin{block}{Proof via Distribution Matching}
 \begin{align*}
-\text{Under } \mathbb{P}: &\quad S_T^{\mathbb{P}} = S_0 e^{(\mu - \frac{1}{2}\sigma^2)T + \sigma W_T^{\mathbb{P}}} \\
-\text{Under } \mathbb{Q}: &\quad S_T^{\mathbb{Q}} = S_0 e^{(r - \frac{1}{2}\sigma^2)T + \sigma W_T^{\mathbb{Q}}} \\
-\text{Girsanov:} &\quad W_T^{\mathbb{Q}} = W_T^{\mathbb{P}} + \lambda T, \quad \lambda = \frac{\mu - r}{\sigma} \\
-\Rightarrow S_T^{\mathbb{Q}} &= S_0 e^{(r - \frac{1}{2}\sigma^2)T + \sigma(W_T^{\mathbb{P}} + \lambda T)} \\
-&= S_0 e^{(r - \frac{1}{2}\sigma^2)T + \sigma W_T^{\mathbb{P}} + (\mu - r)T} \\
-&= S_0 e^{(\mu - \frac{1}{2}\sigma^2)T + \sigma W_T^{\mathbb{P}}} \cdot e^{(r - \mu)T} \\
-&= S_T^{\mathbb{P}} \cdot e^{(r - \mu)T} \quad \qed
+S_T^{\mathbb{P}} &= S_0 \exp\!\left(\left(\mu - \frac{\sigma^2}{2}\right)T + \sigma W_T^{\mathbb{P}}\right) \\
+S_T^{\mathbb{P}} \cdot e^{(r-\mu)T} &= S_0 \exp\!\left(\left(r - \frac{\sigma^2}{2}\right)T + \sigma W_T^{\mathbb{P}}\right) \\
+S_T^{\mathbb{Q}} &= S_0 \exp\!\left(\left(r - \frac{\sigma^2}{2}\right)T + \sigma W_T^{\mathbb{Q}}\right)
 \end{align*}
+Since $W_T^{\mathbb{P}} \stackrel{d}{=} W_T^{\mathbb{Q}} \sim \mathcal{N}(0,T)$,  
+$\Rightarrow$ \alert{distributions are identical}. \qed
+\end{block}
+
+\begin{block}{Critical Distinction}
+\begin{itemize}
+\item \textbf{Not pathwise}: $W_T^{\mathbb{P}} \neq W_T^{\mathbb{Q}}$ almost surely
+\item \textbf{Distributional}: Same law under scaling
+\item \texttt{NNS.rescale} = \alert{outcome transport}, not measure change
+\end{itemize}
 \end{block}
 \end{frame}
 
 % ==================== 15. GBM Exactness ====================
-\begin{frame}{GBM Exactness: \texttt{NNS.rescale} = Exact Measure Change}
-\begin{block}{Theory vs. Implementation}
+\begin{frame}{GBM Exactness: Two Paths, One Distribution}
+\begin{block}{Equivalent Constructions}
 \begin{center}
-\begin{tabular}{ll}
-\textbf{Theory:} & $S_T^{\mathbb{Q}} = e^{(r-\mu)T} \cdot S_T^{\mathbb{P}}$ \\
-\textbf{Practice:} & $S_T^{\mathbb{Q}} = e^{\theta} \cdot S_T^{\mathbb{P}}$, \quad $\theta \to (r-\mu)T$ \\
+\begin{tabular}{p{0.55\textwidth}p{0.4\textwidth}}
+\textbf{Direct $\mathbb{Q}$-Simulation} & \textbf{\texttt{NNS.rescale}} \\
+\hline
+$S_0 \exp\!\left((r - \frac{\sigma^2}{2})T + \sigma W_T^{\mathbb{Q}}\right)$ &
+$S_T^{\mathbb{P}} \cdot e^{(r-\mu)T}$ \\
+\alert{Same distribution} & \alert{Same distribution} \\
 \end{tabular}
 \end{center}
 \end{block}
 
-\begin{block}{The Mathematical Truth}
+\begin{block}{The Truth}
 \begin{itemize}
-\item \textbf{Finite $n$}: Exact mean enforcement (no-arbitrage)
-\item \textbf{Infinite $n$}: Exact measure change recovery
-\item \textbf{Always}: More efficient than alternatives
+\item \textbf{Distributional equivalence} under GBM
+\item \textbf{Empirical convergence} to correct scaling
+\item \textbf{Computational edge}: No re-simulation, full efficiency
+\item \textbf{Conceptual clarity}: Transform outcomes, not measures
 \end{itemize}
 \end{block}
 \end{frame}
@@ -539,51 +551,65 @@ Metric & Value \\
 \end{frame}
 
 % ==================== 19. Takeaway ====================
-\begin{frame}{Takeaway}
-\begin{block}{\textbf{Three Roads from $\mathbb{P}$ to $\mathbb{Q}$}}
+\begin{frame}{Takeaway: Three Roads from $\mathbb{P}$ to $\mathbb{Q}$}
+
+\begin{block}{\textbf{All Roads Lead to the Same Price}}
+\centering
+\vspace{0.5em}
+\begin{tabular}{p{0.32\linewidth}p{0.32\linewidth}p{0.32\linewidth}}
+\multicolumn{1}{c}{\textbf{Direct $\mathbb{Q}$}} &
+\multicolumn{1}{c}{\textbf{Girsanov}} &
+\multicolumn{1}{c}{\textbf{\texttt{NNS.rescale}}} \\
+\hline
+Simulate with drift $r$ &
+Reweight $\mathbb{P}$-paths &
+Rescale $\mathbb{P}$-paths \\
+\textit{Simple} &
+\textit{Elegant} &
+\textit{Exact + Efficient} \\
+MC noise: $\sigma/\sqrt{n}$ &
+ESS $\downarrow$ as $|\mu-r|\uparrow$ &
+\textbf{Full ESS, zero bias} \\
+\end{tabular}
+\end{block}
+
+\vspace{0.8em}
+
+\begin{block}{\textbf{Mathematical Equivalence (GBM)}}
+\[
+\boxed{
+\underbrace{S_T^{\mathbb{P}} \cdot e^{(r-\mu)T}}_{\text{Exact multiplier}}
+\;\; \stackrel{d}{=} \;\;
+\underbrace{S_0 \exp\!\Big((r - \frac{\sigma^2}{2})T + \sigma W_T^{\mathbb{Q}}\Big)}_{\text{Direct $\mathbb{Q}$-simulation}}
+}
+\]
+\texttt{NNS.rescale} $\to$ \alert{empirically discovers} $e^{(r-\mu)T}$
+\end{block}
+
+\end{frame}
+
+% ==================== 20. Practical Decision Guide ====================
+\begin{frame}{Decision Guide: Choose Your Weapon}
+
+\begin{block}{\textbf{Use \texttt{NNS.rescale} When...}}
 \begin{itemize}
-\item \textbf{Direct $\mathbb{Q}$}: Simulate with drift $r$ → \textit{simplest, accept MC noise}
-\item \textbf{Girsanov}: Reweight $\mathbb{P}$ paths → \textit{elegant, high variance, low ESS}
-\item \textbf{NNS.rescale}: Transform paths to enforce mean → \textit{exact for GBM, full MC efficiency}
+\item \alert{Vanilla pricing under GBM}
+\item You want \textbf{maximum MC efficiency}
+\item Stability and speed matter (production)
+\item You already simulate under $\mathbb{P}$ (risk systems)
 \end{itemize}
 \end{block}
 
 \vspace{0.5em}
-\begin{block}{\textbf{Mathematical Elegance: Two Routes, Same Destination}}
-\begin{center}
-\begin{tabular}{rl}
-\textbf{Theory route:} & Change measure → simulate with new drift \\
-\textbf{\texttt{NNS.rescale}:} & Simulate with real drift → apply exact multiplier \\
-& \textbf{Same mathematical destination for GBM}
-\end{tabular}
-\end{center}
-\[
-S_T^{\mathbb{Q}} = e^{(r-\mu)T} \cdot S_T^{\mathbb{P}} \quad \text{(exact measure change)}
-\]
-\end{block}
-\end{frame}
 
-% ==================== 20. Practical Decision Guide ====================
-\begin{frame}{Practical Decision Guide}
-\small
-\begin{block}{\textbf{When to Use Which Method}}
+\begin{block}{\textbf{Use Dynamic Rescaling When...}}
 \begin{itemize}
-\item \alert{Vanilla pricing (GBM)?} → \texttt{NNS.rescale} (\textit{exact, efficient, stable})
-\item \alert{Exotics or path-dependent?} → Dynamic rescaling with \texttt{type = "Discounted"}
-\item \alert{Proofs or theoretical work?} → Girsanov or Direct $\mathbb{Q}$
-\item \alert{Complex models beyond GBM?} → Rescale for mean enforcement + validate distribution
+\item Path-dependent exotics (Asians, barriers)
+\item Multi-maturity calibration
+\item Need \alert{true discrete martingale}: \texttt{type = "Discounted"}
 \end{itemize}
 \end{block}
 
-\vspace{1em}
-\begin{block}{\textbf{Key Advantages of \texttt{NNS.rescale}}}
-\begin{itemize}
-\item \textbf{Exact mean enforcement}: No-arbitrage condition satisfied by construction
-\item \textbf{Full MC efficiency}: No ESS loss, 100\% path utilization
-\item \textbf{Production stability}: Deterministic, fast, numerically robust
-\item \textbf{Mathematical foundation}: Exact for GBM, principled for other models
-\end{itemize}
-\end{block}
 
 \end{frame}
 
@@ -593,4 +619,6 @@ S_T^{\mathbb{Q}} = e^{(r-\mu)T} \cdot S_T^{\mathbb{P}} \quad \text{(exact measur
 \centering
 \includegraphics[width=6cm]{P_to_Q_NNS_rescale_Rnw_QR_code.PNG}
 \end{frame}
+
+
 \end{document}
