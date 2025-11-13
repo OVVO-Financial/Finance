@@ -2,7 +2,7 @@
 
 This repository collects working papers, analytical notebooks, and reproducible code that explore [Nonlinear Nonparametric Statistics (NNS)](https://github.com/OVVO-Financial/NNS) tools for portfolio construction, risk management, and derivative pricing.
 
-## Document Abstracts
+## Documents
 
 ### Distributional_Equivalence_in_GBM.pdf
 Derives the Radon–Nikodym density that maps the physical measure to its risk-neutral counterpart when asset prices follow geometric Brownian motion. The note documents how drift adjustments, discounting, and martingale consistency emerge in closed form, providing a concise reference that complements the P and Q rescaling discussion.
