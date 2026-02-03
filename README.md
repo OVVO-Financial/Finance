@@ -4,6 +4,11 @@ This repository collects working papers, analytical notebooks, and reproducible 
 
 ## Documents
 
+### Conditional Tail Dynamics via Put–Call IV Ratio
+This work examines how option-implied volatility regimes shape future return tails. Using nonparametric NNS methods and near-dated options, the Put–Call IV ratio is analyzed as a state variable governing tail asymmetry and its evolution after large price moves.
+
+- [Download the PDF](Put_Call_IVs.pdf)
+
 ### Distributional_Equivalence_in_GBM.pdf
 Derives the Radon–Nikodym density that maps the physical measure to its risk-neutral counterpart when asset prices follow geometric Brownian motion. The note documents how drift adjustments, discounting, and martingale consistency emerge in closed form, providing a concise reference that complements the P and Q rescaling discussion.
 
