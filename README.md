@@ -5,7 +5,7 @@ This repository collects working papers, analytical notebooks, and reproducible 
 ## Documents
 
 ### Conditional Tail Dynamics via Put–Call IV Ratio
-This work examines how option-implied volatility regimes shape future return tails. Using nonparametric NNS methods and near-dated options, the Put–Call IV ratio is analyzed as a state variable governing tail asymmetry and its evolution after large price moves.
+This study examines how option-implied volatility regimes govern the geometry of conditional forward return distributions following large price shocks. Using nonparametric tail statistics (Value at Risk, Expected Shortfall, and kurtosis) and near-dated option-implied volatilities, we analyze the Put–Call IV ratio as a state variable that selects tail structure—distinguishing between bilateral explosive risk, asymmetric recovery, and bounded near-Gaussian behavior across assets and horizons.
 
 - [Download the PDF](Put_Call_IVs.pdf)
 
