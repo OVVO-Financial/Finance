@@ -14,16 +14,21 @@ Derives the Radon–Nikodym density that maps the physical measure to its risk-n
 
 - [Download the PDF](Distributional_Equivalence_in_GBM.pdf)
 
+### LPM_rank_cors.md
+Demonstrates how to source current S&P 500 constituents, compute log returns, and evaluate the concordance between tail-sensitive risk measures. The analysis contrasts expected regret of drawdown, conditional drawdown at risk, conditional value at risk, and lower partial moments to highlight ranking differences driven by asymmetry.
+
+- [Read the Markdown](LPM_rank_cors.md)
+
 ### NNS_MFE.md
 A modern restatement of mathematical finance foundations through the lens of Nonlinear Nonparametric Statistics. The paper replaces parametric stochastic differential equation machinery with empirical distributions, partial-moment valuation, and pathwise risk-neutral rescaling to deliver a fully data-driven pricing and risk measurement pipeline that still respects martingale constraints.
 
 - [Read the Markdown](NNS_MFE.md)
 - [Download the PDF](NNS_MFE.pdf)
 
-### LPM_rank_cors.md
-Demonstrates how to source current S&P 500 constituents, compute log returns, and evaluate the concordance between tail-sensitive risk measures. The analysis contrasts expected regret of drawdown, conditional drawdown at risk, conditional value at risk, and lower partial moments to highlight ranking differences driven by asymmetry.
+### Omega_Computation_and_Critique_Markowitz_2012.docx
+Presents a parametric linear programming (PLP) framework for tracing the complete set of Ω(L)-maximizing portfolios across admissible thresholds L, replacing discrete optimization with a continuous frontier analysis. The paper shows that maximizing Ω(L) is equivalent to achieving expected return and lower partial moment efficiency, and formalizes the simplex-based transition rules governing basis changes as L varies. It then critiques Ω as a performance criterion, contrasting it with stochastic dominance and expected-utility theory, and surveys empirical evidence indicating that mean-variance approximations often outperform VaR, CVaR, MAD, and related downside measures in approximating expected utility.
 
-- [Read the Markdown](LPM_rank_cors.md)
+- [Download the DOCX](Omega-Computation-and-Critique-Markowitz-2012.docx)
 
 ### P_and_Q.md
 Illustrates why `NNS.rescale()` is required when simulated price paths must satisfy theoretical expectations under different probability measures. The worked example shows how the function enforces risk-neutral and discounted constraints without distorting the empirical distribution.
