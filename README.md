@@ -51,8 +51,13 @@ Outlines a stress-testing framework that confines analysis to the downside co-lo
 
 - [Read the Markdown](stress_test.md)
 
+### Utility Theory with Partial Moments
+Synthesizes a trilogy of utility-theory papers into a unified partial-moments framework. The note develops utility from dual benchmarks using upper and lower partial moments, explains how benchmark heterogeneity affects zero-return utility, and connects the framework to behavioral phenomena such as loss aversion, the house money effect, and the break-even effect. It also highlights practical applications in portfolio optimization and asymmetric risk assessment.
+
+- [Download the PDF](Utility%20Theory%20with%20Partial%20Moments.pdf)
+
+
 ## Additional Resources
 
 - [NNS.options() accuracy comparison](https://htmlpreview.github.io/?https://github.com/OVVO-Financial/Finance/blob/master/NNS_Options_comparison.html)
-- [View the HTML file directly in the repository](NNS_Options_comparison.html)
 - Original portfolio theory implementation details: [SSRN abstract 2791621](http://ssrn.com/abstract=2791621) and [OVVO Labs](https://www.ovvolabs.com)
