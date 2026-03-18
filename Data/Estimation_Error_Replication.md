@@ -300,11 +300,11 @@ The simulation **fully confirms** the original paper:
 > "Feed mean-variance optimizers classical inputs and you get garbage-in-garbage-out.  
 > Feed them stable LPM₂ / UPM₂ / semideviation inputs and you get robust, distribution-free portfolios."
 
+This is why Markowitz (1959, 2010) preferred semivariance and why modern practitioners (Sortino, NNS framework, etc.) use full partial-moment analysis.  
+The same probability statements (Chebychev-style) can be made with LPM₀/UPM₀ without assuming normality.
+
 ---
 
 **Note**: We use mean absolute error because the objective is to measure estimator stability relative to each statistic’s own population proxy across repeated resamples. Since each statistic is reported separately rather than pooled into a single composite score, differing natural scales are not a problem. MAE preserves the native units of each estimand and avoids the denominator instability that would arise with percentage-based errors when population targets are zero or near zero.
 
 Cross-statistic comparisons are interpreted within economically comparable families, not as a claim that one unit of mean error is numerically interchangeable with one unit of variance error.
-
-This is why Markowitz (1959, 2010) preferred semivariance and why modern practitioners (Sortino, NNS framework, etc.) use full partial-moment analysis.  
-The same probability statements (Chebychev-style) can be made with LPM₀/UPM₀ without assuming normality.
