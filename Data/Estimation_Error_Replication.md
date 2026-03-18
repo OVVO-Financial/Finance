@@ -34,7 +34,7 @@ This Markdown summarizes the exact replication of the paper's resampling methodo
 set.seed(42)
 library(NNS)
 library(ggplot2)
-library(reshape2)   # for melt()
+library(reshape2)
 
 simulate <- function(rdist, params, n_seeds = 300, max_n = 5000000,
                      sizes = c(10, 20, 50, 100, 200, 500, 1000, 2000, 5000,
@@ -98,104 +98,17 @@ chi <- simulate(function(n, df) rchisq(n, df) - df - 0.0099, list(df = 5))
 cat("=== Student's t(df=3) - heavy tails, infinite kurtosis ===\n")
 t3 <- simulate(rt, list(df = 3))
 
-# ====================== PRINT MAE TABLES (now with UPM2) ======================
+# ====================== PRINT MAE TABLES ======================
 cols_to_show <- c("size", "mean_err", "sd_err", "semidev_err", "var_err",
                   "lpm1_err", "lpm2_err", "upm1_err", "upm2_err")
-print("Normal MAE table (with UPM2)")
+print("Normal MAE table")
 print(round(normal$mae[, cols_to_show], 5))
-print("Chi-square MAE table (with UPM2)")
+print("Chi-square MAE table")
 print(round(chi$mae[, cols_to_show], 5))
-print("Student's t(df=3) MAE table (with UPM2)")
+print("Student's t(df=3) MAE table")
 print(round(t3$mae[, cols_to_show], 5))
 
-# ====================== PLOT (now includes UPM2 - most dramatic on t(3)) ======================
-plot_mae <- function(df, title) {
-  long <- melt(df$mae, id.vars = "size",
-               measure.vars = c("mean_err","sd_err","semidev_err","var_err",
-                                "lpm1_err","lpm2_err","upm1_err","upm2_err"))
-  ggplot(long, aes(x = size, y = value, color = variable)) +
-    geom_line(size = 1) + geom_point() +
-    scale_y_log10() +
-    labs(title = title, y = "Mean Absolute Error (log scale)") +
-    theme_minimal()
-}set.seed(42)
-library(NNS)
-library(ggplot2)
-library(reshape2)   # for melt()
-
-simulate <- function(rdist, params, n_seeds = 300, max_n = 5000000,
-                     sizes = c(10, 20, 50, 100, 200, 500, 1000, 2000, 5000,
-                               10000, 20000, 50000, 100000, 200000, 500000,
-                               1000000, 2000000, 5000000)) {
-  
-  results <- data.frame()
-  
-  for (s in 1:n_seeds) {
-    set.seed(s)
-    full <- do.call(rdist, c(list(n = max_n), params))
-    
-    # Population values from the full 5M draw (paper's proxy)
-    pop_target <- mean(full)
-    pop_mean   <- pop_target
-    pop_sd     <- sd(full)
-    pop_var    <- var(full)
-    
-    pop_lpm0 <- NNS::LPM(0, pop_target, full)
-    pop_lpm1 <- NNS::LPM(1, pop_target, full)
-    pop_lpm2 <- NNS::LPM(2, pop_target, full)
-    pop_upm0 <- NNS::UPM(0, pop_target, full)
-    pop_upm1 <- NNS::UPM(1, pop_target, full)
-    pop_upm2 <- NNS::UPM(2, pop_target, full)   # ← FULL UPM2 ADDED HERE
-    pop_semidev <- sqrt(pop_lpm2)
-    
-    # Sub-samples
-    for (k in sizes) {
-      if (k > max_n) break
-      sub <- full[1:k]
-      
-      row <- data.frame(
-        seed = s,
-        size = k,
-        mean_err    = abs(mean(sub) - pop_mean),
-        sd_err      = abs(sd(sub) - pop_sd),
-        semidev_err = abs(sqrt(NNS::LPM(2, pop_target, sub)) - pop_semidev),
-        var_err     = abs(var(sub) - pop_var),
-        lpm0_err    = abs(NNS::LPM(0, pop_target, sub) - pop_lpm0),
-        lpm1_err    = abs(NNS::LPM(1, pop_target, sub) - pop_lpm1),
-        lpm2_err    = abs(NNS::LPM(2, pop_target, sub) - pop_lpm2),
-        upm0_err    = abs(NNS::UPM(0, pop_target, sub) - pop_upm0),
-        upm1_err    = abs(NNS::UPM(1, pop_target, sub) - pop_upm1),
-        upm2_err    = abs(NNS::UPM(2, pop_target, sub) - pop_upm2)   # ← FULL UPM2 ERROR
-      )
-      results <- rbind(results, row)
-    }
-  }
-  
-  mae <- aggregate(. ~ size, data = results[, -1], mean)
-  list(mae = mae, raw = results)
-}
-
-# ====================== RUN THE THREE DISTRIBUTIONS ======================
-cat("=== Normal (control) ===\n")
-normal <- simulate(rnorm, list(mean = 0.09, sd = 0.20))
-
-cat("=== Chi-square (skewed + leptokurtic) ===\n")
-chi <- simulate(function(n, df) rchisq(n, df) - df - 0.0099, list(df = 5))
-
-cat("=== Student's t(df=3) - heavy tails, infinite kurtosis ===\n")
-t3 <- simulate(rt, list(df = 3))
-
-# ====================== PRINT MAE TABLES (now with UPM2) ======================
-cols_to_show <- c("size", "mean_err", "sd_err", "semidev_err", "var_err",
-                  "lpm1_err", "lpm2_err", "upm1_err", "upm2_err")
-print("Normal MAE table (with UPM2)")
-print(round(normal$mae[, cols_to_show], 5))
-print("Chi-square MAE table (with UPM2)")
-print(round(chi$mae[, cols_to_show], 5))
-print("Student's t(df=3) MAE table (with UPM2)")
-print(round(t3$mae[, cols_to_show], 5))
-
-# ====================== PLOT  ======================
+# ====================== PLOT ======================
 plot_mae <- function(df, title) {
   long <- melt(df$mae, id.vars = "size",
                measure.vars = c("mean_err","sd_err","semidev_err","var_err",
@@ -208,8 +121,8 @@ plot_mae <- function(df, title) {
 }
 
 p1 <- plot_mae(normal, "Normal")
-p2 <- plot_mae(chi,    "Chi-square")
-p3 <- plot_mae(t3,     "Student's t(df=3)")
+p2 <- plot_mae(chi, "Chi-square")
+p3 <- plot_mae(t3, "Student's t(df=3)")
 
 print(p1)
 print(p2)
