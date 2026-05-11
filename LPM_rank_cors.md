@@ -85,7 +85,7 @@ compute_risk_measures <- function(ret) {
   drawdowns <- sapply(1:length(ret), function(t) max(cum_ret[1:t]) - cum_ret[t])
   
   # ERoD: Mean of drawdowns exceeding the threshold (epsilon)
-  edor <- mean(pmax(drawdowns - THRESHOLD_Q, 0))
+  erod <- mean(pmax(drawdowns - THRESHOLD_Q, 0))
   
   # CDaR: Mean of the worst (1-q_level)% drawdowns
   cdar <- mean(sort(drawdowns, decreasing = TRUE)[1:floor(Q_LEVEL * length(drawdowns))])
@@ -101,7 +101,7 @@ compute_risk_measures <- function(ret) {
   lpm3 <- LPM(3, gain_loss_thresh, ret)
   lpm4 <- LPM(4, gain_loss_thresh, ret)
   
-  return(c(EDoR = edor, CDaR = cdar, CVaR = cvar, 
+  return(c(ERoD = erod, CDaR = cdar, CVaR = cvar, 
            LPM1 = lpm1, LPM2 = lpm2, LPM3 = lpm3, LPM4 = lpm4))
 }
 
@@ -138,11 +138,11 @@ main()
 
 The results illustrate how higher degrees of lower partial moments amplify tail risk effects, aligning closely with the drawdown-focused measures `ERoD` and `CDaR`. 
 Additionally, the connection between `CVaR` and a linear utility framework is evident through its relationship with `LPM degree 1`. 
-Notably, as an investor’s risk aversion increases (*reflected in higher* `LPM` *degrees*) drawdown-based measures like `EDoR` and `CDaR` provide less distinct information, as the `LPM` focus shifts toward extreme tail losses rather than the magnitude or frequency of drawdowns alone.
+Notably, as an investor’s risk aversion increases (*reflected in higher* `LPM` *degrees*) drawdown-based measures like `ERoD` and `CDaR` provide less distinct information, as the `LPM` focus shifts toward extreme tail losses rather than the magnitude or frequency of drawdowns alone.
 
 ```r
-          EDoR      CDaR      CVaR      LPM1      LPM2      LPM3      LPM4
-EDoR 1.0000000 0.9877608 0.8814864 0.7668398 0.7504878 0.7119337 0.6747384
+          ERoD      CDaR      CVaR      LPM1      LPM2      LPM3      LPM4
+ERoD 1.0000000 0.9877608 0.8814864 0.7668398 0.7504878 0.7119337 0.6747384
 CDaR 0.9877608 1.0000000 0.8891179 0.7719253 0.7547708 0.7139340 0.6744421
 CVaR 0.8814864 0.8891179 1.0000000 0.8592282 0.7984393 0.7201233 0.6583978
 LPM1 0.7668398 0.7719253 0.8592282 1.0000000 0.9515798 0.8551246 0.7785731
