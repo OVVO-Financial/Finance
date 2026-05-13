@@ -9,28 +9,28 @@ This study examines how option-implied volatility regimes govern the geometry of
 
 - [Download the PDF](Put_Call_IVs.pdf)
 
-### Distributional_Equivalence_in_GBM.pdf
+### Distributional Equivalence in GBM
 Derives the Radon–Nikodym density that maps the physical measure to its risk-neutral counterpart when asset prices follow geometric Brownian motion. The note documents how drift adjustments, discounting, and martingale consistency emerge in closed form, providing a concise reference that complements the P and Q rescaling discussion.
 
 - [Download the PDF](Distributional_Equivalence_in_GBM.pdf)
 
-### LPM_rank_cors.md
+### LPM rank correlations
 Demonstrates how to source current S&P 500 constituents, compute log returns, and evaluate the concordance between tail-sensitive risk measures. The analysis contrasts expected regret of drawdown, conditional drawdown at risk, conditional value at risk, and lower partial moments to highlight ranking differences driven by asymmetry.
 
 - [Read the Markdown](LPM_rank_cors.md)
 
-### NNS_MFE.md
+### NNS_MFE
 A modern restatement of mathematical finance foundations through the lens of Nonlinear Nonparametric Statistics. The paper replaces parametric stochastic differential equation machinery with empirical distributions, partial-moment valuation, and pathwise risk-neutral rescaling to deliver a fully data-driven pricing and risk measurement pipeline that still respects martingale constraints.
 
 - [Read the Markdown](NNS_MFE.md)
 - [Download the PDF](NNS_MFE.pdf)
 
-### Omega_Computation_and_Critique_Markowitz_2012.docx
+### Omega Computation and Critique (Markowitz 2012)
 Presents a parametric linear programming (PLP) framework for tracing the complete set of Ω(L)-maximizing portfolios across admissible thresholds L, replacing discrete optimization with a continuous frontier analysis. The paper shows that maximizing Ω(L) is equivalent to achieving expected return and lower partial moment efficiency, and formalizes the simplex-based transition rules governing basis changes as L varies. It then critiques Ω as a performance criterion, contrasting it with stochastic dominance and expected-utility theory, and surveys empirical evidence indicating that mean-variance approximations often outperform VaR, CVaR, MAD, and related downside measures in approximating expected utility.
 
 - [Download the DOCX](Omega-Computation-and-Critique-Markowitz-2012.docx)
 
-### P_and_Q.md
+### P_and_Q
 Illustrates why `NNS.rescale()` is required when simulated price paths must satisfy theoretical expectations under different probability measures. The worked example shows how the function enforces risk-neutral and discounted constraints without distorting the empirical distribution.
 
 - [Read the Markdown](P_and_Q.md)
@@ -41,23 +41,51 @@ Walks through the `P_to_Q_NNS_rescale.Rnw` reproducible research workflow that c
 - [Inspect the Sweave source](P_to_Q_NNS_rescale.Rnw)
 - [Download the compiled PDF](P_to_Q_NNS_rescale.pdf)
 
-### SD_cluster.md
+### SD_cluster
 Compares stochastic dominance clustering with Hierarchical Risk Parity and naïve equal weighting in an out-of-sample asset allocation setting. The workflow extracts S&P 500 data, constructs NNS stochastic dominance clusters, and contrasts their performance with conventional portfolio construction heuristics.
 
 - [Read the Markdown](SD_cluster.md)
 
-### stress_test.md
+### stress_test
 Outlines a stress-testing framework that confines analysis to the downside co-lower partial moment quadrant while preserving nonlinear dependence through `NNS.reg()`. Bootstrapped replicates and dependence diagnostics ensure scenario paths respect empirical joint behavior when targeting adverse market moves.
 
 - [Read the Markdown](stress_test.md)
+
+
+### PT as I Still See It
+A reflective note on portfolio theory assumptions and practical implementation tradeoffs, with emphasis on where classical formulations diverge from empirical market behavior and decision-making under uncertainty.
+
+- [Download the PDF](PT%20as%20I%20still%20see%20it.pdf)
+
+### Nine Criticisms, Nine Concessions
+A structured critique-reply format that catalogs common objections to the NNS framing and pairs each with a concession or clarification, helping delineate where the methodology is strongest and where limitations remain.
+
+- [Download the PDF](Nine_criticisms_nine_concessions.pdf)
+
+### Peters Ergodicity Critique
+Discusses ergodicity-focused arguments in finance and evaluates implications for return aggregation, long-run growth framing, and risk measurement in nonstationary settings.
+
+- [Download the PDF](Peters_ergodocity_critique.pdf)
 
 ### Utility Theory with Partial Moments
 Synthesizes a trilogy of utility-theory papers into a unified partial-moments framework. The note develops utility from dual benchmarks using upper and lower partial moments, explains how benchmark heterogeneity affects zero-return utility, and connects the framework to behavioral phenomena such as loss aversion, the house money effect, and the break-even effect. It also highlights practical applications in portfolio optimization and asymmetric risk assessment.
 
 - [Download the PDF](Utility%20Theory%20with%20Partial%20Moments.pdf)
 
+## Data and Replication Notes
+
+### Estimation Error Replication
+Companion notes for reproducing estimation-error experiments and implementation details used in portfolio comparison exercises.
+
+- [Read the Markdown](Data/Estimation_Error_Replication.md)
+
+### Put Call IV Results
+Saved output artifacts and intermediate results supporting the Put–Call IV tail-dynamics study.
+
+- [Open the results folder](Data/Put%20Call%20IV%20Results)
 
 ## Additional Resources
 
-- [NNS.options() accuracy comparison](https://htmlpreview.github.io/?https://github.com/OVVO-Financial/Finance/blob/master/NNS_Options_comparison.html)
+- [NNS.options() accuracy comparison (HTML)](NNS_Options_comparison.html)
+- Preview rendering via GitHub HTMLPreview: [NNS.options() comparison preview](https://htmlpreview.github.io/?https://github.com/OVVO-Financial/Finance/blob/master/NNS_Options_comparison.html)
 - Original portfolio theory implementation details: [SSRN abstract 2791621](http://ssrn.com/abstract=2791621) and [OVVO Labs](https://www.ovvolabs.com)
