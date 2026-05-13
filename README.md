@@ -46,7 +46,7 @@ Compares stochastic dominance clustering with Hierarchical Risk Parity and naïv
 
 - [Read the Markdown](SD_cluster.md)
 
-### stress_test
+### Stress Testing
 Outlines a stress-testing framework that confines analysis to the downside co-lower partial moment quadrant while preserving nonlinear dependence through `NNS.reg()`. Bootstrapped replicates and dependence diagnostics ensure scenario paths respect empirical joint behavior when targeting adverse market moves.
 
 - [Read the Markdown](stress_test.md)
