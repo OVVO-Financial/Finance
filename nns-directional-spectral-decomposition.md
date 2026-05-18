@@ -1124,10 +1124,10 @@ Alignment diagnostics were:
 
 | Quantity | Value |
 |---|---:|
-| $|\langle PC1, market\rangle|$ | 0.00000742 |
-| $|\langle PC1, spread\rangle|$ | 0.99982464 |
-| $|\langle PC2, market\rangle|$ | 0.99827428 |
-| $|\langle PC2, spread\rangle|$ | 0.00016201 |
+| $\left\lvert\langle PC1,\mathrm{market}\rangle\right\rvert$ | 0.00000742 |
+| $\left\lvert\langle PC1,\mathrm{spread}\rangle\right\rvert$ | 0.99982464 |
+| $\left\lvert\langle PC2,\mathrm{market}\rangle\right\rvert$ | 0.99827428 |
+| $\left\lvert\langle PC2,\mathrm{spread}\rangle\right\rvert$ | 0.00016201 |
 
 Thus PC1 is essentially the spread factor, while PC2 is essentially the market factor.
 
