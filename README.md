@@ -83,27 +83,6 @@ Appendix-style results tables supporting the Put–Call IV tail-dynamics study, 
 
 - [Read the results tables](Data/Put%20Call%20IV%20Results)
 
-## Supplementary Documents and Figures
-
-### Everyone Has Been Wrong for 280 Years?
-HTML critique of Peters and Gell-Mann's multiplicative-effects argument, contrasting growth-rate maximization with utility theory and partial-moment downside-risk framing.
-
-- [Read the HTML note](Images/Peters_Gell-Mann_Critique.html)
-
-### LTCM reference
-Supporting PDF on Long-Term Capital Management, retained as a risk-management reference alongside the repository's portfolio and stress-testing materials.
-
-- [Download the PDF](Images/LTCM.pdf)
-
-### Generated figures
-Supporting images used by the markdown notebooks and papers, including stochastic-dominance cluster charts, out-of-sample allocation comparisons, NNS_MFE visuals, extrapolation diagrams, and Magnificent Seven loss distributions.
-
-- [NNS_MFE figure](Images/NNS_MFE.png)
-- [Dow stochastic-dominance clusters](Images/SD_clusters_Dow.png)
-- [Stochastic dominance vs. HRP out-of-sample comparison](Images/SD_vs_HRP_OOS.png)
-- [Extrapolations figure](Images/extrapolations.png)
-- [Magnificent Seven loss distributions](Images/mag_7_loss_distributions.png)
-
 ## Additional Resources
 
 - [NNS.options() accuracy comparison](https://htmlpreview.github.io/?https://github.com/OVVO-Financial/Finance/blob/master/NNS_Options_comparison.html)
