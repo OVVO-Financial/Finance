@@ -86,4 +86,4 @@ Appendix-style results tables supporting the Put–Call IV tail-dynamics study, 
 ## Additional Resources
 
 - [NNS.options() accuracy comparison](https://htmlpreview.github.io/?https://github.com/OVVO-Financial/Finance/blob/master/NNS_Options_comparison.html)
-- Original portfolio theory implementation details: [SSRN abstract 2791621](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2791621) and [OVVO Labs](https://www.ovvolabs.com)
+- Original portfolio theory implementation details: [SSRN abstract 2791621](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2791621) and [OVVO Labs](https://www.ovvolabs.com) 
