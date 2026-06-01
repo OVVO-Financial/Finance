@@ -1,6 +1,6 @@
 # Finance Research Notes
 
-This repository collects working papers, analytical notebooks, and reproducible code that explore [Nonlinear Nonparametric Statistics (NNS)](https://github.com/OVVO-Financial/NNS) tools for portfolio construction, risk management, and derivative pricing.
+This repository collects working papers, analytical notebooks, reproducible code, and supporting artifacts that explore [Nonlinear Nonparametric Statistics (NNS)](https://github.com/OVVO-Financial/NNS) tools for portfolio construction, risk management, and derivative pricing.
 
 ## Documents
 
@@ -51,19 +51,18 @@ Outlines a stress-testing framework that confines analysis to the downside co-lo
 
 - [Read the Markdown](stress_test.md)
 
-
 ### PT as I Still See It
-A reflective note on portfolio theory assumptions and practical implementation tradeoffs, with emphasis on where classical formulations diverge from empirical market behavior and decision-making under uncertainty.
+Harry M. Markowitz's 2010 Annual Review of Financial Economics article revisiting portfolio theory, including the roles of mean-variance analysis, expected utility, and practical portfolio-selection assumptions.
 
 - [Download the PDF](PT%20as%20I%20still%20see%20it.pdf)
 
 ### Nine Criticisms, Nine Concessions
-A structured critique-reply format that catalogs common objections to the NNS framing and pairs each with a concession or clarification, helping delineate where the methodology is strongest and where limitations remain.
+Catalogs nine criticisms of partial-moment methods and pairs them with nine concessions, clarifying the limits, tradeoffs, and appropriate interpretation of partial moments in risk and utility analysis.
 
 - [Download the PDF](Nine_criticisms_nine_concessions.pdf)
 
 ### Peters Ergodicity Critique
-Discusses ergodicity-focused arguments in finance and evaluates implications for return aggregation, long-run growth framing, and risk measurement in nonstationary settings.
+Critical literature review of Ole Peters and ergodicity economics, focusing on time-average versus ensemble-average reasoning, multiplicative wealth dynamics, and how those claims interact with expected utility and partial-moment analysis.
 
 - [Download the PDF](Peters_ergodocity_critique.pdf)
 
@@ -80,12 +79,11 @@ Companion notes for reproducing estimation-error experiments and implementation 
 - [Read the Markdown](Data/Estimation_Error_Replication.md)
 
 ### Put Call IV Results
-Saved output artifacts and intermediate results supporting the Put–Call IV tail-dynamics study.
+Appendix-style results tables supporting the Put–Call IV tail-dynamics study, including lagged tail-statistic summaries across assets and put-call IV regime splits.
 
-- [Open the results folder](Data/Put%20Call%20IV%20Results)
+- [Read the results tables](Data/Put%20Call%20IV%20Results)
 
 ## Additional Resources
 
-- [NNS.options() accuracy comparison (HTML)](NNS_Options_comparison.html)
-- Preview rendering via GitHub HTMLPreview: [NNS.options() comparison preview](https://htmlpreview.github.io/?https://github.com/OVVO-Financial/Finance/blob/master/NNS_Options_comparison.html)
-- Original portfolio theory implementation details: [SSRN abstract 2791621](http://ssrn.com/abstract=2791621) and [OVVO Labs](https://www.ovvolabs.com)
+- [NNS.options() accuracy comparison](https://htmlpreview.github.io/?https://github.com/OVVO-Financial/Finance/blob/master/NNS_Options_comparison.html)
+- Original portfolio theory implementation details: [SSRN abstract 2791621](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2791621) and [OVVO Labs](https://www.ovvolabs.com)
