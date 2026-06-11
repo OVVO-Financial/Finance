@@ -1,6 +1,6 @@
 # Finance Research Notes
 
-This repository collects working papers, analytical notebooks, reproducible code, and supporting artifacts that explore [Nonlinear Nonparametric Statistics (NNS)](https://github.com/OVVO-Financial/NNS) tools for portfolio construction, risk management, and derivative pricing.
+This repository collects working papers, Markdown research notes, R/Sweave examples, PDFs, and supporting artifacts that explore [Nonlinear Nonparametric Statistics (NNS)](https://github.com/OVVO-Financial/NNS) tools for portfolio construction, risk management, derivative pricing, stochastic dominance, and directional PCA attribution.
 
 ## Documents
 
@@ -14,6 +14,16 @@ Derives the Radon–Nikodym density that maps the physical measure to its risk-n
 
 - [Download the PDF](Distributional_Equivalence_in_GBM.pdf)
 
+### Directional Markov Regimes and PCA Recovery
+Extends NNS directional spectral decomposition from static partial-moment quadrants to time-indexed directional regimes. The note shows how observable quadrant frequencies, conditional means, transition paths, and partial-moment matrices recover covariance and attribute PCA eigenvalues without relying on hidden-state labels.
+
+- [Read the Markdown](directional-markov-regimes-pca-pm-matrix-updated.md)
+
+### Exogenous Directional Risk Matrices
+Companion PDF note on directional risk-matrix construction and interpretation for exogenous market or factor inputs.
+
+- [Download the PDF](exogenous_directional_risk_matrices_note.pdf)
+
 ### LPM rank correlations
 Demonstrates how to source current S&P 500 constituents, compute log returns, and evaluate the concordance between tail-sensitive risk measures. The analysis contrasts expected regret of drawdown, conditional drawdown at risk, conditional value at risk, and lower partial moments to highlight ranking differences driven by asymmetry.
 
@@ -24,6 +34,11 @@ A modern restatement of mathematical finance foundations through the lens of Non
 
 - [Read the Markdown](NNS_MFE.md)
 - [Download the PDF](NNS_MFE.pdf)
+
+### NNS Directional Spectral Decomposition
+Develops a directional genealogy for covariance and PCA using full mean-split orthants, pairwise partial-moment matrices, and scalable `DPM_nD` diagnostics. The note distinguishes exact spectral recovery from compact directional summaries for high-dimensional applications.
+
+- [Read the Markdown](nns-directional-spectral-decomposition.md)
 
 ### Omega Computation and Critique (Markowitz 2012)
 Presents a parametric linear programming (PLP) framework for tracing the complete set of Ω(L)-maximizing portfolios across admissible thresholds L, replacing discrete optimization with a continuous frontier analysis. The paper shows that maximizing Ω(L) is equivalent to achieving expected return and lower partial moment efficiency, and formalizes the simplex-based transition rules governing basis changes as L varies. It then critiques Ω as a performance criterion, contrasting it with stochastic dominance and expected-utility theory, and surveys empirical evidence indicating that mean-variance approximations often outperform VaR, CVaR, MAD, and related downside measures in approximating expected utility.
@@ -71,6 +86,11 @@ Synthesizes a trilogy of utility-theory papers into a unified partial-moments fr
 
 - [Download the PDF](Utility%20Theory%20with%20Partial%20Moments.pdf)
 
+### When PC1 Is Not the Market Factor
+Demonstrates that the first principal component can represent a dominant spread factor rather than a broad market factor. The simulation uses NNS mean-split orthants to recover the PCA eigensystem and attribute the leading variance axis to the directional regimes that generated it.
+
+- [Read the Markdown](when-pc1-is-not-the-market-factor.md)
+
 ## Data and Replication Notes
 
 ### Estimation Error Replication
@@ -85,5 +105,5 @@ Appendix-style results tables supporting the Put–Call IV tail-dynamics study, 
 
 ## Additional Resources
 
-- [NNS.options() accuracy comparison](https://htmlpreview.github.io/?https://github.com/OVVO-Financial/Finance/blob/master/NNS_Options_comparison.html)
+- [NNS.options() accuracy comparison](NNS_Options_comparison.html) ([HTML preview](https://htmlpreview.github.io/?https://github.com/OVVO-Financial/Finance/blob/master/NNS_Options_comparison.html))
 - Original portfolio theory implementation details: [SSRN abstract 2791621](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2791621) and [OVVO Labs](https://www.ovvolabs.com) 
