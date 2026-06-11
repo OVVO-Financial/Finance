@@ -20,7 +20,7 @@ Extends NNS directional spectral decomposition from static partial-moment quadra
 - [Read the Markdown](directional-markov-regimes-pca-pm-matrix-updated.md)
 
 ### Exogenous Directional Risk Matrices
-Companion PDF note on directional risk-matrix construction and interpretation for exogenous market or factor inputs.
+Formalizes the distinction between endogenous portfolio-conditioned semivariance matrices and exogenous benchmark-relative risk primitives. The note shows how Estrada’s asset-level semicovariance heuristic restores quadratic-program tractability, then extends the idea through Viole–Nawrocki and NNS directional co-partial moment matrices that decompose covariance, downside risk, upside risk, and asymmetric dependence into fixed directional building blocks.
 
 - [Download the PDF](exogenous_directional_risk_matrices_note.pdf)
 
