@@ -86,6 +86,11 @@ Demonstrates that the first principal component can represent a dominant spread 
 
 ## Theory, Utility, and Critique
 
+### Active vs. Passive Investing
+Revised and extended version of Appendix A from *Physics Envy* (Viole and Nawrocki, 2011). Sharpe's arithmetic of active management is affirmed as an accounting identity, but its hidden assumptions — an exhaustive active/passive classification, a static market portfolio, and dollar-weighted averaging — are made explicit and examined one by one. Passive investing is indeed active, albeit infrequently: cap-weighted portfolios never trade on price moves alone, yet share issuance, buybacks, and index reconstitution force even the purest indexer to transact (Pedersen, 2018), and the prices the rule weights by are produced by the active sector it free-rides on (Grossman–Stiglitz, 1980). The note updates the empirical record through the mid-2020s, including the passive-share crossover and the disappearing index effect.
+
+- [Download the PDF](Active_vs_Passive.pdf)
+
 ### PT as I Still See It
 Harry M. Markowitz's 2010 Annual Review of Financial Economics article revisiting portfolio theory, including the roles of mean-variance analysis, expected utility, and practical portfolio-selection assumptions.
 
