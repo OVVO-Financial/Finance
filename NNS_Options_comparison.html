@@ -10,7 +10,7 @@
 
 
 
-<meta name="date" content="2024-10-09" />
+<meta name="date" content="2026-07-06" />
 
 <title>NNS Options Pricing Comparison</title>
 
@@ -2756,16 +2756,19 @@ font-size: 0.95em;
 
 
 <h1 class="title toc-ignore">NNS Options Pricing Comparison</h1>
-<h4 class="date">October 09, 2024</h4>
+<h4 class="date">July 06, 2026</h4>
 
 </div>
 
 
 <p>Comparing ITM &amp; OTM option prices from <code>NNS.options</code>
-with live market prices. The market prices were obtained using a
-refactored version of Majeed Simaan’s “Implied Volatility Surface”
-options data retrieval (<a href="https://rpubs.com/simaan84/vol_surface" class="uri">https://rpubs.com/simaan84/vol_surface</a>, see below for
-addendum).</p>
+with market prices from CBOE’s free public delayed-quotes endpoint (~15
+minutes behind the market, see below for addendum). Quotes, volume, open
+interest, last trade times, and the delayed underlying price all arrive
+in a single payload per symbol, so the entire chain is time-aligned by
+construction. <code>NNS.options</code> is evaluated as of the quote
+session and priced off that same delayed underlying, keeping the model’s
+S and the market quotes on the same clock.</p>
 <p><code>NNS.options</code> is proprietary, but you can download its
 <code>Model Results</code> output for the following symbols via: <a href="https://ovvo.shinyapps.io/options_intro" class="uri">https://ovvo.shinyapps.io/options_intro</a>, or subscribe to
 access the entire set of market securities.</p>
@@ -2774,197 +2777,244 @@ the remaining symbols.</p>
 <p>The conditions used for including a strike price were:</p>
 <ul>
 <li><p>Open interest &gt; 0</p></li>
-<li><p>Traded today, not stale prices</p></li>
+<li><p>Traded during the snapshot session, not stale prices</p></li>
 <li><p>Bid and ask &gt; 0</p></li>
 </ul>
 <div id="next-expiry" class="section level1">
 <h1>Next Expiry</h1>
 <pre class="r"><code>if(as.numeric(difftime(third_friday_this_month, today))&lt;=5){
-  exp_date = third_friday_next_month 
+  exp_date = third_friday_next_month
 } else {
   exp_date = third_friday_this_month
 }
 
 exp_date</code></pre>
-<pre><code>## [1] &quot;2024-10-18&quot;</code></pre>
+<pre><code>## [1] &quot;2026-07-17&quot;</code></pre>
 <div id="spy" class="section level2">
 <h2>SPY</h2>
 <pre class="r"><code>security = &quot;SPY&quot;
 
 
-ds &lt;- getOptionChain.yahoo(security,NULL)
-ds &lt;- lapply(ds, function(ds_i) do.call(plyr::rbind.fill,ds_i)  )
-ds &lt;- do.call(plyr::rbind.fill,ds)
+ds &lt;- getOptionChain.cboe(security, exp_date)
 
-
-itm_prices = ds[ds$openInterest&gt;0 &amp; ds$inTheMoney == TRUE &amp; 
-                  format(ds$expiration, format = &quot;%Y-%m-%d&quot;) == exp_date &amp; 
-                  format(ds$lastTradeDate, format = &quot;%Y-%m-%d&quot;)==Sys.Date() &amp;
+# Session the delayed quotes were taken from
+snapshot_date &lt;- unique(ds$snapshotDate)
+S_mkt &lt;- unique(ds$underlying)
+snapshot_date</code></pre>
+<pre><code>## [1] &quot;2026-07-06&quot;</code></pre>
+<pre class="r"><code>itm_prices = ds[ds$openInterest&gt;0 &amp; ds$inTheMoney == TRUE &amp;
+                  ds$volume&gt;0 &amp;
                   ds$ask&gt;0 &amp; ds$bid&gt;0,]
 
 itm_prices = itm_prices[complete.cases(itm_prices),]
 
-otm_prices = ds[ds$openInterest&gt;0 &amp; ds$inTheMoney == FALSE &amp; 
-                  format(ds$expiration, format = &quot;%Y-%m-%d&quot;) == exp_date &amp;
-                  format(ds$lastTradeDate, format = &quot;%Y-%m-%d&quot;)==Sys.Date() &amp;
+otm_prices = ds[ds$openInterest&gt;0 &amp; ds$inTheMoney == FALSE &amp;
+                  ds$volume&gt;0 &amp;
                   ds$ask&gt;0 &amp; ds$bid&gt;0,]
 otm_prices = otm_prices[complete.cases(otm_prices),]
 
-itm_nns_model = NNS.options(security, 
+itm_nns_model = NNS.options(security,
                             strike =  itm_prices[itm_prices$Type==&quot;calls&quot;,&quot;strike&quot;],
-                            expiration_date = exp_date, plot = F)
-otm_nns_model = NNS.options(security, 
+                            expiration_date = exp_date,
+                            historical_date = snapshot_date,
+                            underlying_price = S_mkt, plot = F)
+otm_nns_model = NNS.options(security,
                             strike =  otm_prices[otm_prices$Type==&quot;calls&quot;,&quot;strike&quot;],
-                            expiration_date = exp_date, plot = F)
+                            expiration_date = exp_date,
+                            historical_date = snapshot_date,
+                            underlying_price = S_mkt, plot = F)
 
 itm_midpoints_calls = rowMeans(itm_prices[itm_prices$Type==&quot;calls&quot;, c(&quot;bid&quot;, &quot;ask&quot;)])
-itm_call_comp = cbind(itm_midpoints_calls, unlist(itm_nns_model$`Model Results`[2,]))
+itm_call_comp = cbind(itm_midpoints_calls, as.numeric(unlist(itm_nns_model$`Model Results`[3, -1])))
 colnames(itm_call_comp) = c(paste0(security, &quot; Market Prices&quot;),  &quot;NNS Model&quot;)
 rownames(itm_call_comp) = paste0(itm_prices[itm_prices$Type==&quot;calls&quot;, &quot;strike&quot;], &quot; strike&quot;)
 
 otm_midpoints_calls = rowMeans(otm_prices[otm_prices$Type==&quot;calls&quot;, c(&quot;bid&quot;, &quot;ask&quot;)])
-otm_call_comp = cbind(otm_midpoints_calls, unlist(otm_nns_model$`Model Results`[2,]))
+otm_call_comp = cbind(otm_midpoints_calls, as.numeric(unlist(otm_nns_model$`Model Results`[3, -1])))
 colnames(otm_call_comp) = c(paste0(security, &quot; Market Prices&quot;),  &quot;NNS Model&quot;)
 rownames(otm_call_comp) = paste0(otm_prices[otm_prices$Type==&quot;calls&quot;, &quot;strike&quot;], &quot; strike&quot;)
 
-itm_nns_model = NNS.options(security, 
+itm_nns_model = NNS.options(security,
                             strike =  itm_prices[itm_prices$Type==&quot;puts&quot;,&quot;strike&quot;],
-                            expiration_date = exp_date, plot = F)
-otm_nns_model = NNS.options(security, 
+                            expiration_date = exp_date,
+                            historical_date = snapshot_date,
+                            underlying_price = S_mkt, plot = F)
+otm_nns_model = NNS.options(security,
                             strike =  otm_prices[otm_prices$Type==&quot;puts&quot;,&quot;strike&quot;],
-                            expiration_date = exp_date, plot = F)
+                            expiration_date = exp_date,
+                            historical_date = snapshot_date,
+                            underlying_price = S_mkt, plot = F)
 
 itm_midpoints_puts = rowMeans(itm_prices[itm_prices$Type==&quot;puts&quot;, c(&quot;bid&quot;, &quot;ask&quot;)])
-itm_put_comp = cbind(itm_midpoints_puts, unlist(itm_nns_model$`Model Results`[5,]))
+itm_put_comp = cbind(itm_midpoints_puts, as.numeric(unlist(itm_nns_model$`Model Results`[15, -1])))
 colnames(itm_put_comp) = c(paste0(security, &quot; Market Prices&quot;),  &quot;NNS Model&quot;)
 rownames(itm_put_comp) = paste0(itm_prices[itm_prices$Type==&quot;puts&quot;, &quot;strike&quot;], &quot; strike&quot;)
 
 otm_midpoints_puts = rowMeans(otm_prices[otm_prices$Type==&quot;puts&quot;, c(&quot;bid&quot;, &quot;ask&quot;)])
-otm_put_comp = cbind(otm_midpoints_puts, unlist(otm_nns_model$`Model Results`[5,]))
+otm_put_comp = cbind(otm_midpoints_puts, as.numeric(unlist(otm_nns_model$`Model Results`[15, -1])))
 colnames(otm_put_comp) = c(paste0(security, &quot; Market Prices&quot;),  &quot;NNS Model&quot;)
 rownames(otm_put_comp) = paste0(otm_prices[otm_prices$Type==&quot;puts&quot;, &quot;strike&quot;], &quot; strike&quot;)</code></pre>
 <div id="itm-calls" class="section level3">
 <h3>ITM Calls</h3>
 <pre class="r"><code># Last price
 print(paste0(&quot;Last price: &quot;, itm_nns_model$`Last (S)`))</code></pre>
-<pre><code>## [1] &quot;Last price: 575.48&quot;</code></pre>
+<pre><code>## [1] &quot;Last price: 750.88&quot;</code></pre>
 <pre class="r"><code>print(paste0(&quot;ITM Call MAPE: &quot;, Metrics::mape(itm_call_comp[,1], itm_call_comp[,2])))</code></pre>
-<pre><code>## [1] &quot;ITM Call MAPE: 0.0657165702315601&quot;</code></pre>
+<pre><code>## [1] &quot;ITM Call MAPE: 0.0470003238870968&quot;</code></pre>
 <pre class="r"><code>itm_call_comp</code></pre>
 <pre><code>##            SPY Market Prices NNS Model
-## 260 strike           314.520  318.1500
-## 510 strike            65.185   65.8823
-## 515 strike            60.190   60.8445
-## 520 strike            55.245   55.8073
-## 525 strike            50.250   50.7708
-## 535 strike            40.360   40.7000
-## 538 strike            37.375   37.6795
-## 543 strike            32.635   32.6460
-## 546 strike            29.605   29.6265
-## 549 strike            26.785   26.6074
-## 550 strike            25.765   25.6011
-## 551 strike            24.855   24.5949
-## 552 strike            23.980   23.5888
-## 554 strike            22.050   21.5767
-## 555 strike            21.030   20.5708
-## 556 strike            20.200   19.5649
-## 557 strike            19.345   18.5591
-## 559 strike            17.385   16.5478
-## 560 strike            16.570   15.5422
-## 561 strike            15.585   14.5368
-## 562 strike            14.820   13.5315
-## 563 strike            13.980   12.5631
-## 564 strike            13.105   11.6213
-## 565 strike            12.205   11.2008
-## 566 strike            11.455   10.3081
-## 567 strike            10.630    9.6004
-## 568 strike             9.870    9.1648
-## 569 strike             9.060    8.9353
-## 570 strike             8.380    8.9758
-## 571 strike             7.625    8.1022
-## 572 strike             6.960    8.1889
-## 573 strike             6.270    7.9394
-## 574 strike             5.645    6.9595
-## 575 strike             5.055    6.8503</code></pre>
+## 470 strike           281.495  281.9092
+## 475 strike           276.505  276.9090
+## 520 strike           231.585  231.9075
+## 590 strike           161.095  161.9053
+## 595 strike           156.310  156.9052
+## 600 strike           151.740  151.9050
+## 605 strike           146.785  146.9049
+## 620 strike           131.240  131.9044
+## 640 strike           111.425  111.9039
+## 670 strike            81.830   81.9032
+## 675 strike            76.605   76.9030
+## 676 strike            75.835   75.9030
+## 680 strike            71.465   71.9029
+## 685 strike            66.435   66.9028
+## 690 strike            62.095   61.9027
+## 695 strike            57.000   56.9070
+## 696 strike            56.120   55.9112
+## 698 strike            54.140   53.9153
+## 700 strike            52.035   51.9193
+## 704 strike            48.235   47.9343
+## 705 strike            46.615   46.9415
+## 707 strike            44.625   44.9518
+## 709 strike            42.705   42.9683
+## 710 strike            42.300   41.9779
+## 715 strike            37.470   37.0543
+## 720 strike            32.605   32.1971
+## 721 strike            31.690   31.2373
+## 722 strike            30.735   30.2842
+## 725 strike            27.900   27.3540
+## 726 strike            26.965   26.3560
+## 727 strike            26.030   25.3518
+## 729 strike            24.180   23.3607
+## 730 strike            23.235   22.3628
+## 731 strike            22.340   21.3964
+## 732 strike            21.435   20.4453
+## 733 strike            20.540   19.4930
+## 734 strike            19.650   18.5323
+## 735 strike            18.765   17.5769
+## 736 strike            17.905   16.6204
+## 737 strike            17.045   15.6703
+## 738 strike            16.205   14.7363
+## 739 strike            15.360   13.8244
+## 740 strike            14.525   12.9575
+## 741 strike            13.720   12.1285
+## 742 strike            12.920   11.3319
+## 743 strike            12.125   10.5649
+## 744 strike            11.365    9.8210
+## 745 strike            10.610    9.0977
+## 746 strike             9.890    8.4294
+## 747 strike             9.170    7.7888
+## 748 strike             8.465    7.1263
+## 749 strike             7.795    6.4045
+## 750 strike             7.170    5.6279</code></pre>
 </div>
 <div id="otm-calls" class="section level3">
 <h3>OTM Calls</h3>
 <pre class="r"><code># Only strikes where NNS price &gt; 0
 non_zero_nns = otm_call_comp[otm_call_comp[,2] &gt; 0,]
 
-if(is.null(nrow(non_zero_nns)))  non_zero_nns = t(non_zero_nns)
-
-
 print(paste0(&quot;OTM Call MAPE: &quot;, Metrics::mape(non_zero_nns[,1], non_zero_nns[,2])))</code></pre>
-<pre><code>## [1] &quot;OTM Call MAPE: 0.986347657599813&quot;</code></pre>
+<pre><code>## [1] &quot;OTM Call MAPE: 0.484932133910551&quot;</code></pre>
 <pre class="r"><code>non_zero_nns</code></pre>
 <pre><code>##            SPY Market Prices NNS Model
-## 576 strike             4.485    6.0641
-## 577 strike             3.945    5.2875
-## 578 strike             3.445    4.8184
-## 579 strike             2.955    4.1636
-## 580 strike             2.565    4.2349
-## 581 strike             2.165    3.9985
-## 582 strike             1.825    3.4468
-## 583 strike             1.525    2.9259
-## 584 strike             1.255    2.7490
-## 585 strike             1.065    2.3294
-## 586 strike             0.855    2.0352
-## 587 strike             0.705    1.8094
-## 588 strike             0.585    1.6165
-## 589 strike             0.455    1.3267</code></pre>
+## 751 strike             6.540    4.5065
+## 752 strike             5.955    3.8200
+## 753 strike             5.390    3.3318
+## 754 strike             4.860    2.9390
+## 755 strike             4.360    2.9772
+## 756 strike             3.890    3.2715
+## 757 strike             3.460    3.2960
+## 758 strike             3.050    2.9896
+## 759 strike             2.680    2.5408
+## 760 strike             2.340    2.0520
+## 761 strike             2.030    1.5980
+## 762 strike             1.755    1.2108
+## 763 strike             1.505    0.8976
+## 764 strike             1.275    0.6567
+## 765 strike             1.085    0.4729
+## 766 strike             0.915    0.3402
+## 767 strike             0.765    0.2457
+## 768 strike             0.645    0.1785
+## 769 strike             0.535    0.1270
+## 770 strike             0.445    0.0902
+## 771 strike             0.365    0.0649
+## 772 strike             0.305    0.0426
+## 773 strike             0.255    0.0312
+## 774 strike             0.215    0.0222
+## 775 strike             0.185    0.0119</code></pre>
 </div>
 <div id="itm-puts" class="section level3">
 <h3>ITM Puts</h3>
 <pre class="r"><code># Last price
 print(paste0(&quot;Last price: &quot;, itm_nns_model$`Last (S)`))</code></pre>
-<pre><code>## [1] &quot;Last price: 575.48&quot;</code></pre>
+<pre><code>## [1] &quot;Last price: 750.88&quot;</code></pre>
 <pre class="r"><code>print(paste0(&quot;ITM Put MAPE: &quot;, Metrics::mape(itm_put_comp[,1], itm_put_comp[,2])))</code></pre>
-<pre><code>## [1] &quot;ITM Put MAPE: 0.0788640743821835&quot;</code></pre>
+<pre><code>## [1] &quot;ITM Put MAPE: 0.0964533497152205&quot;</code></pre>
 <pre class="r"><code>itm_put_comp</code></pre>
 <pre><code>##            SPY Market Prices NNS Model
-## 576 strike             5.480    6.4886
-## 577 strike             6.030    7.0531
-## 578 strike             6.490    7.5603
-## 579 strike             7.095    8.0136
-## 580 strike             7.695    8.4408
-## 581 strike             8.300    9.0141
-## 582 strike             8.985    9.5871
-## 583 strike             9.735   10.2930
-## 584 strike            10.415   10.7665
-## 585 strike            11.290   11.4358
-## 586 strike            12.115   11.8313
-## 587 strike            13.110   12.4904
-## 588 strike            14.025   13.6153
-## 589 strike            14.860   14.4248
-## 590 strike            15.895   15.0728</code></pre>
+## 751 strike             5.700    5.8681
+## 752 strike             6.125    6.2688
+## 753 strike             6.570    5.7689
+## 754 strike             7.035    5.7076
+## 755 strike             7.550    5.7564
+## 756 strike             8.085    6.0624
+## 758 strike             9.280    7.4459
+## 759 strike             9.925    8.3854
+## 760 strike            10.605    9.3004
+## 761 strike            11.320   10.2392
+## 762 strike            12.075   11.2005
+## 763 strike            12.865   12.1631
+## 764 strike            13.675   13.1492
+## 765 strike            14.525   14.1309
+## 770 strike            19.090   19.1216
+## 775 strike            24.090   24.1202
+## 780 strike            29.765   29.1203</code></pre>
 </div>
 <div id="otm-puts" class="section level3">
 <h3>OTM Puts</h3>
 <pre class="r"><code># Only strikes where NNS price &gt; 0
 non_zero_nns = otm_put_comp[otm_put_comp[,2] &gt; 0,]
 
-if(is.null(nrow(non_zero_nns)))  non_zero_nns = t(non_zero_nns)
-
-
 print(paste0(&quot;OTM Put MAPE: &quot;, Metrics::mape(non_zero_nns[,1], non_zero_nns[,2])))</code></pre>
-<pre><code>## [1] &quot;OTM Put MAPE: 0.126363046337266&quot;</code></pre>
+<pre><code>## [1] &quot;OTM Put MAPE: 0.488045087164174&quot;</code></pre>
 <pre class="r"><code>non_zero_nns</code></pre>
 <pre><code>##            SPY Market Prices NNS Model
-## 562 strike             1.755    1.3801
-## 563 strike             1.895    1.3365
-## 564 strike             2.060    1.4871
-## 565 strike             2.245    1.7926
-## 566 strike             2.405    2.1742
-## 567 strike             2.630    2.3932
-## 568 strike             2.820    2.7264
-## 569 strike             3.090    2.8311
-## 570 strike             3.365    3.2544
-## 571 strike             3.620    3.3846
-## 572 strike             3.985    3.9897
-## 573 strike             4.315    4.7512
-## 574 strike             4.700    5.4117
-## 575 strike             5.055    5.6947</code></pre>
+## 724 strike             0.925    0.0200
+## 725 strike             0.985    0.0333
+## 726 strike             1.045    0.0549
+## 727 strike             1.115    0.0750
+## 728 strike             1.185    0.0982
+## 729 strike             1.265    0.1262
+## 730 strike             1.345    0.1726
+## 731 strike             1.435    0.2182
+## 732 strike             1.535    0.2938
+## 733 strike             1.645    0.3901
+## 734 strike             1.755    0.5133
+## 735 strike             1.875    0.6721
+## 736 strike             2.005    0.8684
+## 737 strike             2.145    1.1212
+## 738 strike             2.295    1.4245
+## 739 strike             2.460    1.7617
+## 740 strike             2.635    2.1067
+## 741 strike             2.825    2.4265
+## 742 strike             3.030    2.6647
+## 743 strike             3.245    2.9073
+## 744 strike             3.480    3.1066
+## 745 strike             3.730    3.2731
+## 746 strike             4.010    3.4657
+## 747 strike             4.300    3.7368
+## 748 strike             4.615    4.3545
+## 749 strike             4.950    4.8977
+## 750 strike             5.315    5.6227</code></pre>
 </div>
 </div>
 <div id="aapl" class="section level2">
@@ -2974,78 +3024,92 @@ print(paste0(&quot;OTM Put MAPE: &quot;, Metrics::mape(non_zero_nns[,1], non_zer
 <h3>ITM Calls</h3>
 <pre class="r"><code># Last price
 print(paste0(&quot;Last price: &quot;, itm_nns_model$`Last (S)`))</code></pre>
-<pre><code>## [1] &quot;Last price: 228.0429&quot;</code></pre>
+<pre><code>## [1] &quot;Last price: 312.46&quot;</code></pre>
 <pre class="r"><code>print(paste0(&quot;ITM Call MAPE: &quot;, Metrics::mape(itm_call_comp[,1], itm_call_comp[,2])))</code></pre>
-<pre><code>## [1] &quot;ITM Call MAPE: 0.0340657017592386&quot;</code></pre>
+<pre><code>## [1] &quot;ITM Call MAPE: 0.0415928559860391&quot;</code></pre>
 <pre class="r"><code>itm_call_comp</code></pre>
 <pre><code>##              AAPL Market Prices NNS Model
-## 40 strike               187.625  189.4676
-## 165 strike               62.575   63.4036
-## 170 strike               57.625   58.3661
-## 180 strike               47.775   48.2931
-## 190 strike               37.675   38.2231
-## 195 strike               32.600   33.1896
-## 200 strike               27.825   28.1571
-## 205 strike               22.800   23.1260
-## 207.5 strike             20.325   20.6110
-## 210 strike               17.950   18.0965
-## 212.5 strike             15.525   15.5825
-## 215 strike               13.175   13.0690
-## 217.5 strike             10.725   10.5563
-## 220 strike                8.500    8.0445
-## 222.5 strike              6.525    6.2117
-## 225 strike                4.725    5.0939
-## 227.5 strike              3.250    4.0433</code></pre>
+## 200 strike              112.950  112.8786
+## 210 strike              103.075  102.8783
+## 220 strike               93.400   92.8781
+## 225 strike               88.525   87.8780
+## 230 strike               83.575   82.8778
+## 235 strike               78.400   77.8777
+## 240 strike               73.600   72.8776
+## 245 strike               68.225   67.8775
+## 250 strike               62.975   62.8774
+## 255 strike               58.150   57.8773
+## 260 strike               53.225   52.8772
+## 265 strike               47.875   47.8771
+## 270 strike               43.300   42.8770
+## 275 strike               38.225   37.8748
+## 277.5 strike             35.950   35.3732
+## 280 strike               32.975   32.8739
+## 282.5 strike             30.925   30.3752
+## 285 strike               28.700   27.8594
+## 287.5 strike             25.825   25.3565
+## 290 strike               23.600   22.8655
+## 292.5 strike             21.375   20.3826
+## 295 strike               18.825   17.9053
+## 297.5 strike             16.675   15.3834
+## 300 strike               14.475   13.0017
+## 302.5 strike             12.425   10.8543
+## 305 strike               10.525    8.8895
+## 307.5 strike              8.750    7.1371
+## 310 strike                7.150    5.4955</code></pre>
 </div>
 <div id="otm-calls-1" class="section level3">
 <h3>OTM Calls</h3>
 <pre class="r"><code># Only strikes where NNS price &gt; 0
 non_zero_nns = otm_call_comp[otm_call_comp[,2] &gt; 0,]
 
-if(is.null(nrow(non_zero_nns)))  non_zero_nns = t(non_zero_nns)
-
-
 print(paste0(&quot;OTM Call MAPE: &quot;, Metrics::mape(non_zero_nns[,1], non_zero_nns[,2])))</code></pre>
-<pre><code>## [1] &quot;OTM Call MAPE: 3.00757370013453&quot;</code></pre>
+<pre><code>## [1] &quot;OTM Call MAPE: 0.560692922948888&quot;</code></pre>
 <pre class="r"><code>non_zero_nns</code></pre>
 <pre><code>##              AAPL Market Prices NNS Model
-## 230 strike                 1.99    5.0321
-## 232.5 strike               1.22    3.4214
-## 235 strike                 0.66    2.1796
-## 237.5 strike               0.36    1.2957
-## 240 strike                 0.19    1.4826</code></pre>
+## 312.5 strike              5.825    3.6738
+## 315 strike                4.550    2.6593
+## 317.5 strike              3.525    2.1136
+## 320 strike                2.685    1.5978
+## 322.5 strike              2.020    0.8004
+## 325 strike                1.485    0.3299
+## 330 strike                0.810    0.0380</code></pre>
 </div>
 <div id="itm-puts-1" class="section level3">
 <h3>ITM Puts</h3>
 <pre class="r"><code># Last price
 print(paste0(&quot;Last price: &quot;, itm_nns_model$`Last (S)`))</code></pre>
-<pre><code>## [1] &quot;Last price: 228.0429&quot;</code></pre>
+<pre><code>## [1] &quot;Last price: 312.46&quot;</code></pre>
 <pre class="r"><code>print(paste0(&quot;ITM Put MAPE: &quot;, Metrics::mape(itm_put_comp[,1], itm_put_comp[,2])))</code></pre>
-<pre><code>## [1] &quot;ITM Put MAPE: 0.0439266178541686&quot;</code></pre>
+<pre><code>## [1] &quot;ITM Put MAPE: 0.0937307934111724&quot;</code></pre>
 <pre class="r"><code>itm_put_comp</code></pre>
 <pre><code>##              AAPL Market Prices NNS Model
-## 230 strike                4.350    3.9796
-## 232.5 strike              6.000    6.3649
-## 235 strike                7.900    8.1097
-## 240 strike               12.625   12.2815
-## 245 strike               17.600   17.2495</code></pre>
+## 312.5 strike              5.400    4.9599
+## 315 strike                6.650    4.9761
+## 317.5 strike              8.150    6.0315
+## 320 strike                9.825    8.1237
+## 322.5 strike             11.475   10.7849
+## 325 strike               13.475   13.2421
+## 330 strike               17.450   17.7839
+## 335 strike               22.350   22.8106
+## 340 strike               27.225   27.8935
+## 350 strike               36.825   37.9030</code></pre>
 </div>
 <div id="otm-puts-1" class="section level3">
 <h3>OTM Puts</h3>
 <pre class="r"><code># Only strikes where NNS price &gt; 0
 non_zero_nns = otm_put_comp[otm_put_comp[,2] &gt; 0,]
 
-if(is.null(nrow(non_zero_nns)))  non_zero_nns = t(non_zero_nns)
-
-
 print(paste0(&quot;OTM Put MAPE: &quot;, Metrics::mape(non_zero_nns[,1], non_zero_nns[,2])))</code></pre>
-<pre><code>## [1] &quot;OTM Put MAPE: 0.0616310491983773&quot;</code></pre>
+<pre><code>## [1] &quot;OTM Put MAPE: 0.661071699321536&quot;</code></pre>
 <pre class="r"><code>non_zero_nns</code></pre>
 <pre><code>##              AAPL Market Prices NNS Model
-## 220 strike                0.890    0.9110
-## 222.5 strike              1.355    1.2850
-## 225 strike                2.065    2.2440
-## 227.5 strike              3.075    3.3351</code></pre>
+## 297.5 strike              1.195    0.0332
+## 300 strike                1.570    0.1237
+## 302.5 strike              2.045    0.3652
+## 305 strike                2.655    0.9872
+## 307.5 strike              3.400    2.0303
+## 310 strike                4.300    3.3516</code></pre>
 </div>
 </div>
 <div id="xom" class="section level2">
@@ -3053,56 +3117,55 @@ print(paste0(&quot;OTM Put MAPE: &quot;, Metrics::mape(non_zero_nns[,1], non_zer
 <pre class="r"><code>security = &quot;XOM&quot;</code></pre>
 <div id="itm-calls-2" class="section level3">
 <h3>ITM Calls</h3>
-<pre><code>## [1] &quot;Last price: 121.66&quot;</code></pre>
-<pre><code>## [1] &quot;ITM Call MAPE: 0.189648212779836&quot;</code></pre>
+<pre><code>## [1] &quot;Last price: 136.54&quot;</code></pre>
+<pre><code>## [1] &quot;ITM Call MAPE: 0.036966521106259&quot;</code></pre>
 <pre><code>##            XOM Market Prices NNS Model
-## 110 strike            12.075   11.6869
-## 115 strike             7.300    6.6635
-## 117 strike             5.400    4.6555
-## 119 strike             3.775    2.6978
-## 120 strike             3.050    2.1052
-## 121 strike             2.390    1.7075</code></pre>
+## 120 strike            17.175   16.5401</code></pre>
 </div>
 <div id="otm-calls-2" class="section level3">
 <h3>OTM Calls</h3>
-<pre><code>## [1] &quot;OTM Call MAPE: 0.42883571291984&quot;</code></pre>
+<pre><code>## [1] &quot;OTM Call MAPE: 0.510405256596992&quot;</code></pre>
 <pre><code>##            XOM Market Prices NNS Model
-## 122 strike             1.805    1.3299
-## 123 strike             1.335    0.8068
-## 124 strike             0.965    0.6109
-## 125 strike             0.695    0.5643
-## 126 strike             0.485    0.9362</code></pre>
+## 137 strike             2.630    2.8370
+## 138 strike             2.270    1.9893
+## 139 strike             1.910    1.2495
+## 140 strike             1.495    0.7981
+## 141 strike             1.180    0.5361
+## 142 strike             0.990    0.2761
+## 143 strike             0.775    0.1129
+## 144 strike             0.705    0.0368</code></pre>
 </div>
 <div id="itm-puts-2" class="section level3">
 <h3>ITM Puts</h3>
 <pre class="r"><code># Last price
 print(paste0(&quot;Last price: &quot;, itm_nns_model$`Last (S)`))</code></pre>
-<pre><code>## [1] &quot;Last price: 121.66&quot;</code></pre>
+<pre><code>## [1] &quot;Last price: 136.54&quot;</code></pre>
 <pre class="r"><code>print(paste0(&quot;ITM Put MAPE: &quot;, Metrics::mape(itm_put_comp[,1], itm_put_comp[,2])))</code></pre>
-<pre><code>## [1] &quot;ITM Put MAPE: 0.0549664692854731&quot;</code></pre>
+<pre><code>## [1] &quot;ITM Put MAPE: 0.05715111874553&quot;</code></pre>
 <pre class="r"><code>itm_put_comp</code></pre>
 <pre><code>##            XOM Market Prices NNS Model
-## 122 strike             1.715    1.5653
-## 123 strike             2.290    2.0689
-## 125 strike             3.725    3.4306
-## 126 strike             4.475    4.4341
-## 127 strike             5.425    5.4403</code></pre>
+## 139 strike             3.925    4.1077
+## 140 strike             4.600    4.8222
+## 141 strike             5.150    5.5556
+## 145 strike             8.575    9.0971
+## 150 strike            13.275   14.1087
+## 155 strike            18.275   19.1085</code></pre>
 </div>
 <div id="otm-puts-2" class="section level3">
 <h3>OTM Puts</h3>
 <pre class="r"><code># Only strikes where NNS price &gt; 0
 non_zero_nns = otm_put_comp[otm_put_comp[,2] &gt; 0,]
 
-if(is.null(nrow(non_zero_nns)))  non_zero_nns = t(non_zero_nns)
-
 print(paste0(&quot;OTM Put MAPE: &quot;, Metrics::mape(non_zero_nns[,1], non_zero_nns[,2])))</code></pre>
-<pre><code>## [1] &quot;OTM Put MAPE: 0.125685439822983&quot;</code></pre>
+<pre><code>## [1] &quot;OTM Put MAPE: 0.737436071498899&quot;</code></pre>
 <pre class="r"><code>non_zero_nns</code></pre>
 <pre><code>##            XOM Market Prices NNS Model
-## 118 strike             0.545    0.5419
-## 119 strike             0.720    0.6462
-## 120 strike             0.975    0.7489
-## 121 strike             1.280    1.0718</code></pre>
+## 131 strike             0.770    0.0101
+## 132 strike             1.020    0.0640
+## 133 strike             1.265    0.2250
+## 134 strike             1.540    0.4955
+## 135 strike             1.940    0.8069
+## 136 strike             2.390    1.3957</code></pre>
 </div>
 </div>
 <div id="tlt" class="section level2">
@@ -3110,180 +3173,144 @@ print(paste0(&quot;OTM Put MAPE: &quot;, Metrics::mape(non_zero_nns[,1], non_zer
 <pre class="r"><code>security = &quot;TLT&quot;</code></pre>
 <div id="itm-calls-3" class="section level3">
 <h3>ITM Calls</h3>
-<pre><code>## [1] &quot;Last price: 94.83&quot;</code></pre>
-<pre><code>## [1] &quot;ITM Call MAPE: 0.198623840342951&quot;</code></pre>
+<pre><code>## [1] &quot;Last price: 85.275&quot;</code></pre>
+<pre><code>## [1] &quot;ITM Call MAPE: 0.181997071683647&quot;</code></pre>
 <pre><code>##             TLT Market Prices NNS Model
-## 92 strike               3.150    2.8294
-## 93 strike               2.255    1.8819
-## 93.5 strike             1.845    1.4557
-## 94 strike               1.475    1.0975
-## 94.5 strike             1.145    0.8485</code></pre>
+## 80 strike               5.425    5.2751
+## 82 strike               3.450    3.2751
+## 84 strike               1.530    1.2814
+## 84.5 strike             1.115    0.8066
+## 85 strike               0.755    0.4586</code></pre>
 </div>
 <div id="otm-calls-3" class="section level3">
 <h3>OTM Calls</h3>
-<pre><code>## [1] &quot;OTM Call MAPE: 0.117735472508593&quot;</code></pre>
+<pre><code>## [1] &quot;OTM Call MAPE: 0.514054226475279&quot;</code></pre>
 <pre><code>##             TLT Market Prices NNS Model
-## 95 strike               0.855    0.8084
-## 95.5 strike             0.625    0.5967
-## 96 strike               0.445    0.4290
-## 96.5 strike             0.305    0.3237
-## 97 strike               0.215    0.2992</code></pre>
+## 85.5 strike             0.475    0.3237
+## 86 strike               0.275    0.1695
+## 86.5 strike             0.155    0.0248</code></pre>
 </div>
 <div id="itm-puts-3" class="section level3">
 <h3>ITM Puts</h3>
 <pre class="r"><code># Last price
 print(paste0(&quot;Last price: &quot;, itm_nns_model$`Last (S)`))</code></pre>
-<pre><code>## [1] &quot;Last price: 94.83&quot;</code></pre>
+<pre><code>## [1] &quot;Last price: 85.275&quot;</code></pre>
 <pre class="r"><code>print(paste0(&quot;ITM Put MAPE: &quot;, Metrics::mape(itm_put_comp[,1], itm_put_comp[,2])))</code></pre>
-<pre><code>## [1] &quot;ITM Put MAPE: 0.0205584226744234&quot;</code></pre>
+<pre><code>## [1] &quot;ITM Put MAPE: 0.0431676885929616&quot;</code></pre>
 <pre class="r"><code>itm_put_comp</code></pre>
 <pre><code>##             TLT Market Prices NNS Model
-## 95 strike               0.855    0.7794
-## 95.5 strike             1.135    1.1048
-## 96 strike               1.460    1.4364
-## 96.5 strike             1.835    1.7883
-## 97 strike               2.245    2.2268
-## 97.5 strike             2.705    2.6919
-## 98 strike               3.175    3.2002
-## 98.5 strike             3.650    3.7023
-## 99 strike               4.150    4.2040
-## 100 strike              5.150    5.2078
-## 101 strike              6.150    6.2118</code></pre>
+## 85.5 strike             0.585    0.4912
+## 86 strike               0.900    0.8384
+## 86.5 strike             1.285    1.2849
+## 87 strike               1.730    1.7902
+## 87.5 strike             2.215    2.2842
+## 88 strike               2.720    2.7827
+## 89 strike               3.725    3.7820
+## 90 strike               4.725    4.7821</code></pre>
 </div>
 <div id="otm-puts-3" class="section level3">
 <h3>OTM Puts</h3>
 <pre class="r"><code># Only strikes where NNS price &gt; 0
 non_zero_nns = otm_put_comp[otm_put_comp[,2] &gt; 0,]
 
-if(is.null(nrow(non_zero_nns)))  non_zero_nns = t(non_zero_nns)
-
-
 print(paste0(&quot;OTM Put MAPE: &quot;, Metrics::mape(non_zero_nns[,1], non_zero_nns[,2])))</code></pre>
-<pre><code>## [1] &quot;OTM Put MAPE: 0.309119030095957&quot;</code></pre>
+<pre><code>## [1] &quot;OTM Put MAPE: 0.428673435964625&quot;</code></pre>
 <pre class="r"><code>non_zero_nns</code></pre>
 <pre><code>##             TLT Market Prices NNS Model
-## 93 strike               0.245    0.3870
-## 93.5 strike             0.340    0.4868
-## 94 strike               0.470    0.5538
-## 94.5 strike             0.645    0.6148</code></pre>
+## 84.5 strike             0.215    0.1005
+## 85 strike               0.355    0.2397</code></pre>
 </div>
 </div>
-<div id="refactored-options-code" class="section level2">
-<h2>Refactored Options Code:</h2>
-<pre class="r"><code>`getOptionChain` &lt;-
-  function(Symbols, Exp=NULL, src=&quot;yahoo&quot;, ...) {
-    Call &lt;- paste(&quot;getOptionChain&quot;,src,sep=&quot;.&quot;)
-    if(missing(Exp)) {
-      do.call(Call, list(Symbols=Symbols, ...))
-    } else {
-      do.call(Call, list(Symbols=Symbols, Exp=Exp, ...))
-    }
-  }
+<div id="cboe-options-chain-retrieval-code" class="section level2">
+<h2>CBOE Options Chain Retrieval Code:</h2>
+<pre class="r"><code># CBOE option chain retrieval + supporting data loaders
+#
+# Replaces the deprecated Yahoo Finance option chain scrape used in
+# NNS_Options_comparison.Rmd with CBOE&#39;s free public delayed-quotes
+# endpoint (https://cdn.cboe.com/api/global/delayed_quotes/options/&lt;SYM&gt;.json).
+# No API key required; quotes are ~15 minutes behind the market, and the
+# payload carries quotes, volume, open interest, last trade times, and the
+# delayed underlying price together - so the whole chain is time-aligned
+# by construction.
+#
+# Requires packages: httr, jsonlite
 
-getOptionChain.yahoo &lt;- function(Symbols, Exp, ...)
-{
-  if(!requireNamespace(&quot;jsonlite&quot;, quietly=TRUE))
-    stop(&quot;package:&quot;,dQuote(&quot;jsonlite&quot;),&quot;cannot be loaded.&quot;)
-  
-  NewToOld &lt;- function(x) {
-    if(is.null(x) || length(x) &lt; 1)
-      return(NULL)
-    # clean up colnames, in case there&#39;s weirdness in the JSON
-    names(x) &lt;- tolower(gsub(&quot;[[:space:]]&quot;, &quot;&quot;, names(x)))
-    # set cleaned up colnames to current output colnames
-    d &lt;- with(x, data.frame(Strike=strike, Last=lastprice, Chg=change,
-                            Bid=bid, Ask=ask, Vol=volume, OI=openinterest,
-                            row.names=contractsymbol, stringsAsFactors=FALSE))
-    
-    # remove commas from the numeric data
-    d[] &lt;- lapply(d, gsub, pattern=&quot;,&quot;, replacement=&quot;&quot;, fixed=TRUE)
-    d[] &lt;- lapply(d, type.convert, as.is=TRUE)
-    d
-  }
-  
-  # Don&#39;t check the expiry date if we&#39;re looping over dates we just scraped
-  checkExp &lt;- !hasArg(&quot;.expiry.known&quot;) || !match.call(expand.dots=TRUE)$.expiry.known
-  # Construct URL
-  urlExp &lt;- paste0(&quot;https://query2.finance.yahoo.com/v6/finance/options/&quot;, Symbols[1])
-  # Add expiry date to URL
-  if(!checkExp)
-    urlExp &lt;- paste0(urlExp, &quot;?&amp;date=&quot;, Exp)
-  
-  # Fetch data (jsonlite::fromJSON will handle connection)
-  tbl &lt;- jsonlite::fromJSON(urlExp)
-  
-  # Only return nearest expiry (default served by Yahoo Finance), unless the user specified Exp
-  if(!missing(Exp) &amp;&amp; checkExp) {
-    all.expiries &lt;- tbl$optionChain$result$expirationDates[[1]]
-    all.expiries.posix &lt;- .POSIXct(as.numeric(all.expiries), tz=&quot;UTC&quot;)
-    
-    # this is a recursive command
-    if(is.null(Exp)) {
-      # Return all expires if Exp = NULL
-      out &lt;- lapply(all.expiries, getOptionChain.yahoo, Symbols=Symbols, .expiry.known=TRUE)
-      # Expiry format was &quot;%b %Y&quot;, but that&#39;s not unique with weeklies. Change
-      # format to &quot;%b.%d.%Y&quot; (&quot;%Y-%m-%d wouldn&#39;t be good, since names should
-      # start with a letter or dot--naming things is hard).
-      return(setNames(out, format(all.expiries.posix, &quot;%b.%d.%Y&quot;)))
-    }     
-    
-    else {
-      # Ensure data exist for user-provided expiry date(s)
-      if(inherits(Exp, &quot;Date&quot;))
-        valid.expiries &lt;- as.Date(all.expiries.posix) %in% Exp
-      else if(inherits(Exp, &quot;POSIXt&quot;))
-        valid.expiries &lt;- all.expiries.posix %in% Exp
-      else if(is.character(Exp)) {
-        expiry.range &lt;- range(unlist(lapply(Exp, .parseISO8601, tz=&quot;UTC&quot;)))
-        valid.expiries &lt;- all.expiries.posix &gt;= expiry.range[1] &amp;
-          all.expiries.posix &lt;= expiry.range[2]
-      }
-      if(all(!valid.expiries))
-        stop(&quot;Provided expiry date(s) not found. Available dates are: &quot;,
-             paste(as.Date(all.expiries.posix), collapse=&quot;, &quot;))
-      
-      expiry.subset &lt;- all.expiries[valid.expiries]
-      if(length(expiry.subset) == 1)
-        return(getOptionChain.yahoo(Symbols, expiry.subset, .expiry.known=TRUE))
-      else {
-        out &lt;- lapply(expiry.subset, getOptionChain.yahoo, Symbols=Symbols, .expiry.known=TRUE)
-        # See comment above regarding the output names
-        return(setNames(out, format(all.expiries.posix[valid.expiries], &quot;%b.%d.%Y&quot;)))
-      }
-    }
-  }
-  
-  dftables &lt;- lapply(tbl$optionChain$result$options[[1]][,c(&quot;calls&quot;,&quot;puts&quot;)], `[[`, 1L)
-  #dftables &lt;- mapply(NewToOld, x=dftables, SIMPLIFY=FALSE)
+# Underlying spot estimate from the chain itself via put-call parity:
+# at the strike where the call and put mids cross, S ~= K + C - P.
+# Used only as a fallback when the payload&#39;s own underlying price is missing.
+estimate_underlying_parity &lt;- function(chain) {
+  quoted &lt;- chain[!is.na(chain$bid) &amp; !is.na(chain$ask) &amp; chain$bid &gt; 0 &amp; chain$ask &gt; 0, ]
+  calls &lt;- quoted[quoted$Type == &quot;calls&quot;, c(&quot;strike&quot;, &quot;bid&quot;, &quot;ask&quot;)]
+  puts  &lt;- quoted[quoted$Type == &quot;puts&quot;,  c(&quot;strike&quot;, &quot;bid&quot;, &quot;ask&quot;)]
+  m &lt;- merge(calls, puts, by = &quot;strike&quot;, suffixes = c(&quot;.c&quot;, &quot;.p&quot;))
+  if (nrow(m) == 0) return(NA_real_)
+  call_mid &lt;- (m$bid.c + m$ask.c) / 2
+  put_mid  &lt;- (m$bid.p + m$ask.p) / 2
+  k &lt;- which.min(abs(call_mid - put_mid))
+  m$strike[k] + call_mid[k] - put_mid[k]
+}
 
-###### Added to avoid type labeling error
-  
-  addTypeColumn &lt;- function(df, name) {
-    if (grepl(&quot;calls&quot;, name, ignore.case = TRUE)) {
-      df$Type &lt;- &quot;calls&quot;
-    } else if (grepl(&quot;puts&quot;, name, ignore.case = TRUE)) {
-      df$Type &lt;- &quot;puts&quot;
-    } 
-    return(df)
+# Option chain for one underlying and expiration date: Type (&quot;calls&quot;/&quot;puts&quot;), 
+# strike, bid, ask, volume, openInterest, expiration, lastTradeDate, 
+# inTheMoney, plus underlying (delayed underlying price) and 
+# snapshotDate (session the quotes are from).
+# Note: index symbols need CBOE&#39;s underscore prefix (e.g. &quot;_SPX&quot;) - the
+# equity/ETF symbols used here need no adjustment.
+getOptionChain.cboe &lt;- function(symbol, exp_date) {
+  exp_date &lt;- as.Date(exp_date)
+  url &lt;- paste0(&quot;https://cdn.cboe.com/api/global/delayed_quotes/options/&quot;,
+                toupper(symbol), &quot;.json&quot;)
+  resp &lt;- httr::GET(url, httr::user_agent(&quot;Mozilla/5.0 (options research)&quot;))
+  if (httr::http_error(resp)) {
+    stop(&quot;CBOE delayed quotes request for &quot;, symbol, &quot; failed [HTTP &quot;,
+         httr::status_code(resp), &quot;]&quot;)
   }
-  
- 
-  dftables &lt;- Map(addTypeColumn, dftables, names(dftables))
+  j &lt;- jsonlite::fromJSON(httr::content(resp, as = &quot;text&quot;, encoding = &quot;UTF-8&quot;))
+  opts &lt;- j$data$options
+  if (is.null(opts) || nrow(opts) == 0) stop(&quot;CBOE returned no options for &quot;, symbol)
 
-###### Added to avoid type labeling error
-  
-  fix_date &lt;- function(x) {
-    if(class(x) == &quot;list&quot;) 
-      return(NULL)
-    x$expiration &lt;- .POSIXct(as.numeric(x$expiration), tz=&quot;UTC&quot;)
-    x$lastTradeDate &lt;- .POSIXct(as.numeric(x$lastTradeDate), tz=&quot;UTC&quot;)
-    x &lt;- x[,sort(names(x))]
-    return(x)
+  # OSI symbol: ROOT + yymmdd + C/P + strike*1000 (last 15 characters)
+  osi &lt;- opts$option
+  tail15 &lt;- substr(osi, nchar(osi) - 14, nchar(osi))
+  chain &lt;- data.frame(
+    contractSymbol = osi,
+    Type           = ifelse(substr(tail15, 7, 7) == &quot;C&quot;, &quot;calls&quot;, &quot;puts&quot;),
+    strike         = as.numeric(substr(tail15, 8, 15)) / 1000,
+    expiration     = as.Date(substr(tail15, 1, 6), format = &quot;%y%m%d&quot;),
+    bid            = opts$bid,
+    ask            = opts$ask,
+    volume         = opts$volume,
+    last           = opts$last_trade_price,
+    openInterest   = opts$open_interest,
+    lastTradeDate  = as.Date(substr(as.character(opts$last_trade_time), 1, 10)),
+    stringsAsFactors = FALSE
+  )
+  chain$bid[is.na(chain$bid)] &lt;- 0
+  chain$ask[is.na(chain$ask)] &lt;- 0
+  chain$volume[is.na(chain$volume)] &lt;- 0
+  chain$openInterest[is.na(chain$openInterest)] &lt;- 0
+
+  # Most recent session seen anywhere in the full chain = the quote session
+  snap &lt;- suppressWarnings(max(chain$lastTradeDate, na.rm = TRUE))
+  chain$snapshotDate &lt;- if (is.finite(snap)) snap else Sys.Date()
+
+  keep &lt;- chain$expiration == exp_date
+  if (!any(keep)) {
+    stop(&quot;No &quot;, symbol, &quot; contracts found for expiration &quot;, exp_date,
+         &quot;. Available expirations: &quot;,
+         paste(sort(unique(chain$expiration)), collapse = &quot;, &quot;))
   }
-  
-  dftables &lt;- lapply(dftables,fix_date)
-  dftables &lt;- dftables[!sapply(dftables,is.null)]
-  dftables
+  chain &lt;- chain[keep, ]
+
+  S &lt;- j$data$current_price
+  if (is.null(S) || !is.finite(S) || S &lt;= 0) S &lt;- j$data$close
+  if (is.null(S) || !is.finite(S) || S &lt;= 0) S &lt;- estimate_underlying_parity(chain)
+  chain$underlying &lt;- S
+  chain$inTheMoney &lt;- ifelse(chain$Type == &quot;calls&quot;,
+                             chain$strike &lt; S,
+                             chain$strike &gt; S)
+
+  chain[order(chain$Type, chain$strike), ]
 }</code></pre>
 </div>
 </div>
