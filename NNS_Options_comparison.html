@@ -2901,28 +2901,208 @@ res$snapshot_date</code></pre>
 <div id="itm-calls" class="section level3">
 <h3>ITM Calls</h3>
 <pre class="r"><code>show_comp(res$itm_calls, &quot;ITM Call&quot;, show_last = TRUE)</code></pre>
-<pre><code>## [1] &quot;Last price: 749.63&quot;</code></pre>
-<pre><code>## Error in `loadNamespace()`:
-## ! there is no package called &#39;Metrics&#39;</code></pre>
+<pre><code>## [1] &quot;Last price: 749.78&quot;
+## [1] &quot;ITM Call MAPE: 0.165789434710566&quot;</code></pre>
+<pre><code>##            SPY Market Prices NNS Model
+## 365 strike           386.505  386.6316
+## 560 strike           192.800  191.5537
+## 575 strike           177.945  176.5485
+## 590 strike           163.095  161.5433
+## 600 strike           153.160  151.5400
+## 615 strike           138.385  136.5351
+## 625 strike           128.500  126.5320
+## 635 strike           118.640  116.5289
+## 650 strike           103.970  101.5244
+## 655 strike            99.110   96.5230
+## 660 strike            94.250   91.5207
+## 662 strike            92.320   89.5197
+## 665 strike            89.330   86.5184
+## 669 strike            85.605   82.5165
+## 670 strike            84.530   81.5159
+## 671 strike            83.655   80.5156
+## 675 strike            79.700   76.5130
+## 680 strike            74.930   71.5026
+## 685 strike            70.205   66.5064
+## 689 strike            65.880   62.4967
+## 690 strike            65.575   61.4963
+## 695 strike            60.115   56.4932
+## 699 strike            56.465   52.4765
+## 700 strike            56.300   51.4769
+## 701 strike            54.580   50.4749
+## 705 strike            51.040   46.4716
+## 708 strike            49.025   43.4726
+## 709 strike            48.135   42.4755
+## 710 strike            46.725   41.4732
+## 715 strike            42.830   36.5230
+## 717 strike            41.095   34.5659
+## 720 strike            38.505   31.6603
+## 722 strike            36.815   29.7694
+## 723 strike            35.970   28.8309
+## 724 strike            35.135   27.9078
+## 725 strike            34.300   26.9938
+## 726 strike            33.480   26.0783
+## 728 strike            31.830   24.3142
+## 729 strike            31.025   23.4700
+## 730 strike            30.205   22.6398
+## 731 strike            29.405   21.8199
+## 732 strike            28.620   21.0408
+## 733 strike            27.820   20.2537
+## 734 strike            27.055   19.4821
+## 735 strike            26.285   18.7169
+## 737 strike            24.720   17.2275
+## 739 strike            23.220   15.7941
+## 740 strike            22.490   15.0942
+## 741 strike            21.760   14.3912
+## 742 strike            21.030   13.6561
+## 743 strike            20.305   12.9008
+## 744 strike            19.610   12.1553
+## 745 strike            18.925   11.4120
+## 746 strike            18.230   10.6988
+## 747 strike            17.550   10.0176
+## 748 strike            16.890    9.4508
+## 749 strike            16.225    8.5850</code></pre>
 </div>
 <div id="otm-calls" class="section level3">
 <h3>OTM Calls</h3>
 <pre class="r"><code>show_comp(res$otm_calls, &quot;OTM Call&quot;, nonzero_only = TRUE)</code></pre>
-<pre><code>## Error in `loadNamespace()`:
-## ! there is no package called &#39;Metrics&#39;</code></pre>
+<pre><code>## [1] &quot;OTM Call MAPE: 0.686420204682261&quot;</code></pre>
+<pre><code>##            SPY Market Prices NNS Model
+## 750 strike            15.615    8.0109
+## 751 strike            14.980    7.5031
+## 752 strike            14.360    7.1663
+## 753 strike            13.750    6.6651
+## 754 strike            13.160    6.1531
+## 755 strike            12.580    5.7498
+## 756 strike            12.015    5.5238
+## 757 strike            11.460    5.5657
+## 758 strike            10.920    5.7604
+## 759 strike            10.395    5.9430
+## 760 strike             9.885    6.0008
+## 761 strike             9.385    5.8920
+## 762 strike             8.900    5.6328
+## 763 strike             8.440    5.2914
+## 764 strike             7.985    4.8720
+## 765 strike             7.550    4.5073
+## 766 strike             7.125    4.0774
+## 767 strike             6.725    3.6162
+## 768 strike             6.330    3.1812
+## 769 strike             5.960    2.7821
+## 770 strike             5.595    2.3970
+## 771 strike             5.255    2.0607
+## 772 strike             4.925    1.7662
+## 773 strike             4.605    1.5037
+## 774 strike             4.305    1.2744
+## 775 strike             4.025    1.0663
+## 776 strike             3.750    0.8980
+## 777 strike             3.495    0.7523
+## 778 strike             3.255    0.6392
+## 779 strike             3.025    0.5351
+## 780 strike             2.800    0.4520
+## 781 strike             2.600    0.3829
+## 782 strike             2.410    0.3176
+## 783 strike             2.225    0.2740
+## 784 strike             2.060    0.2209
+## 785 strike             1.900    0.1951
+## 786 strike             1.750    0.1539
+## 787 strike             1.610    0.1306
+## 788 strike             1.480    0.1044
+## 789 strike             1.360    0.0940
+## 790 strike             1.250    0.0781
+## 791 strike             1.150    0.0632
+## 792 strike             1.055    0.0504
+## 793 strike             0.970    0.0417
+## 794 strike             0.890    0.0341
+## 795 strike             0.810    0.0238
+## 796 strike             0.750    0.0212
+## 797 strike             0.685    0.0155</code></pre>
 </div>
 <div id="itm-puts" class="section level3">
 <h3>ITM Puts</h3>
 <pre class="r"><code>show_comp(res$itm_puts, &quot;ITM Put&quot;, show_last = TRUE)</code></pre>
-<pre><code>## [1] &quot;Last price: 749.63&quot;</code></pre>
-<pre><code>## Error in `loadNamespace()`:
-## ! there is no package called &#39;Metrics&#39;</code></pre>
+<pre><code>## [1] &quot;Last price: 749.78&quot;
+## [1] &quot;ITM Put MAPE: 0.193663650541753&quot;</code></pre>
+<pre><code>##            SPY Market Prices NNS Model
+## 750 strike            12.575   11.2788
+## 751 strike            12.955   11.6106
+## 752 strike            13.345    9.9370
+## 753 strike            13.755    9.8282
+## 754 strike            14.175   10.2050
+## 755 strike            14.605   10.6366
+## 756 strike            15.055   10.5936
+## 757 strike            15.515   10.6794
+## 758 strike            16.005   11.1633
+## 759 strike            16.510   11.6459
+## 760 strike            17.025   12.1793
+## 761 strike            17.540   12.9184
+## 762 strike            18.095   13.6497
+## 763 strike            18.640   14.3924
+## 764 strike            19.230   15.3216
+## 765 strike            19.825   16.0660
+## 766 strike            20.425   16.9922
+## 767 strike            21.070   17.8846
+## 768 strike            21.720   18.7848
+## 769 strike            22.375   19.7142
+## 770 strike            23.070   20.6303
+## 775 strike            26.740   25.4783
+## 785 strike            35.300   35.2699
+## 790 strike            40.170   40.2379</code></pre>
 </div>
 <div id="otm-puts" class="section level3">
 <h3>OTM Puts</h3>
 <pre class="r"><code>show_comp(res$otm_puts, &quot;OTM Put&quot;, nonzero_only = TRUE)</code></pre>
-<pre><code>## Error in `loadNamespace()`:
-## ! there is no package called &#39;Metrics&#39;</code></pre>
+<pre><code>## [1] &quot;OTM Put MAPE: 0.636240837850198&quot;</code></pre>
+<pre><code>##            SPY Market Prices NNS Model
+## 699 strike             3.170    0.0176
+## 700 strike             3.245    0.0196
+## 701 strike             3.330    0.0392
+## 702 strike             3.410    0.0566
+## 703 strike             3.500    0.0733
+## 704 strike             3.590    0.0735
+## 705 strike             3.680    0.0934
+## 706 strike             3.770    0.1272
+## 707 strike             3.865    0.1464
+## 708 strike             3.970    0.1783
+## 709 strike             4.070    0.1964
+## 710 strike             4.180    0.2359
+## 711 strike             4.285    0.2625
+## 712 strike             4.395    0.3027
+## 713 strike             4.510    0.3594
+## 714 strike             4.630    0.4308
+## 715 strike             4.750    0.4980
+## 716 strike             4.880    0.5855
+## 717 strike             5.005    0.6818
+## 718 strike             5.145    0.7954
+## 719 strike             5.285    0.9254
+## 720 strike             5.425    1.0820
+## 721 strike             5.575    1.2556
+## 722 strike             5.725    1.4541
+## 723 strike             5.875    1.6829
+## 724 strike             6.035    1.9548
+## 725 strike             6.205    2.2690
+## 726 strike             6.375    2.5687
+## 727 strike             6.555    2.9074
+## 728 strike             6.735    3.2400
+## 729 strike             6.920    3.5948
+## 730 strike             7.115    3.9215
+## 731 strike             7.310    4.2343
+## 732 strike             7.520    4.5157
+## 733 strike             7.730    4.7972
+## 734 strike             7.950    5.0407
+## 735 strike             8.170    5.2854
+## 736 strike             8.400    5.5063
+## 737 strike             8.640    5.7304
+## 738 strike             8.885    5.8989
+## 739 strike             9.140    6.0515
+## 740 strike             9.405    6.2117
+## 741 strike             9.680    6.4061
+## 742 strike             9.960    6.6883
+## 743 strike            10.250    7.1079
+## 744 strike            10.550    7.6624
+## 745 strike            10.860    8.2508
+## 746 strike            11.175    8.7870
+## 747 strike            11.515    9.2913
+## 748 strike            11.850    9.8997
+## 749 strike            12.205   10.3658</code></pre>
 </div>
 </div>
 <div id="aapl" class="section level2">
@@ -2931,28 +3111,71 @@ res$snapshot_date</code></pre>
 <div id="itm-calls-1" class="section level3">
 <h3>ITM Calls</h3>
 <pre class="r"><code>show_comp(res$itm_calls, &quot;ITM Call&quot;, show_last = TRUE)</code></pre>
-<pre><code>## [1] &quot;Last price: 317.08&quot;</code></pre>
-<pre><code>## Error in `loadNamespace()`:
-## ! there is no package called &#39;Metrics&#39;</code></pre>
+<pre><code>## [1] &quot;Last price: 317.19&quot;
+## [1] &quot;ITM Call MAPE: 0.0596149303554648&quot;</code></pre>
+<pre><code>##            AAPL Market Prices NNS Model
+## 165 strike            152.725  153.6281
+## 170 strike            147.475  148.6265
+## 200 strike            117.800  118.6170
+## 210 strike            107.775  108.6140
+## 220 strike             98.275   98.6110
+## 230 strike             88.050   88.6082
+## 235 strike             82.950   83.6068
+## 240 strike             77.975   78.6055
+## 245 strike             73.025   73.6042
+## 250 strike             68.250   68.6029
+## 255 strike             63.525   63.6016
+## 260 strike             58.675   58.6002
+## 265 strike             54.050   53.5988
+## 270 strike             48.625   48.5778
+## 275 strike             44.525   43.5371
+## 280 strike             39.800   38.4817
+## 285 strike             35.325   33.3463
+## 290 strike             30.925   28.2812
+## 295 strike             27.000   23.4445
+## 300 strike             22.900   19.0667
+## 305 strike             19.350   15.2406
+## 310 strike             16.125   11.8358
+## 315 strike             13.125    8.9542</code></pre>
 </div>
 <div id="otm-calls-1" class="section level3">
 <h3>OTM Calls</h3>
 <pre class="r"><code>show_comp(res$otm_calls, &quot;OTM Call&quot;, nonzero_only = TRUE)</code></pre>
-<pre><code>## Error in `loadNamespace()`:
-## ! there is no package called &#39;Metrics&#39;</code></pre>
+<pre><code>## [1] &quot;OTM Call MAPE: 0.693203072616185&quot;</code></pre>
+<pre><code>##            AAPL Market Prices NNS Model
+## 320 strike             10.525    5.4116
+## 325 strike              8.250    4.2281
+## 330 strike              6.350    3.6236
+## 335 strike              4.750    2.0140
+## 340 strike              3.500    0.8385
+## 345 strike              2.570    0.3074
+## 350 strike              1.835    0.1035
+## 355 strike              1.310    0.0229</code></pre>
 </div>
 <div id="itm-puts-1" class="section level3">
 <h3>ITM Puts</h3>
 <pre class="r"><code>show_comp(res$itm_puts, &quot;ITM Put&quot;, show_last = TRUE)</code></pre>
-<pre><code>## [1] &quot;Last price: 317.08&quot;</code></pre>
-<pre><code>## Error in `loadNamespace()`:
-## ! there is no package called &#39;Metrics&#39;</code></pre>
+<pre><code>## [1] &quot;Last price: 317.19&quot;
+## [1] &quot;ITM Put MAPE: 0.197582101589186&quot;</code></pre>
+<pre><code>##            AAPL Market Prices NNS Model
+## 320 strike             12.175    9.1365
+## 325 strike             14.925    9.8556
+## 330 strike             18.175   13.4825
+## 335 strike             21.675   18.0329
+## 340 strike             25.600   22.8811
+## 345 strike             29.725   27.8273</code></pre>
 </div>
 <div id="otm-puts-1" class="section level3">
 <h3>OTM Puts</h3>
 <pre class="r"><code>show_comp(res$otm_puts, &quot;OTM Put&quot;, nonzero_only = TRUE)</code></pre>
-<pre><code>## Error in `loadNamespace()`:
-## ! there is no package called &#39;Metrics&#39;</code></pre>
+<pre><code>## [1] &quot;OTM Put MAPE: 0.660256360152078&quot;</code></pre>
+<pre><code>##            AAPL Market Prices NNS Model
+## 290 strike              2.755    0.0614
+## 295 strike              3.600    0.2526
+## 300 strike              4.675    0.8462
+## 305 strike              6.050    2.2932
+## 310 strike              7.750    4.7034
+## 315 strike              9.800    7.6349</code></pre>
 </div>
 </div>
 <div id="xom" class="section level2">
@@ -2960,27 +3183,44 @@ res$snapshot_date</code></pre>
 <pre class="r"><code>security = &quot;XOM&quot;</code></pre>
 <div id="itm-calls-2" class="section level3">
 <h3>ITM Calls</h3>
-<pre><code>## [1] &quot;Last price: 145.0446&quot;</code></pre>
-<pre><code>## Error in `loadNamespace()`:
-## ! there is no package called &#39;Metrics&#39;</code></pre>
+<pre><code>## [1] &quot;Last price: 145.07&quot;
+## [1] &quot;ITM Call MAPE: 0.13828911972649&quot;</code></pre>
+<pre><code>##            XOM Market Prices NNS Model
+## 120 strike            25.675   25.0727
+## 125 strike            20.825   20.0719
+## 130 strike            16.250   15.0712
+## 135 strike            12.250   10.0706
+## 140 strike             8.725    5.2088
+## 145 strike             5.925    6.6162</code></pre>
 </div>
 <div id="otm-calls-2" class="section level3">
 <h3>OTM Calls</h3>
-<pre><code>## Error in `loadNamespace()`:
-## ! there is no package called &#39;Metrics&#39;</code></pre>
+<pre><code>## [1] &quot;OTM Call MAPE: 0.641681021820219&quot;</code></pre>
+<pre><code>##            XOM Market Prices NNS Model
+## 150 strike             3.875    2.5765
+## 155 strike             2.465    0.8524
+## 160 strike             1.505    0.0967</code></pre>
 </div>
 <div id="itm-puts-2" class="section level3">
 <h3>ITM Puts</h3>
 <pre class="r"><code>show_comp(res$itm_puts, &quot;ITM Put&quot;, show_last = TRUE)</code></pre>
-<pre><code>## [1] &quot;Last price: 145.0446&quot;</code></pre>
-<pre><code>## Error in `loadNamespace()`:
-## ! there is no package called &#39;Metrics&#39;</code></pre>
+<pre><code>## [1] &quot;Last price: 145.07&quot;
+## [1] &quot;ITM Put MAPE: 0.0558888990672842&quot;</code></pre>
+<pre><code>##            XOM Market Prices NNS Model
+## 150 strike              9.05    7.7764
+## 155 strike             12.70   11.5164
+## 160 strike             16.75   16.1409
+## 165 strike             21.20   21.0968
+## 170 strike             26.20   26.0877</code></pre>
 </div>
 <div id="otm-puts-2" class="section level3">
 <h3>OTM Puts</h3>
 <pre class="r"><code>show_comp(res$otm_puts, &quot;OTM Put&quot;, nonzero_only = TRUE)</code></pre>
-<pre><code>## Error in `loadNamespace()`:
-## ! there is no package called &#39;Metrics&#39;</code></pre>
+<pre><code>## [1] &quot;OTM Put MAPE: 0.713193348625167&quot;</code></pre>
+<pre><code>##            XOM Market Prices NNS Model
+## 135 strike              2.08    0.0454
+## 140 strike              3.70    0.9275
+## 145 strike              6.05    3.5569</code></pre>
 </div>
 </div>
 <div id="tlt" class="section level2">
@@ -2988,27 +3228,49 @@ res$snapshot_date</code></pre>
 <pre class="r"><code>security = &quot;TLT&quot;</code></pre>
 <div id="itm-calls-3" class="section level3">
 <h3>ITM Calls</h3>
-<pre><code>## [1] &quot;Last price: 83.995&quot;</code></pre>
-<pre><code>## Error in `loadNamespace()`:
-## ! there is no package called &#39;Metrics&#39;</code></pre>
+<pre><code>## [1] &quot;Last price: 84.01&quot;
+## [1] &quot;ITM Call MAPE: 0.139109819886658&quot;</code></pre>
+<pre><code>##           TLT Market Prices NNS Model
+## 67 strike            17.150   17.0115
+## 69 strike            15.175   15.0112
+## 70 strike            14.175   14.0111
+## 71 strike            13.175   13.0110
+## 80 strike             4.300    4.0101
+## 81 strike             3.350    3.0101
+## 82 strike             2.515    2.0105
+## 83 strike             1.765    1.0800
+## 84 strike             1.145    0.6280</code></pre>
 </div>
 <div id="otm-calls-3" class="section level3">
 <h3>OTM Calls</h3>
-<pre><code>## Error in `loadNamespace()`:
-## ! there is no package called &#39;Metrics&#39;</code></pre>
+<pre><code>## [1] &quot;OTM Call MAPE: 0.640713960477188&quot;</code></pre>
+<pre><code>##           TLT Market Prices NNS Model
+## 85 strike             0.695    0.3729
+## 86 strike             0.395    0.0719</code></pre>
 </div>
 <div id="itm-puts-3" class="section level3">
 <h3>ITM Puts</h3>
 <pre class="r"><code>show_comp(res$itm_puts, &quot;ITM Put&quot;, show_last = TRUE)</code></pre>
-<pre><code>## [1] &quot;Last price: 83.995&quot;</code></pre>
-<pre><code>## Error in `loadNamespace()`:
-## ! there is no package called &#39;Metrics&#39;</code></pre>
+<pre><code>## [1] &quot;Last price: 84.01&quot;
+## [1] &quot;ITM Put MAPE: 0.0418804924142194&quot;</code></pre>
+<pre><code>##           TLT Market Prices NNS Model
+## 85 strike             1.670    1.3490
+## 86 strike             2.400    2.2327
+## 87 strike             3.250    3.2154
+## 88 strike             4.200    4.2280
+## 90 strike             6.125    6.2263
+## 91 strike             7.125    7.2264
+## 92 strike             8.125    8.2265
+## 94 strike            10.100   10.2267</code></pre>
 </div>
 <div id="otm-puts-3" class="section level3">
 <h3>OTM Puts</h3>
 <pre class="r"><code>show_comp(res$otm_puts, &quot;OTM Put&quot;, nonzero_only = TRUE)</code></pre>
-<pre><code>## Error in `loadNamespace()`:
-## ! there is no package called &#39;Metrics&#39;</code></pre>
+<pre><code>## [1] &quot;OTM Put MAPE: 0.651825850549507&quot;</code></pre>
+<pre><code>##           TLT Market Prices NNS Model
+## 82 strike             0.425    0.0430
+## 83 strike             0.695    0.2965
+## 84 strike             1.100    0.5684</code></pre>
 </div>
 </div>
 <div id="cboe-options-chain-retrieval-code" class="section level2">
