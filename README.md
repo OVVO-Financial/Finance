@@ -1,6 +1,8 @@
 # Finance Research Notes
 
-This repository collects working papers, Markdown research notes, R/Sweave examples, PDFs, and supporting artifacts that explore [Nonlinear Nonparametric Statistics (NNS)](https://github.com/OVVO-Financial/NNS) tools for portfolio construction, risk management, derivative pricing, stochastic dominance, and directional PCA attribution.
+This repository collects published research, working papers, Markdown research notes, R/Sweave examples, PDFs, and supporting artifacts that explore [Nonlinear Nonparametric Statistics (NNS)](https://github.com/OVVO-Financial/NNS) tools and their foundations in utility theory, portfolio construction, risk management, derivative pricing, stochastic dominance, and directional PCA attribution.
+
+For the theoretical foundation, start with [Nawrocki and Viole's 2014 behavioral finance review](JBEF%20Final.pdf), which connects investor preferences, portfolio selection, and nonlinear nonparametric statistics.
 
 ## Contents
 
@@ -14,28 +16,33 @@ This repository collects working papers, Markdown research notes, R/Sweave examp
 ## Mathematical Finance and Derivative Pricing
 
 ### NNS_MFE
+
 A modern restatement of mathematical finance foundations through the lens of Nonlinear Nonparametric Statistics. The paper replaces parametric stochastic differential equation machinery with empirical distributions, partial-moment valuation, and pathwise risk-neutral rescaling to deliver a fully data-driven pricing and risk measurement pipeline that still respects martingale constraints.
 
 - [Read the Markdown](NNS_MFE.md)
 - [Download the PDF](NNS_MFE.pdf)
 
 ### Distributional Equivalence in GBM
+
 Derives the Radon–Nikodym density that maps the physical measure to its risk-neutral counterpart when asset prices follow geometric Brownian motion. The note documents how drift adjustments, discounting, and martingale consistency emerge in closed form, providing a concise reference that complements the P and Q rescaling discussion.
 
 - [Download the PDF](Distributional_Equivalence_in_GBM.pdf)
 
 ### P_and_Q
+
 Illustrates why `NNS.rescale()` is required when simulated price paths must satisfy theoretical expectations under different probability measures. The worked example shows how the function enforces risk-neutral and discounted constraints without distorting the empirical distribution.
 
 - [Read the Markdown](P_and_Q.md)
 
 ### P_to_Q_NNS_rescale
+
 Walks through the `P_to_Q_NNS_rescale.Rnw` reproducible research workflow that connects the theoretical discussion to the accompanying data-driven implementation. The dynamic document demonstrates how the rescaling procedure enforces discounted martingale constraints and links to the generated PDF output.
 
 - [Inspect the Sweave source](P_to_Q_NNS_rescale.Rnw)
 - [Download the compiled PDF](P_to_Q_NNS_rescale.pdf)
 
 ### Conditional Tail Dynamics via Put–Call IV Ratio
+
 This study examines how option-implied volatility regimes govern the geometry of conditional forward return distributions following large price shocks. Using nonparametric tail statistics (Value at Risk, Expected Shortfall, and kurtosis) and near-dated option-implied volatilities, we analyze the Put–Call IV ratio as a state variable that selects tail structure—distinguishing between bilateral explosive risk, asymmetric recovery, and bounded near-Gaussian behavior across assets and horizons.
 
 - [Download the PDF](Put_Call_IVs.pdf)
@@ -43,26 +50,31 @@ This study examines how option-implied volatility regimes govern the geometry of
 ## Portfolio Construction and Risk Management
 
 ### SD_cluster
+
 Compares stochastic dominance clustering with Hierarchical Risk Parity and naïve equal weighting in an out-of-sample asset allocation setting. The workflow extracts S&P 500 data, constructs NNS stochastic dominance clusters, and contrasts their performance with conventional portfolio construction heuristics.
 
 - [Read the Markdown](SD_cluster.md)
 
 ### Stress Testing
+
 Outlines a stress-testing framework that confines analysis to the downside co-lower partial moment quadrant while preserving nonlinear dependence through `NNS.reg()`. Bootstrapped replicates and dependence diagnostics ensure scenario paths respect empirical joint behavior when targeting adverse market moves.
 
 - [Read the Markdown](stress_test.md)
 
 ### LPM rank correlations
+
 Demonstrates how to source current S&P 500 constituents, compute log returns, and evaluate the concordance between tail-sensitive risk measures. The analysis contrasts expected regret of drawdown, conditional drawdown at risk, conditional value at risk, and lower partial moments to highlight ranking differences driven by asymmetry.
 
 - [Read the Markdown](LPM_rank_cors.md)
 
 ### Exogenous Directional Risk Matrices
+
 Formalizes the distinction between endogenous portfolio-conditioned semivariance matrices and exogenous benchmark-relative risk primitives. The note shows how Estrada’s asset-level semicovariance heuristic restores quadratic-program tractability, then extends the idea through Viole–Nawrocki and NNS directional co-partial moment matrices that decompose covariance, downside risk, upside risk, and asymmetric dependence into fixed directional building blocks.
 
 - [Download the PDF](exogenous_directional_risk_matrices_note.pdf)
 
 ### Omega Computation and Critique (Markowitz 2012)
+
 Presents a parametric linear programming (PLP) framework for tracing the complete set of Ω(L)-maximizing portfolios across admissible thresholds L, replacing discrete optimization with a continuous frontier analysis. The paper shows that maximizing Ω(L) is equivalent to achieving expected return and lower partial moment efficiency, and formalizes the simplex-based transition rules governing basis changes as L varies. It then critiques Ω as a performance criterion, contrasting it with stochastic dominance and expected-utility theory, and surveys empirical evidence indicating that mean-variance approximations often outperform VaR, CVaR, MAD, and related downside measures in approximating expected utility.
 
 - [Download the DOCX](Omega-Computation-and-Critique-Markowitz-2012.docx)
@@ -70,43 +82,62 @@ Presents a parametric linear programming (PLP) framework for tracing the complet
 ## Directional Decomposition and PCA Attribution
 
 ### Directional Markov Regimes and PCA Recovery
+
 Extends NNS directional spectral decomposition from static partial-moment quadrants to time-indexed directional regimes. The note shows how observable quadrant frequencies, conditional means, transition paths, and partial-moment matrices recover covariance and attribute PCA eigenvalues without relying on hidden-state labels.
 
 - [Read the Markdown](directional-markov-regimes-pca-pm-matrix-updated.md)
 
 ### NNS Directional Spectral Decomposition
+
 Develops a directional genealogy for covariance and PCA using full mean-split orthants, pairwise partial-moment matrices, and scalable `DPM_nD` diagnostics. The note distinguishes exact spectral recovery from compact directional summaries for high-dimensional applications.
 
 - [Read the Markdown](nns-directional-spectral-decomposition.md)
 
 ### When PC1 Is Not the Market Factor
+
 Demonstrates that the first principal component can represent a dominant spread factor rather than a broad market factor. The simulation uses NNS mean-split orthants to recover the PCA eigensystem and attribute the leading variance axis to the directional regimes that generated it.
 
 - [Read the Markdown](when-pc1-is-not-the-market-factor.md)
 
 ## Theory, Utility, and Critique
 
+### Behavioral Finance in Financial Market Theory, Utility Theory, Portfolio Theory and the Necessary Statistics: A Review
+
+**David Nawrocki and Fred Viole (2014).** *Journal of Behavioral and Experimental Finance*, **2**, 10–17. DOI: [10.1016/j.jbef.2014.02.005](https://doi.org/10.1016/j.jbef.2014.02.005).
+
+This published review connects financial market theory, expected utility, and portfolio selection through heterogeneous investor preferences. It argues for nonlinear, nonparametric statistics that accommodate investor-specific targets and asymmetric responses to gains and losses, emphasizing upper and lower partial moments (UPM/LPM). The discussion covers dynamic disequilibrium markets, bounded rationality, the limitations of conventional risk measures, and the use of co-partial moments in portfolio analysis.
+
+Read alongside [Utility Theory with Partial Moments](Utility%20Theory%20with%20Partial%20Moments.pdf), [Exogenous Directional Risk Matrices](exogenous_directional_risk_matrices_note.pdf), and [NNS Directional Spectral Decomposition](nns-directional-spectral-decomposition.md).
+
+- [Download the published paper](JBEF%20Final.pdf)
+- [View the publisher's article page](https://www.sciencedirect.com/science/article/pii/S2214635014000136)
+
 ### Active vs. Passive Investing
+
 Revised and extended version of Appendix A from *Physics Envy* (Viole and Nawrocki, 2011). Sharpe's arithmetic of active management is affirmed as an accounting identity, but its hidden assumptions — an exhaustive active/passive classification, a static market portfolio, and dollar-weighted averaging — are made explicit and examined one by one. Passive investing is indeed active, albeit infrequently: cap-weighted portfolios never trade on price moves alone, yet share issuance, buybacks, and index reconstitution force even the purest indexer to transact (Pedersen, 2018), and the prices the rule weights by are produced by the active sector it free-rides on (Grossman–Stiglitz, 1980). The note updates the empirical record through the mid-2020s, including the passive-share crossover and the disappearing index effect.
 
 - [Download the PDF](Active_vs_Passive.pdf)
 
 ### PT as I Still See It
+
 Harry M. Markowitz's 2010 Annual Review of Financial Economics article revisiting portfolio theory, including the roles of mean-variance analysis, expected utility, and practical portfolio-selection assumptions.
 
 - [Download the PDF](PT%20as%20I%20still%20see%20it.pdf)
 
 ### Utility Theory with Partial Moments
+
 Synthesizes a trilogy of utility-theory papers into a unified partial-moments framework. The note develops utility from dual benchmarks using upper and lower partial moments, explains how benchmark heterogeneity affects zero-return utility, and connects the framework to behavioral phenomena such as loss aversion, the house money effect, and the break-even effect. It also highlights practical applications in portfolio optimization and asymmetric risk assessment.
 
 - [Download the PDF](Utility%20Theory%20with%20Partial%20Moments.pdf)
 
 ### Nine Criticisms, Nine Concessions
+
 Catalogs nine criticisms of partial-moment methods and pairs them with nine concessions, clarifying the limits, tradeoffs, and appropriate interpretation of partial moments in risk and utility analysis.
 
 - [Download the PDF](Nine_criticisms_nine_concessions.pdf)
 
 ### Peters Ergodicity Critique
+
 Critical literature review of Ole Peters and ergodicity economics, focusing on time-average versus ensemble-average reasoning, multiplicative wealth dynamics, and how those claims interact with expected utility and partial-moment analysis.
 
 - [Download the PDF](Peters_ergodocity_critique.pdf)
@@ -115,17 +146,19 @@ Critical literature review of Ole Peters and ergodicity economics, focusing on t
 ## Data and Replication Notes
 
 ### Estimation Error Replication
+
 Companion notes for reproducing estimation-error experiments and implementation details used in portfolio comparison exercises.
 
 - [Read the Markdown](Data/Estimation_Error_Replication.md)
 
 ### Put Call IV Results
+
 Appendix-style results tables supporting the Put–Call IV tail-dynamics study, including lagged tail-statistic summaries across assets and put-call IV regime splits.
 
 - [Read the results tables](Data/Put%20Call%20IV%20Results)
 
 ## Additional Resources
 
-- [NNS.options() accuracy comparison](NNS_Options_comparison.html) ([HTML preview](https://htmlpreview.github.io/?https://github.com/OVVO-Financial/Finance/blob/master/NNS_Options_comparison.html))
+- [NNS.options() accuracy comparison](NNS_Options_comparison.html) ([HTML preview](https://htmlpreview.github.io/?https://github.com/OVVO-Financial/Finance/blob/main/NNS_Options_comparison.html))
 - [LTCM reference material](Images/LTCM.pdf) — background reading on the Long-Term Capital Management episode.
 - Original portfolio theory implementation details: [SSRN abstract 2791621](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2791621) and [OVVO Labs](https://www.ovvolabs.com)
