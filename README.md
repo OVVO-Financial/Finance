@@ -162,3 +162,4 @@ Appendix-style results tables supporting the Put–Call IV tail-dynamics study, 
 - [NNS.options() accuracy comparison](NNS_Options_comparison.html) ([HTML preview](https://htmlpreview.github.io/?https://github.com/OVVO-Financial/Finance/blob/main/NNS_Options_comparison.html))
 - [LTCM reference material](Images/LTCM.pdf) — background reading on the Long-Term Capital Management episode.
 - Original portfolio theory implementation details: [SSRN abstract 2791621](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2791621) and [OVVO Labs](https://www.ovvolabs.com)
+- [Timeseries Classification (NASADAQ)](Time_Series_Classification_Expanded--Nasdaq-.html) ([HTML preview](https://htmlpreview.github.io/?https://github.com/OVVO-Financial/Finance/blob/main/Time_Series_Classification_Expanded--Nasdaq-.html))
