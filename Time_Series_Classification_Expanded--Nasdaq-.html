@@ -2888,7 +2888,8 @@ cumulative return vectors to determine similarity.</p>
 </div>
 <div id="use-any-length-of-latest-returns" class="section level1">
 <h1>Use any length of latest returns</h1>
-<p>We will use the last 88 trading days.</p>
+<p>We will use the last 88 trading days. Otherwise, select a different
+length of returns.</p>
 <pre class="r"><code>#current_returns &lt;- tail(current_returns, 60) #Set to any length
 w              &lt;- length(current_returns)
 current_cumret &lt;- cumret(current_returns)</code></pre>
@@ -2910,7 +2911,7 @@ best.period.1 &lt;- which.max(
 
 # Calculate elapsed time
 print(Sys.time() - start.time)</code></pre>
-<pre><code>## Time difference of 0.9826238 secs</code></pre>
+<pre><code>## Time difference of 0.891757 secs</code></pre>
 <pre class="r"><code># Output the best matching period&#39;s value in IXIC
 IXIC[best.period.1]</code></pre>
 <pre><code>##            IXIC.Open IXIC.High IXIC.Low IXIC.Close IXIC.Volume IXIC.Adjusted
