@@ -10,7 +10,7 @@
 
 
 
-<meta name="date" content="2026-11-19" />
+<meta name="date" content="2026-11-20" />
 
 <title>NNS Options Pricing Comparison</title>
 
@@ -2774,7 +2774,7 @@ div.tocify {
 
 
 <h1 class="title toc-ignore">NNS Options Pricing Comparison</h1>
-<h4 class="date">November 19, 2026</h4>
+<h4 class="date">November 20, 2026</h4>
 
 </div>
 
@@ -2897,368 +2897,97 @@ res &lt;- compare_security(security, exp_date)
 
 # Session the delayed quotes were taken from
 res$snapshot_date</code></pre>
-<pre><code>## [1] &quot;2026-11-19&quot;</code></pre>
+<pre><code>## NULL</code></pre>
 <div id="itm-calls" class="section level3">
 <h3>ITM Calls</h3>
 <pre class="r"><code>show_comp(res$itm_calls, &quot;ITM Call&quot;, show_last = TRUE)</code></pre>
-<pre><code>## [1] &quot;Last price: 729.47&quot;
-## [1] &quot;ITM Call MAPE: 0.157554084560624&quot;</code></pre>
-<pre><code>##            SPY Market Prices NNS Model
-## 280 strike           450.685  449.5734
-## 365 strike           366.010  364.5486
-## 370 strike           360.815  359.5472
-## 375 strike           355.945  354.5458
-## 385 strike           346.010  344.5430
-## 390 strike           340.975  339.5416
-## 395 strike           336.150  334.5402
-## 400 strike           331.155  329.5388
-## 405 strike           325.995  324.5374
-## 410 strike           321.230  319.5361
-## 415 strike           316.205  314.5347
-## 420 strike           311.275  309.5333
-## 425 strike           306.295  304.5320
-## 430 strike           301.325  299.5306
-## 435 strike           296.335  294.5293
-## 440 strike           291.180  289.5280
-## 455 strike           276.345  274.5240
-## 465 strike           266.520  264.5214
-## 470 strike           261.555  259.5201
-## 505 strike           226.690  224.5113
-## 520 strike           211.995  209.5076
-## 540 strike           192.095  189.5029
-## 560 strike           172.300  169.4983
-## 575 strike           157.495  154.4949
-## 580 strike           152.575  149.4938
-## 595 strike           137.670  134.4906
-## 600 strike           132.870  129.4896
-## 605 strike           127.920  124.4885
-## 615 strike           118.240  114.4865
-## 620 strike           113.250  109.4855
-## 625 strike           108.560  104.4845
-## 630 strike           103.715   99.4836
-## 635 strike            98.760   94.4826
-## 645 strike            89.185   84.4808
-## 650 strike            84.105   79.4799
-## 655 strike            78.745   74.4790
-## 665 strike            70.345   64.4774
-## 675 strike            61.715   54.4758
-## 680 strike            56.310   49.4750
-## 690 strike            47.535   39.4736
-## 695 strike            43.840   34.4758
-## 700 strike            39.065   29.4870
-## 706 strike            34.190   23.5361
-## 708 strike            32.640   21.6062
-## 710 strike            31.070   19.7108
-## 711 strike            30.325   18.8006
-## 712 strike            29.580   17.9189
-## 715 strike            27.310   15.4660
-## 718 strike            25.165   13.4915
-## 719 strike            24.440   12.9298
-## 720 strike            23.765   12.4090
-## 721 strike            23.070   11.8810
-## 722 strike            22.355   11.3889
-## 723 strike            21.700   10.8623
-## 724 strike            21.025   10.3498
-## 725 strike            20.320    9.9234
-## 726 strike            19.710    9.7000
-## 727 strike            19.100    9.7647
-## 728 strike            18.475   10.7251
-## 729 strike            17.840   11.6994</code></pre>
+<pre><code>## No ITM Call satisfying the conditions for this expiry.</code></pre>
 </div>
 <div id="otm-calls" class="section level3">
 <h3>OTM Calls</h3>
 <pre class="r"><code>show_comp(res$otm_calls, &quot;OTM Call&quot;, nonzero_only = TRUE)</code></pre>
-<pre><code>## [1] &quot;OTM Call MAPE: 0.77348204159306&quot;</code></pre>
-<pre><code>##            SPY Market Prices NNS Model
-## 730 strike            17.225   11.3910
-## 731 strike            16.620    9.6238
-## 732 strike            16.025    9.5737
-## 733 strike            15.430    8.5148
-## 734 strike            14.850    7.4216
-## 735 strike            14.295    6.5080
-## 736 strike            13.740    5.7657
-## 737 strike            13.195    5.3094
-## 738 strike            12.665    4.9220
-## 739 strike            12.150    4.5152
-## 740 strike            11.645    4.1008
-## 741 strike            11.145    3.6852
-## 742 strike            10.660    3.2564
-## 743 strike            10.200    2.8374
-## 744 strike             9.740    2.4172
-## 745 strike             9.290    2.0272
-## 746 strike             8.860    1.6727
-## 747 strike             8.440    1.3511
-## 748 strike             8.030    1.0763
-## 749 strike             7.635    0.8485
-## 750 strike             7.255    0.6732
-## 751 strike             6.885    0.5210
-## 752 strike             6.535    0.3999
-## 753 strike             6.195    0.3119
-## 754 strike             5.860    0.2372
-## 755 strike             5.540    0.1778
-## 756 strike             5.240    0.1364
-## 757 strike             4.950    0.0997
-## 758 strike             4.670    0.0682
-## 759 strike             4.400    0.0510
-## 760 strike             4.145    0.0327
-## 761 strike             3.895    0.0249
-## 762 strike             3.665    0.0204
-## 763 strike             3.445    0.0104</code></pre>
+<pre><code>## No OTM Call satisfying the conditions for this expiry.</code></pre>
 </div>
 <div id="itm-puts" class="section level3">
 <h3>ITM Puts</h3>
 <pre class="r"><code>show_comp(res$itm_puts, &quot;ITM Put&quot;, show_last = TRUE)</code></pre>
-<pre><code>## [1] &quot;Last price: 729.47&quot;
-## [1] &quot;ITM Put MAPE: 0.153871588735836&quot;</code></pre>
-<pre><code>##            SPY Market Prices NNS Model
-## 730 strike            16.550    7.6169
-## 731 strike            16.945    8.7889
-## 732 strike            17.365   10.2515
-## 733 strike            17.790   11.0476
-## 734 strike            18.235   11.8048
-## 735 strike            18.685   12.5316
-## 736 strike            19.145   13.2766
-## 737 strike            19.535   13.9691
-## 738 strike            20.020   14.5901
-## 739 strike            20.500   15.1035
-## 740 strike            21.010   15.6224
-## 741 strike            21.525   16.1432
-## 742 strike            22.060   16.6411
-## 743 strike            22.615   17.1765
-## 744 strike            23.160   17.7581
-## 745 strike            23.765   18.3778
-## 746 strike            24.340   19.0605
-## 747 strike            24.935   19.7839
-## 748 strike            25.545   20.5605
-## 749 strike            26.175   21.4070
-## 750 strike            26.795   22.2557
-## 751 strike            27.450   23.1347
-## 752 strike            28.095   24.0355
-## 753 strike            28.780   24.9538
-## 754 strike            29.475   25.8558
-## 755 strike            30.165   26.7686
-## 756 strike            30.880   27.7014
-## 757 strike            31.600   28.6435
-## 758 strike            32.330   29.5915
-## 759 strike            33.070   30.5619
-## 760 strike            33.830   31.5341
-## 761 strike            34.625   32.5360
-## 762 strike            35.390   33.5431
-## 763 strike            36.170   34.5532
-## 764 strike            36.980   35.5542
-## 765 strike            37.780   36.5680
-## 766 strike            39.145   37.5823
-## 767 strike            39.455   38.5942
-## 768 strike            40.130   39.6046
-## 769 strike            40.940   40.6133
-## 770 strike            41.370   41.6218
-## 771 strike            42.670   42.6301
-## 772 strike            43.535   43.6366
-## 774 strike            45.510   45.6455
-## 775 strike            46.325   46.6451
-## 780 strike            50.880   51.6287
-## 785 strike            55.460   56.6169
-## 790 strike            60.255   61.6177
-## 800 strike            70.465   71.6194</code></pre>
+<pre><code>## No ITM Put satisfying the conditions for this expiry.</code></pre>
 </div>
 <div id="otm-puts" class="section level3">
 <h3>OTM Puts</h3>
 <pre class="r"><code>show_comp(res$otm_puts, &quot;OTM Put&quot;, nonzero_only = TRUE)</code></pre>
-<pre><code>## [1] &quot;OTM Put MAPE: 0.74621741020712&quot;</code></pre>
-<pre><code>##            SPY Market Prices NNS Model
-## 690 strike             6.430    0.0255
-## 695 strike             7.200    0.1107
-## 700 strike             8.080    0.3449
-## 701 strike             8.270    0.4237
-## 702 strike             8.475    0.5141
-## 703 strike             8.665    0.6265
-## 704 strike             8.865    0.7608
-## 705 strike             9.075    0.9249
-## 706 strike             9.295    1.1171
-## 707 strike             9.515    1.3426
-## 708 strike             9.755    1.5989
-## 709 strike             9.980    1.8852
-## 710 strike            10.215    2.2105
-## 711 strike            10.460    2.5492
-## 712 strike            10.710    2.8859
-## 713 strike            10.970    3.2080
-## 714 strike            11.230    3.5063
-## 715 strike            11.505    3.7650
-## 716 strike            11.780    4.0029
-## 717 strike            12.070    4.2502
-## 718 strike            12.365    4.4633
-## 719 strike            12.665    4.6984
-## 720 strike            12.975    4.9432
-## 721 strike            13.290    5.2143
-## 722 strike            13.615    5.4838
-## 723 strike            13.950    5.6231
-## 724 strike            14.290    5.7445
-## 725 strike            14.640    5.9035
-## 726 strike            15.005    5.9924
-## 727 strike            15.375    5.8663
-## 728 strike            15.755    6.1659
-## 729 strike            16.135    6.9533</code></pre>
+<pre><code>## No OTM Put satisfying the conditions for this expiry.</code></pre>
 </div>
 </div>
 <div id="aapl" class="section level2">
 <h2>AAPL</h2>
 <pre class="r"><code>security = &quot;AAPL&quot;</code></pre>
+<pre><code>## CBOE chain download failed for AAPL: CBOE delayed quotes request for AAPL failed [HTTP 403]</code></pre>
 <div id="itm-calls-1" class="section level3">
 <h3>ITM Calls</h3>
 <pre class="r"><code>show_comp(res$itm_calls, &quot;ITM Call&quot;, show_last = TRUE)</code></pre>
-<pre><code>## [1] &quot;Last price: 349.79&quot;
-## [1] &quot;ITM Call MAPE: 0.0801682967257111&quot;</code></pre>
-<pre><code>##            AAPL Market Prices NNS Model
-## 200 strike            150.450  149.8139
-## 230 strike            120.650  119.8076
-## 240 strike            110.650  109.8056
-## 245 strike            105.700  104.8046
-## 250 strike            101.150   99.8036
-## 260 strike             90.925   89.8018
-## 265 strike             86.025   84.8009
-## 270 strike             81.150   79.8000
-## 275 strike             76.125   74.7991
-## 280 strike             71.625   69.7982
-## 285 strike             66.400   64.7974
-## 290 strike             61.675   59.7966
-## 295 strike             56.475   54.7958
-## 300 strike             51.725   49.7951
-## 310 strike             42.150   39.7936
-## 315 strike             37.575   34.7952
-## 320 strike             32.775   29.8089
-## 325 strike             28.700   24.8757
-## 330 strike             24.500   20.0595
-## 335 strike             20.475   15.4882
-## 340 strike             16.700   11.1831
-## 345 strike             13.250    7.8637</code></pre>
+<pre><code>## No ITM Call satisfying the conditions for this expiry.</code></pre>
 </div>
 <div id="otm-calls-1" class="section level3">
 <h3>OTM Calls</h3>
 <pre class="r"><code>show_comp(res$otm_calls, &quot;OTM Call&quot;, nonzero_only = TRUE)</code></pre>
-<pre><code>## [1] &quot;OTM Call MAPE: 0.571126843706439&quot;</code></pre>
-<pre><code>##            AAPL Market Prices NNS Model
-## 350 strike             10.200    6.3603
-## 355 strike              7.600    6.1780
-## 360 strike              5.375    3.7606
-## 365 strike              3.700    1.7341
-## 370 strike              2.405    0.5808
-## 375 strike              1.495    0.1672
-## 380 strike              0.900    0.0396</code></pre>
+<pre><code>## No OTM Call satisfying the conditions for this expiry.</code></pre>
 </div>
 <div id="itm-puts-1" class="section level3">
 <h3>ITM Puts</h3>
 <pre class="r"><code>show_comp(res$itm_puts, &quot;ITM Put&quot;, show_last = TRUE)</code></pre>
-<pre><code>## [1] &quot;Last price: 349.79&quot;
-## [1] &quot;ITM Put MAPE: 0.114866693510482&quot;</code></pre>
-<pre><code>##            AAPL Market Prices NNS Model
-## 350 strike              9.125    4.8619
-## 355 strike             11.550    9.2845
-## 360 strike             14.375   12.7819
-## 365 strike             17.525   16.3392
-## 370 strike             21.850   20.5662
-## 375 strike             25.725   25.3174
-## 380 strike             30.275   30.2380
-## 385 strike             35.175   35.2203</code></pre>
+<pre><code>## No ITM Put satisfying the conditions for this expiry.</code></pre>
 </div>
 <div id="otm-puts-1" class="section level3">
 <h3>OTM Puts</h3>
 <pre class="r"><code>show_comp(res$otm_puts, &quot;OTM Put&quot;, nonzero_only = TRUE)</code></pre>
-<pre><code>## [1] &quot;OTM Put MAPE: 0.623551302989843&quot;</code></pre>
-<pre><code>##            AAPL Market Prices NNS Model
-## 315 strike              1.545    0.0112
-## 320 strike              2.005    0.0860
-## 325 strike              2.600    0.2860
-## 330 strike              3.350    0.9282
-## 335 strike              4.300    2.5631
-## 340 strike              5.625    4.8847
-## 345 strike              7.175    5.2626</code></pre>
+<pre><code>## No OTM Put satisfying the conditions for this expiry.</code></pre>
 </div>
 </div>
 <div id="xom" class="section level2">
 <h2>XOM</h2>
 <pre class="r"><code>security = &quot;XOM&quot;</code></pre>
+<pre><code>## CBOE chain download failed for XOM: CBOE delayed quotes request for XOM failed [HTTP 403]</code></pre>
 <div id="itm-calls-2" class="section level3">
 <h3>ITM Calls</h3>
-<pre><code>## [1] &quot;Last price: 160.1&quot;
-## [1] &quot;ITM Call MAPE: 0.124841224329218&quot;</code></pre>
-<pre><code>##            XOM Market Prices NNS Model
-## 115 strike            45.525   45.1044
-## 125 strike            35.825   35.1030
-## 135 strike            25.650   25.1018
-## 140 strike            21.175   20.1013
-## 145 strike            16.600   15.1008
-## 150 strike            12.400   10.1056
-## 155 strike             8.700    6.6320
-## 160 strike             5.650    3.4792</code></pre>
+<pre><code>## No ITM Call satisfying the conditions for this expiry.</code></pre>
 </div>
 <div id="otm-calls-2" class="section level3">
 <h3>OTM Calls</h3>
-<pre><code>## [1] &quot;OTM Call MAPE: 0.614420418568315&quot;</code></pre>
-<pre><code>##            XOM Market Prices NNS Model
-## 165 strike             3.350    1.6057
-## 170 strike             1.815    0.5297</code></pre>
+<pre><code>## No OTM Call satisfying the conditions for this expiry.</code></pre>
 </div>
 <div id="itm-puts-2" class="section level3">
 <h3>ITM Puts</h3>
 <pre class="r"><code>show_comp(res$itm_puts, &quot;ITM Put&quot;, show_last = TRUE)</code></pre>
-<pre><code>## [1] &quot;Last price: 160.1&quot;
-## [1] &quot;ITM Put MAPE: 0.0431757865430238&quot;</code></pre>
-<pre><code>##            XOM Market Prices NNS Model
-## 165 strike             7.725    7.8745
-## 170 strike            11.225   11.3801
-## 175 strike            15.525   16.4712
-## 180 strike            19.875   21.4369</code></pre>
+<pre><code>## No ITM Put satisfying the conditions for this expiry.</code></pre>
 </div>
 <div id="otm-puts-2" class="section level3">
 <h3>OTM Puts</h3>
 <pre class="r"><code>show_comp(res$otm_puts, &quot;OTM Put&quot;, nonzero_only = TRUE)</code></pre>
-<pre><code>## [1] &quot;OTM Put MAPE: 0.516129783475772&quot;</code></pre>
-<pre><code>##            XOM Market Prices NNS Model
-## 150 strike             1.790    0.1011
-## 155 strike             3.075    1.2824
-## 160 strike             5.025    5.1351</code></pre>
+<pre><code>## No OTM Put satisfying the conditions for this expiry.</code></pre>
 </div>
 </div>
 <div id="tlt" class="section level2">
 <h2>TLT</h2>
 <pre class="r"><code>security = &quot;TLT&quot;</code></pre>
+<pre><code>## CBOE chain download failed for TLT: CBOE delayed quotes request for TLT failed [HTTP 403]</code></pre>
 <div id="itm-calls-3" class="section level3">
 <h3>ITM Calls</h3>
-<pre><code>## [1] &quot;Last price: 80.07&quot;
-## [1] &quot;ITM Call MAPE: 0.159942541335174&quot;</code></pre>
-<pre><code>##           TLT Market Prices NNS Model
-## 75 strike             5.125    5.0859
-## 76 strike             4.175    4.0856
-## 77 strike             3.200    3.0853
-## 78 strike             2.325    2.1053
-## 79 strike             1.585    1.2190
-## 80 strike             1.015    0.4371</code></pre>
+<pre><code>## No ITM Call satisfying the conditions for this expiry.</code></pre>
 </div>
 <div id="otm-calls-3" class="section level3">
 <h3>OTM Calls</h3>
-<pre><code>## [1] &quot;OTM Call MAPE: 0.7216&quot;</code></pre>
-<pre><code>##           TLT Market Prices NNS Model
-## 81 strike             0.625     0.174</code></pre>
+<pre><code>## No OTM Call satisfying the conditions for this expiry.</code></pre>
 </div>
 <div id="itm-puts-3" class="section level3">
 <h3>ITM Puts</h3>
 <pre class="r"><code>show_comp(res$itm_puts, &quot;ITM Put&quot;, show_last = TRUE)</code></pre>
-<pre><code>## [1] &quot;Last price: 80.07&quot;
-## [1] &quot;ITM Put MAPE: 0.211810966918354&quot;</code></pre>
-<pre><code>##           TLT Market Prices NNS Model
-## 81 strike             1.850    0.9739
-## 82 strike             2.620    1.9306
-## 85 strike             5.375    4.9301
-## 93 strike            13.300   12.9306</code></pre>
+<pre><code>## No ITM Put satisfying the conditions for this expiry.</code></pre>
 </div>
 <div id="otm-puts-3" class="section level3">
 <h3>OTM Puts</h3>
 <pre class="r"><code>show_comp(res$otm_puts, &quot;OTM Put&quot;, nonzero_only = TRUE)</code></pre>
-<pre><code>## [1] &quot;OTM Put MAPE: 0.607144545172788&quot;</code></pre>
-<pre><code>##           TLT Market Prices NNS Model
-## 78 strike             0.405    0.0747
-## 79 strike             0.720    0.3683
-## 80 strike             1.195    0.5767</code></pre>
+<pre><code>## No OTM Put satisfying the conditions for this expiry.</code></pre>
 </div>
 </div>
 <div id="cboe-options-chain-retrieval-code" class="section level2">
